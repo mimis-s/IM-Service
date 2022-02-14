@@ -38,7 +38,7 @@ func main() {
 	user := flag.String("u", "zhangbin", "mysql user")
 	pwd := flag.String("p", "zb1998810", "mysql password")
 	addr := flag.String("a", "139.155.88.221", "mysql address")
-	database := flag.String("d", "IM-zhangbin", "mysql database")
+	database := flag.String("d", "im_zhangbin", "mysql database")
 	cmd := flag.String("cmd", "sync", "sync|clean")
 
 	

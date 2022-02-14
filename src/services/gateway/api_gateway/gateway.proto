@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package api_gateway;
+
+Service Gateway {
+    rpc NotifyClient(NotifyClientReq) returns (NotifyClientRes) {};
+}
+
+message NotifyClientReq {
+    string MsgTag = 1;
+    bytes Payload = 2;
+}
+
+message NotifyClientRes {
+    string msg = 1;
+}

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"IM-Service/src/services/lobby"
+	"IM-Service/src/services/gateway"
 	"context"
 	"fmt"
 	"os"
@@ -14,7 +14,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	// 启动每个服务
 
-	go lobby.Boot(ctx)
+	go gateway.Boot(ctx)
 
 	go GracefulStop(cancel)
 	select {

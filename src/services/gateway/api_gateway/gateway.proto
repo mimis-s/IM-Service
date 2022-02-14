@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package api_gateway;
 
-Service Gateway {
+service Gateway {
     rpc NotifyClient(NotifyClientReq) returns (NotifyClientRes) {};
 }
 

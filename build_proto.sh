@@ -57,7 +57,7 @@ gen_service_proto() {
    path=$1
    log_path=$(basename "$(dirname $path)")/$(basename $path)
    cd $path || (echo_red "cd $path error" && exit 1)
-   protoc -I$root_client_proto -I$root_server_proto -I. --gogofaster_out=. --joymicro_out=. *.proto
+   protoc -I$root_client_proto -I$root_server_proto -I. --gogofaster_out=. --rpcx_out=. *.proto
    if [ $? != 0 ]; then
        errCode="1"
        echo_red "[ERROR] ==> compile $log_path not ok"

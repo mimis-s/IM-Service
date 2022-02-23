@@ -27,7 +27,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-var serverName string = "pack"
+var serverName string = "gateway"
 
 type GatewayClientInterface interface {
 	NotifyClient(context.Context, *NotifyClientReq) (*NotifyClientRes, error)

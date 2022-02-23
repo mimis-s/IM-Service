@@ -1,0 +1,46 @@
+# config示例文件，启动时实际调用config里面的配置文件
+
+etcd:
+  path_prefix: etcd-namespace #etcd的命名空间，例如: /zhangbin
+  addrs:
+    - 139.155.88.221:2385
+redis:
+  addr: "139.155.88.221:2379"
+  db: redis-db # 数据库,888,切换数据库select 888
+mq:   # 消息队列
+  url: "mq-dsn" #例如 amqp://dev:dev123@localhost:5672/
+log:  # 日志输出文件
+  path: "/log"
+dfs:  # 分布式文件服务
+  enable: true
+  type: "minio"
+  url: "139.155.88.221:9000"
+  bucket: dfs-bucket
+  key_id: "admin"
+  key: "admin123456"
+
+db:
+  - tag: "gateway"
+    master:
+      addr: "139.155.88.221:3306"
+      db: "im-zhangbin"
+      user: "zhangbin"
+      passwd: "zhangbin"
+  - tag: "friends"
+    master:
+      addr: "139.155.88.221:3306"
+      db: "im-zhangbin"
+      user: "zhangbin"
+      passwd: "zhangbin"
+  - tag: "group"
+    master:
+      addr: "139.155.88.221:3306"
+      db: "im-zhangbin"
+      user: "zhangbin"
+      passwd: "zhangbin"
+  - tag: "lobby"
+    master:
+      addr: "139.155.88.221:3306"
+      db: "im-zhangbin"
+      user: "zhangbin"
+      passwd: "zhangbin"

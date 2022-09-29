@@ -2,7 +2,9 @@ package main
 
 import (
 	"IM-Service/src/services/gateway"
+	"IM-Service/web_client"
 	"context"
+	_ "embed"
 	"fmt"
 	"os"
 	"os/signal"
@@ -11,10 +13,13 @@ import (
 )
 
 func main() {
+
 	ctx, cancel := context.WithCancel(context.Background())
 	// 启动每个服务
-
 	go gateway.Boot(ctx)
+
+	// 运行网页客户端
+	go web_client.Boot(ctx)
 
 	go GracefulStop(cancel)
 	select {

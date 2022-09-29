@@ -1,0 +1,36 @@
+#main_window {
+    width: 100%;
+}
+
+#main_window>div {
+    text-align: center;
+}
+
+.main_up {
+    height: 100px;
+    background-color: orange;
+    margin-top: 0px;
+}
+
+.main_up>div {
+    height: 100%;
+}
+
+.main_up_left {
+    width: 20%;
+    background-color: orange;
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main_up_right {
+    width: 80%;
+    background-color: royalblue;
+    float: left;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

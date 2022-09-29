@@ -8,7 +8,6 @@
 
 .main_up {
     height: 100px;
-    background-color: orange;
     margin-top: 0px;
 }
 
@@ -18,7 +17,8 @@
 
 .main_up_left {
     width: 20%;
-    background-color: orange;
+    background-color: rgb(142, 208, 234);
+    opacity: 0.8;
     float: left;
     display: flex;
     align-items: center;
@@ -27,10 +27,67 @@
 
 .main_up_right {
     width: 80%;
-    background-color: royalblue;
+    background-color: rgb(142, 208, 234);
+    opacity: 0.8;
     float: left;
 
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+
+.main_down {
+    height: 600px;
+    margin-top: 0px;
+}
+
+.main_down>div {
+    height: 100%;
+}
+
+.main_down_left {
+    width: 20%;
+    background-color: rgb(221, 202, 202);
+    opacity: 0.8;
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main_down_right {
+    width: 80%;
+    background-color: rgb(255, 255, 255);
+    opacity: 0.8;
+    float: left;
+}
+
+.head {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    float: left;
+}
+
+#search {
+    float: right;
+    margin: 10px;
+    border-radius: 8px;
+}
+
+.main_down_right>div {
+    width: 100%;
+}
+
+.message_output {
+    height: 75%;
+    overflow-y: scroll;
+    border-bottom: 1px solid gray;
+    margin-top: 0px;
+}
+
+.message_input {
+    margin-top: 0px;
+    height: 25%;
 }

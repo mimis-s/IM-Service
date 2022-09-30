@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package im_main_proto;
+
+// 生成golang文件的目录
+option go_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_main_proto_golang";
+
+// 生成javascript文件的目录
+option java_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_main_proto_js";
+
+message ChatSingleReq {
+
+}
+
+message ChatSingleRes {
+    
+}

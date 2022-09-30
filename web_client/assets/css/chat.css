@@ -91,3 +91,18 @@
     margin-top: 0px;
     height: 25%;
 }
+
+#input_window {
+    min-width: 90%;
+    max-width: 90%;
+    max-height: 94%;
+    min-height: 94%;
+    float: left;
+    border: 0px;
+}
+
+#send_message_btn {
+    float: right;
+    width: 6%;
+    height: 20%;
+}

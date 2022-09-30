@@ -1,5 +1,7 @@
 网页版本的客户端实现
 
+web收发消息都是靠js封装函数实现, 序列化使用protobuf
+
 目录解析:
 assets: 存放资源文件
 controller: 调用html文件方法

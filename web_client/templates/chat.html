@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="assets/assets/image/1.jpg">
     <link rel="stylesheet" href="assets/assets/css/chat.css">
+    <script type="text/javascript" src="assets/assets/js/chat.js"></script>
 
     <style>
         body {
@@ -35,8 +36,8 @@
                 <!--消息展示界面-->
                 <div class="message_output"></div>
                 <div class="message_input">
-                    <textarea rows="8" cols="100" type="float:left width:80%"></textarea>
-                    <button type="float:right width:20%">发送</button>
+                    <textarea id="input_window"></textarea>
+                    <button id="send_message_btn" onclick="sendMessageClick()">发送</button>
                 </div>
             </div>
         </div>

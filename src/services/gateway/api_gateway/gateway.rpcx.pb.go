@@ -11,8 +11,8 @@ import (
 
 import (
 	context "context"
-	client "gitee.com/mimis/golang-tool/rpcx/client"
-	service "gitee.com/mimis/golang-tool/rpcx/service"
+	client "github.com/mimis-s/golang_tools/rpcx/client"
+	service "github.com/mimis-s/golang_tools/rpcx/service"
 	"time"
 )
 

@@ -1,9 +1,9 @@
 package web_client
 
 import (
-	"IM-Service/web_client/router"
 	"embed"
 
+	"github.com/mimis-s/IM-Service/web_client/router"
 	"golang.org/x/net/context"
 )
 

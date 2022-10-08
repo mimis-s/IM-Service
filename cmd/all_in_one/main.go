@@ -1,8 +1,6 @@
 package main
 
 import (
-	"IM-Service/src/services/gateway"
-	"IM-Service/web_client"
 	"context"
 	_ "embed"
 	"fmt"
@@ -10,6 +8,9 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/mimis-s/IM-Service/src/services/gateway"
+	"github.com/mimis-s/IM-Service/web_client"
 )
 
 func main() {

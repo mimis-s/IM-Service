@@ -1,12 +1,12 @@
 package router
 
 import (
-	"IM-Service/web_client/controller"
 	"embed"
 	"html/template"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mimis-s/IM-Service/web_client/controller"
 )
 
 func Start(port string, htmlEmbed embed.FS, assetsEmbed embed.FS) {

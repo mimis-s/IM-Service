@@ -1,12 +1,12 @@
 package main
 
 import (
-	"IM-Service/src/common/dbmodel"
 	"flag"
 	"fmt"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/mimis-s/IM-Service/src/common/dbmodel"
 	"xorm.io/xorm"
 	"xorm.io/xorm/log"
 )

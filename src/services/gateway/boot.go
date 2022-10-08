@@ -1,9 +1,10 @@
 package gateway
 
 import (
-	"IM-Service/src/services/gateway/service"
 	"context"
 	"fmt"
+
+	"github.com/mimis-s/IM-Service/src/services/gateway/service"
 )
 
 func Boot(ctx context.Context) {

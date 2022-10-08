@@ -1,11 +1,11 @@
 package service
 
 import (
-	"IM-Service/src/services/gateway/dao"
 	"fmt"
 
-	"gitee.com/mimis/golang-tool/net"
-	"gitee.com/mimis/golang-tool/net/clientConn"
+	"github.com/mimis-s/IM-Service/src/services/gateway/dao"
+	"github.com/mimis-s/golang_tools/net"
+	"github.com/mimis-s/golang_tools/net/clientConn"
 )
 
 // 服务器统一处理客户端消息的函数(暂时放在这里，这个后面会挪到lobby服务里面去)

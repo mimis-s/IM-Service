@@ -1,16 +1,5 @@
 var output;
 
-window.addEventListener("load", init, false);
-
-function init() {
-    init_window()
-}
-
-function init_window() {
-    output = document.getElementById("message_output");
-}
-
-
 function writeToScreen(message) {
     var pre = document.createElement("p");
     pre.style.wordWrap = "break-word";

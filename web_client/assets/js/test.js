@@ -10,7 +10,7 @@ function testSend() {
     }
     var json = { "msg_id": "1", "payload": msg.value }; //创建对象；
     var jsonStr = JSON.stringify(json);       //转为JSON字符串
-    writeToScreen(jsonStr)
+    writeToScreen("send msg:" + jsonStr)
     msg.value = "";
 
     websocket.send(jsonStr);
@@ -25,4 +25,8 @@ function testOnConn() {
 function testUnConn() {
     writeToScreen("Connection Closed.")
     websocket.close()
+}
+
+function SignleChat(payload) {
+    writeToScreen("调用到了chat:" + payload)
 }

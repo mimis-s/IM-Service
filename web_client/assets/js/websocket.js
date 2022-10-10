@@ -5,7 +5,7 @@ var url = "ws://localhost:8998/ws"
 var lockReconnect = false; //避免重复连接
 var websocket;// 心跳检测
 var heartCheck = {
-    timeout: 60000,
+    timeout: 5000,
     timer: null,
     serverTimer: null,
     reset: function () {
@@ -16,7 +16,8 @@ var heartCheck = {
     start: function () {
         let ts = this;
         this.timer = setTimeout(function () {
-            websocket.send('connectTest');
+            console.log("send heartCheack")
+            websocket.send(JSON.stringify({ "msg_id": "-1", "payload": "" }));
             ts.serverTimer = setTimeout(function () {
                 websocket.onclose();
             }, ts.timeout)
@@ -42,11 +43,16 @@ function wsHandle(url) {
         heartCheck.start();
     }
     websocket.onclose = function (evt) {
-        writeToScreen('websocket 断开: ' + evt.code + ' ' + evt.reason + ' ' + evt.wasClean + '正在重连');
-        reconnect();
+        writeToScreen('websocket 断开: ' + evt.code + ' ' + evt.reason + ' ' + evt.wasClean);
     }
     websocket.onmessage = function (evt) {
-        writeToScreen(evt.data);
+        var data = JSON.parse(evt.data)
+        if (data.msg_id == "-1") {
+            console.log("received heartCheack")
+        } else {
+            writeToScreen("received msg:" + evt.data);
+            RegisterFuncMap.get(string(data.msg_id))(data.payload);
+        }
         heartCheck.reset();
     }
 

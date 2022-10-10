@@ -1,8 +1,10 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 
+	"github.com/mimis-s/IM-Service/src/common/commonproto/im_main_proto"
 	"github.com/mimis-s/IM-Service/src/services/gateway/dao"
 	"github.com/mimis-s/golang_tools/net"
 	"github.com/mimis-s/golang_tools/net/clientConn"
@@ -18,9 +20,27 @@ func HandlerRespone(reqClient *clientConn.ClientMsg) (*clientConn.ClientMsg, err
 		}, nil
 	}
 	fmt.Printf("client send tag:%v message:%s\n", reqClient.Tag, reqClient.Msg)
+	req := &im_main_proto.ChatSingleReq{}
+	err := json.Unmarshal(reqClient.Msg, req)
+	if err != nil {
+		errStr := fmt.Sprintf("json Marshal[%v] is err:%v", req, err)
+		fmt.Println(errStr)
+		return nil, fmt.Errorf(errStr)
+	}
+
+	res := &im_main_proto.ChatSingleRes{
+		TestStr: req.TestStr,
+	}
+
+	msg, err := json.Marshal(res)
+	if err != nil {
+		errStr := fmt.Sprintf("json Marshal[%v] is err:%v", res, err)
+		fmt.Println(errStr)
+		return nil, fmt.Errorf(errStr)
+	}
 	return &clientConn.ClientMsg{
-		Tag: 1,
-		Msg: []byte("work"),
+		Tag: reqClient.Tag,
+		Msg: msg,
 	}, nil
 }
 

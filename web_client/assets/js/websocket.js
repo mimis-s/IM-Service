@@ -43,21 +43,21 @@ function wsHandle(url) {
         heartCheck.start();
     }
     websocket.onclose = function (evt) {
-        writeToScreen('websocket 断开: ' + evt.code + ' ' + evt.reason + ' ' + evt.wasClean);
+        console.log('websocket 断开: ' + evt.code + ' ' + evt.reason + ' ' + evt.wasClean);
     }
     websocket.onmessage = function (evt) {
         var data = JSON.parse(evt.data)
         if (data.msg_id == "-1") {
             console.log("received heartCheack")
         } else {
-            writeToScreen("received msg:" + evt.data);
-            RegisterFuncMap.get(string(data.msg_id))(data.payload);
+            console.log("received msg:" + evt.data);
+            RegisterFuncMap.get(String(data.msg_id))(data.payload);
         }
         heartCheck.reset();
     }
 
     websocket.onerror = function (evt) {
-        writeToScreen('websocket 出错: ' + evt.data + '正在重连')
+        console.log('websocket 出错: ' + evt.data + '正在重连')
         reconnect();
     }
 }
@@ -72,4 +72,13 @@ function reconnect() {
         lockReconnect = false;
     },
         2000);
+}
+
+/* 发送消息 */
+function sendMessage(tag, payload) {
+    var json = { "msg_id": tag, "payload": payload };
+    var jsonStr = JSON.stringify(json);
+    console.log("send msg:" + jsonStr)
+    websocket.send(jsonStr);
+    heartCheck.start()
 }

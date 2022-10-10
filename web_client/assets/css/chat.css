@@ -101,6 +101,18 @@
     border: 0px;
 }
 
+#connect_btn {
+    float: right;
+    width: 6%;
+    height: 20%;
+}
+
+#close_connect_btn {
+    float: right;
+    width: 6%;
+    height: 20%;
+}
+
 #send_message_btn {
     float: right;
     width: 6%;

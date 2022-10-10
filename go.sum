@@ -410,6 +410,8 @@ github.com/gorilla/context v1.1.1/go.mod h1:kBGZzfjB9CEq2AlWe17Uuf7NDRt0dE0s8S51
 github.com/gorilla/mux v1.6.2/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
 github.com/gorilla/mux v1.7.3/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
 github.com/gorilla/websocket v0.0.0-20170926233335-4201258b820c/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
+github.com/gorilla/websocket v1.5.0 h1:PPwGk2jz7EePpoHN/+ClbZu8SPxiqlu12wZP/3sWmnc=
+github.com/gorilla/websocket v1.5.0/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/grandcat/zeroconf v0.0.0-20180329153754-df75bb3ccae1/go.mod h1:YjKB0WsLXlMkO9p+wGTCoPIDGRJH0mz7E526PxkQVxI=
 github.com/grandcat/zeroconf v1.0.0 h1:uHhahLBKqwWBV6WZUDAT71044vwOTL+McW0mBJvo6kE=
 github.com/grandcat/zeroconf v1.0.0/go.mod h1:lTKmG1zh86XyCoUeIHSA4FJMBwCJiQmGfcP2PdzytEs=
@@ -628,8 +630,16 @@ github.com/miekg/dns v1.1.26/go.mod h1:bPDLeHnStXmXAq1m/Ch/hvfNHr14JKNPMBo3VZKju
 github.com/miekg/dns v1.1.27/go.mod h1:KNUDUusw/aVsxyTYZM1oqvCicbwhgbNgztCETuNZ7xM=
 github.com/miekg/dns v1.1.50 h1:DQUfb9uc6smULcREF09Uc+/Gd46YWqJd5DbpPE9xkcA=
 github.com/miekg/dns v1.1.50/go.mod h1:e3IlAVfNqAllflbibAZEWOXOQ+Ynzk/dDozDxY7XnME=
-github.com/mimis-s/golang_tools v0.0.0-20221008061553-881744d9a377 h1:OrGYFtHBVQE1pqTfEt5ps9o1ykMzQ93jP1cbfvVusWg=
-github.com/mimis-s/golang_tools v0.0.0-20221008061553-881744d9a377/go.mod h1:o47Yph68A1ghymYOTLG7v9Gp30tMcdNLv6Tg/ohAcnE=
+github.com/mimis-s/golang_tools v0.0.0-20221010060807-97093a98c3cc h1:ID99NFIJ18ISVyhnb+ZdohSaGYTcBxd9AM7pj+KeSaM=
+github.com/mimis-s/golang_tools v0.0.0-20221010060807-97093a98c3cc/go.mod h1:PUrLk/obaUfrFrMZxOZ9G8ffjQly2Yf5nW86TRCqxbM=
+github.com/mimis-s/golang_tools v0.0.0-20221010070841-2916c7cae806 h1:CN8CQ4Fuf3VTrQfkei7c5rjCp9dTlP2ceGcWrBsWx3w=
+github.com/mimis-s/golang_tools v0.0.0-20221010070841-2916c7cae806/go.mod h1:PUrLk/obaUfrFrMZxOZ9G8ffjQly2Yf5nW86TRCqxbM=
+github.com/mimis-s/golang_tools v0.0.0-20221010074129-73033205df35 h1:PeyEKffA4LFcaTIF7vkvC6gxEIyTCa4IqghyBuZZ+o0=
+github.com/mimis-s/golang_tools v0.0.0-20221010074129-73033205df35/go.mod h1:PUrLk/obaUfrFrMZxOZ9G8ffjQly2Yf5nW86TRCqxbM=
+github.com/mimis-s/golang_tools v0.0.0-20221010074511-653e43e5c1de h1:dJtqVYNUTp161+pmDSKUpRbwHKFFZwjxRRvRBwmrRKg=
+github.com/mimis-s/golang_tools v0.0.0-20221010074511-653e43e5c1de/go.mod h1:PUrLk/obaUfrFrMZxOZ9G8ffjQly2Yf5nW86TRCqxbM=
+github.com/mimis-s/golang_tools v0.0.0-20221010082649-e8a6156a4595 h1:xgGz4+4lnv4hGC5KuvmA4rYt6cyZr3sT94xd+6kVEq0=
+github.com/mimis-s/golang_tools v0.0.0-20221010082649-e8a6156a4595/go.mod h1:PUrLk/obaUfrFrMZxOZ9G8ffjQly2Yf5nW86TRCqxbM=
 github.com/minio/md5-simd v1.1.2/go.mod h1:MzdKDxYpY2BT9XQFocsiZf/NKVtR7nkE4RoEpN+20RM=
 github.com/minio/minio-go/v7 v7.0.40/go.mod h1:nCrRzjoSUQh8hgKKtu3Y708OLvRLtuASMg2/nvmbarw=
 github.com/minio/sha256-simd v1.0.0/go.mod h1:OuYzVNI5vcoYIAmbIvHPl3N3jUzVedXbKy5RFepssQM=

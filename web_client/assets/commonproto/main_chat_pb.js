@@ -221,7 +221,7 @@ proto.im_main_proto.ChatSingleRes.prototype.toObject = function(opt_includeInsta
  */
 proto.im_main_proto.ChatSingleRes.toObject = function(includeInstance, msg) {
   var f, obj = {
-
+    teststr: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -258,6 +258,10 @@ proto.im_main_proto.ChatSingleRes.deserializeBinaryFromReader = function(msg, re
     }
     var field = reader.getFieldNumber();
     switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTeststr(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -287,6 +291,31 @@ proto.im_main_proto.ChatSingleRes.prototype.serializeBinary = function() {
  */
 proto.im_main_proto.ChatSingleRes.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
+  f = message.getTeststr();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string TestStr = 1;
+ * @return {string}
+ */
+proto.im_main_proto.ChatSingleRes.prototype.getTeststr = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.im_main_proto.ChatSingleRes} returns this
+ */
+proto.im_main_proto.ChatSingleRes.prototype.setTeststr = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 

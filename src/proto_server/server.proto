@@ -1,5 +1,0 @@
-// 服务器自己的协议，不和客户端交互
-syntax = "proto3";
-
-// 生成golang文件的目录
-option go_package = "/im_server_proto";

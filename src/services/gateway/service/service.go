@@ -24,16 +24,25 @@ type Service struct {
 	Dao *dao.Dao
 }
 
-func Init(addr string) *Service {
+func Init(addr, webAddr string) *Service {
 
 	d, err := dao.New()
 	if err != nil {
 		panic(err)
 	}
 
-	// 服务连接etcd等服务
-	s := net.InitServer(addr, "tcp", HandlerRespone)
-	s.Listen()
+	httpServer := net.InitServer(webAddr, "http", HandlerRespone)
+
+	go func() {
+		err := httpServer.Listen()
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+	// 客户端连接的TCP连接
+	// s := net.InitServer(addr, "tcp", HandlerRespone)
+	// s.Listen()
 
 	S = &Service{
 		Dao: d,

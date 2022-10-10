@@ -2,18 +2,14 @@
 
 project_path="$(cd "$(dirname "$0")" && pwd)"
 root_client_proto="${project_path}/src/proto"
-root_server_proto="${project_path}/src/proto_server"
 out_path="${project_path}/src/common/commonproto"
 services_root="${project_path}/src/services"
+web_out_path="${project_path}/web_client/assets/commonproto"
 mkdir -p $out_path
 
-echo "[INFO] ==> compile common proto project_path:"$project_path
-echo "[INFO] ==> compile common proto root_client_proto:"$root_client_proto
-echo "[INFO] ==> compile common proto root_server_proto:"$root_server_proto
 echo "[INFO] ==> compile common proto out_path:"$out_path
-echo "[INFO] ==> compile common proto services_root:"$services_root
 
-# errCode="0"
+errCode="0"
 
 echo_red() {
     str=$1
@@ -40,12 +36,10 @@ gen_client_proto_go() {
     fi
 }
 
-mkdir -p ${out_path}/js
-
 gen_client_proto_js() {
     proto=$1
     # 要生成js代码结构
-    protoc -I$root_client_proto/ --js_out=import_style=commonjs,binary:"${out_path}/js" $root_client_proto/$proto
+    protoc -I$root_client_proto/ --js_out=import_style=commonjs,binary:"${web_out_path}" $root_client_proto/$proto
 
     # 上一个命令执行退出状态不等于0, 则说明出错了
     if [ $? -ne 0 ]; then
@@ -57,28 +51,11 @@ gen_client_proto_js() {
     fi
 }
 
-# gen_server_proto() {
-#    path_server=$1
-#    path_client=$2
-#    proto=$3
-# #   ret=`protoc -I$root/ --gogofaster_out=$out_path $root/$proto 2>&1`
-#    protoc -I$path_server/ -I$path_client/ --gogofaster_out=$out_path $path_server/$proto
-#    if [ $? -ne 0 ]; then
-#        errCode="1"
-#        echo_red "[ERROR] ==> compile $proto not ok."
-#        exit 1
-#    else
-#        echo "[INFO] ==> compile $proto ok."
-#    fi
-# }
-
 gen_service_proto() {
     path=$1
     log_path=$(basename "$(dirname $path)")/$(basename $path)
-    echo $path
-    echo $log_path
     cd $path || (echo_red "cd $path error" && exit 1)
-    protoc -I$root_client_proto -I$root_server_proto -I. --gogofaster_out=. --rpcx_out=. *.proto
+    protoc -I. --gogofaster_out=. --rpcx_out=. *.proto
     if [ $? != 0 ]; then
         errCode="1"
         echo_red "[ERROR] ==> compile $log_path not ok"

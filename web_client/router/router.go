@@ -17,6 +17,8 @@ func Start(port string, htmlEmbed embed.FS, assetsEmbed embed.FS) {
 	engine.StaticFS("/assets", http.FS(assetsEmbed))
 
 	engine.GET("/test", controller.Test)
+	engine.GET("/test1", controller.Test1)
+
 	engine.GET("/", controller.Index)
 	engine.GET("/chat", controller.Chat)
 

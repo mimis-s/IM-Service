@@ -80,7 +80,7 @@
     width: 100%;
 }
 
-.message_output {
+#message_output {
     height: 75%;
     overflow-y: scroll;
     border-bottom: 1px solid gray;

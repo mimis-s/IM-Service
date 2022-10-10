@@ -5,16 +5,46 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>测试页面</title>
+    <title>测试界面</title>
 
-    <link rel="stylesheet" href="assets/assets/image/1.jpg" type="image">
-    <link rel="stylesheet" href="assets/assets/css/index.css">
+    <link rel="stylesheet" href="assets/assets/image/1.jpg">
+    <link rel="stylesheet" href="assets/assets/css/chat.css">
+    <script type="text/javascript" src="assets/assets/js/chat.js"></script>
+    <script type="text/javascript" src="assets/assets/js/test.js"></script>
+
+    <style>
+        body {
+            background: url('assets/assets/image/1.jpg') fixed no-repeat;
+            background-size: 100% 100%;
+        }
+    </style>
 
 </head>
 
 <body>
-    <button id="my_button">测试</button>
 
+    <div id="main_window">
+        <div class="main_up">
+            <div class="main_up_left">
+                <img class="head" src="assets/assets/image/1.jpg">
+                <input id="search" type="text">
+            </div>
+            <div class="main_up_right">div2</div>
+        </div>
+        <div class="main_down">
+            <div class="main_down_left">div3</div>
+            <div class="main_down_right">
+                <!--消息展示界面-->
+                <div id="message_output"></div>
+                <div class="message_input">
+                    <textarea id="input_window"></textarea>
+                    <button id="send_message_btn" onclick="testOnConn()">测试连接</button>
+                    <button id="send_message_btn" onclick="testUnConn()">测试关闭</button>
+                    <button id="send_message_btn" onclick="testSend()">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

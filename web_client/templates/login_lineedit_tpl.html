@@ -1,6 +1,9 @@
 {{define "login_lineedit"}}
 
 <head>
+
+    <link rel="stylesheet" type="text/css"
+        href="assets/assets/jquery/lineedit/fonts/font-awesome-4.2.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="assets/assets/jquery/lineedit/css/default.css">
     <link rel="stylesheet" href="assets/assets/jquery/lineedit/css/normalize.css">
     <link rel="stylesheet" href="assets/assets/jquery/lineedit/css/set2.css">
@@ -28,6 +31,41 @@
                 d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,597,46c77.327,0,135,10.5,200.999,10.5c95.996,0,402.001,0,402.001,0" />
         </svg>
     </span>
+
+    <script>
+        (function () {
+            if (!String.prototype.trim) {
+                (function () {
+                    // Make sure we trim BOM and NBSP
+                    var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+                    String.prototype.trim = function () {
+                        return this.replace(rtrim, '');
+                    };
+                })();
+            }
+
+            [].slice.call(document.querySelectorAll('input.input__field')).forEach(function (inputEl) {
+                // in case the input is already filled..
+                if (inputEl.value.trim() !== '') {
+                    classie.add(inputEl.parentNode, 'input--filled');
+                }
+
+                // events:
+                inputEl.addEventListener('focus', onInputFocus);
+                inputEl.addEventListener('blur', onInputBlur);
+            });
+
+            function onInputFocus(ev) {
+                classie.add(ev.target.parentNode, 'input--filled');
+            }
+
+            function onInputBlur(ev) {
+                if (ev.target.value.trim() === '') {
+                    classie.remove(ev.target.parentNode, 'input--filled');
+                }
+            }
+        })();
+    </script>
 </body>
 
 

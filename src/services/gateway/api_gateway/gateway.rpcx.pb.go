@@ -6,6 +6,7 @@ package api_gateway
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	_ "github.com/mimis-s/IM-Service/src/common/commonproto/im_main_proto"
 	math "math"
 )
 

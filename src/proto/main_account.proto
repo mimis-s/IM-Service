@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package im_main_proto;
+
+// 生成golang文件的目录
+option go_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_main_proto";
+
+// 登录
+message LoginReq {
+    int64 UserID = 1;
+    string Password = 2;
+}
+
+message LoginRes {
+    int64 UserID = 1;
+    string UserName = 2;
+}
+
+// 注册
+message RegisterReq {
+    string UserName = 1;
+    string Password = 2;
+}
+
+message RegisterRes {
+    int64 UserID = 1;
+    string UserName = 2;
+}
+
+// 客户端在线时的基本信息
+message ClientOnlineInfo {
+    int64 UserID = 1;
+    string UserName = 2;
+    int32 Region = 3;                   // 地区(中国,美国....)
+    string IPAddr = 4;                  // 客户端地址
+    int32 NetType = 5;                  // 网络类型, websocket或者tcp
+    int64 CreateAccountTimestamp = 6;   // 创建账号时间
+    int64 PreLoginTimestamp = 7;        // 上次登录时间戳
+    int64 PreLogoutTimestamp = 8;       // 上次离线时间戳
+    int64 CurLoginTimestamp = 9;        // 本次登录时间
+    int32 ClientLocalZone = 10;         // 客户端时区
+}

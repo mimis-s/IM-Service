@@ -1,10 +1,11 @@
 #!/bin/bash
 
+set -e
+
 project_path="$(cd "$(dirname "$0")" && pwd)"
 root_client_proto="${project_path}/src/proto"
 out_path="${project_path}/src/common/commonproto"
 services_root="${project_path}/src/services"
-web_out_path="${project_path}/web_client/assets/commonproto"
 mkdir -p $out_path
 
 echo "[INFO] ==> compile common proto out_path:"$out_path
@@ -36,26 +37,11 @@ gen_client_proto_go() {
     fi
 }
 
-gen_client_proto_js() {
-    proto=$1
-    # 要生成js代码结构
-    protoc -I$root_client_proto/ --js_out=import_style=commonjs,binary:"${web_out_path}" $root_client_proto/$proto
-
-    # 上一个命令执行退出状态不等于0, 则说明出错了
-    if [ $? -ne 0 ]; then
-        # errCode="1"
-        echo_red "[ERROR] ==> compile $proto js not ok."
-        exit 1
-    else
-        echo "[INFO] ==> compile $proto js ok."
-    fi
-}
-
 gen_service_proto() {
     path=$1
     log_path=$(basename "$(dirname $path)")/$(basename $path)
     cd $path || (echo_red "cd $path error" && exit 1)
-    protoc -I. --gogofaster_out=. --rpcx_out=. *.proto
+    protoc -I$root_client_proto -I. --gogofaster_out=. --rpcx_out=. *.proto
     if [ $? != 0 ]; then
         errCode="1"
         echo_red "[ERROR] ==> compile $log_path not ok"
@@ -72,7 +58,6 @@ all_client_protos=$(find $root_client_proto -name "*.proto" -type f)
 for client_proto in $all_client_protos; do
     baseName=$(basename $client_proto)
     gen_client_proto_go $baseName
-    gen_client_proto_js $baseName
 done
 
 echo "[INFO] ==> compile all common proto finish."

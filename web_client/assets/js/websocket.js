@@ -17,7 +17,7 @@ var heartCheck = {
         let ts = this;
         this.timer = setTimeout(function () {
             console.log("send heartCheack")
-            websocket.send(JSON.stringify({ "msg_id": "-1", "payload": "" }));
+            websocket.send(JSON.stringify({ "msg_id": String(MESSAGE_ID.HeartCheack), "payload": "" }));
             ts.serverTimer = setTimeout(function () {
                 websocket.onclose();
             }, ts.timeout)
@@ -47,11 +47,12 @@ function wsHandle(url) {
     }
     websocket.onmessage = function (evt) {
         var data = JSON.parse(evt.data)
-        if (data.msg_id == "-1") {
+        var msg_id = String(data.msg_id)
+        if (msg_id == MESSAGE_ID.HeartCheack) {
             console.log("received heartCheack")
         } else {
             console.log("received msg:" + evt.data);
-            RegisterFuncMap.get(String(data.msg_id))(data.payload);
+            RegisterFuncMap.get(msg_id)(data.payload);
         }
         heartCheck.reset();
     }
@@ -81,4 +82,22 @@ function sendMessage(tag, payload) {
     console.log("send msg:" + jsonStr)
     websocket.send(jsonStr);
     heartCheck.start()
+}
+
+// 连接服务器
+function testOnConn() {
+    writeToScreen("加速连接服务器中......")
+    document.getElementById("connect_btn").disabled = "disabled"
+    document.getElementById("close_connect_btn").removeAttribute("disabled")
+
+    createWebSocket()
+}
+
+// 断开服务器
+function testUnConn() {
+    writeToScreen("服务器断开连接")
+    document.getElementById("close_connect_btn").disabled = "disabled"
+    document.getElementById("connect_btn").removeAttribute("disabled")
+
+    websocket.close()
 }

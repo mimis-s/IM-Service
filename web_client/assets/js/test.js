@@ -11,28 +11,11 @@ function testSend() {
     var payload = {
         TestStr: msg.value
     }
-    sendMessage("1", JSON.stringify(payload))
+    sendMessage(String(MESSAGE_ID.Test), JSON.stringify(payload))
     msg.value = ""
     return false
 }
 
-function testOnConn() {
-    writeToScreen("加速连接服务器中......")
-    document.getElementById("connect_btn").disabled = "disabled"
-    document.getElementById("close_connect_btn").removeAttribute("disabled")
-
-    createWebSocket()
-}
-
-function testUnConn() {
-    writeToScreen("服务器断开连接")
-    document.getElementById("close_connect_btn").disabled = "disabled"
-    document.getElementById("connect_btn").removeAttribute("disabled")
-
-    websocket.close()
-}
-
-// 服务器回发的聊天消息
-function SignleChat(payload) {
-    writeToScreen("我:" + payload.TestStr)
+function TestBack(payload) {
+    writeToScreen("测试服务器回发" + payload.TestStr)
 }

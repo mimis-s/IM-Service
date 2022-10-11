@@ -5,11 +5,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IM聊天界面</title>
+    <title>聊天界面</title>
 
     <link rel="stylesheet" href="assets/assets/image/1.jpg">
     <link rel="stylesheet" href="assets/assets/css/chat.css">
+    <script type="text/javascript" src="assets/assets/js/test.js"></script>
     <script type="text/javascript" src="assets/assets/js/chat.js"></script>
+    <script type="text/javascript" src="assets/assets/js/output_screen.js"></script>
+    <script type="text/javascript" src="assets/assets/js/websocket.js"></script>
+    <script type="text/javascript" src="assets/assets/js/register.js"></script>
 
     <style>
         body {
@@ -34,10 +38,12 @@
             <div class="main_down_left">div3</div>
             <div class="main_down_right">
                 <!--消息展示界面-->
-                <div class="message_output"></div>
+                <div id="message_output"></div>
                 <div class="message_input">
                     <textarea id="input_window"></textarea>
-                    <button id="send_message_btn" onclick="sendMessageClick()">发送</button>
+                    <button id="connect_btn" onclick="testOnConn()">连接</button>
+                    <button id="close_connect_btn" onclick="testUnConn()">关闭</button>
+                    <button id="send_message_btn" onclick="SendChat()">发送</button>
                 </div>
             </div>
         </div>

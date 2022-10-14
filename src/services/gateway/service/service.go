@@ -1,17 +1,19 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
-	"github.com/mimis-s/IM-Service/src/common/commonproto/im_main_proto"
 	"github.com/mimis-s/IM-Service/src/services/gateway/dao"
+	"github.com/mimis-s/IM-Service/src/services/main/api_main"
+	main_service "github.com/mimis-s/IM-Service/src/services/main/service"
 	"github.com/mimis-s/golang_tools/net"
 	"github.com/mimis-s/golang_tools/net/clientConn"
 )
 
-// 服务器统一处理客户端消息的函数(暂时放在这里，这个后面会挪到lobby服务里面去)
-func HandlerRespone(reqClient *clientConn.ClientMsg) (*clientConn.ClientMsg, error) {
+// 服务器处理客户端消息的回调函数(现在的简单框架足够了, 但是后面会集成到session里面)
+func (s *Service) HandlerHttpRespone(reqClient *clientConn.ClientMsg) (*clientConn.ClientMsg, error) {
 	if reqClient.Tag == -1 {
 		// 心跳包
 		fmt.Printf("client send heartCheack\n")
@@ -19,17 +21,18 @@ func HandlerRespone(reqClient *clientConn.ClientMsg) (*clientConn.ClientMsg, err
 			Tag: -1,
 		}, nil
 	}
-	fmt.Printf("client send tag:%v message:%s\n", reqClient.Tag, reqClient.Msg)
-	req := &im_main_proto.ChatSingleReq{}
-	err := json.Unmarshal(reqClient.Msg, req)
+
+	req := &api_main.ClientRequestHandleReq{
+		MsgID:   uint32(reqClient.Tag),
+		Payload: reqClient.Msg,
+	}
+	res := &api_main.ClientRequestHandleRes{}
+
+	err := s.Main.ClientRequestHandleJson(context.Background(), req, res)
 	if err != nil {
-		errStr := fmt.Sprintf("json Marshal[%v] is err:%v", req, err)
+		errStr := fmt.Sprintf("Client Request Handle Json[%v] is err:%v", req, err)
 		fmt.Println(errStr)
 		return nil, fmt.Errorf(errStr)
-	}
-
-	res := &im_main_proto.ChatSingleRes{
-		TestStr: req.TestStr,
 	}
 
 	msg, err := json.Marshal(res)
@@ -46,9 +49,10 @@ func HandlerRespone(reqClient *clientConn.ClientMsg) (*clientConn.ClientMsg, err
 
 var S *Service
 
+// 现在的rpcx调用都不用,先使用本地调用
 type Service struct {
-	// 大厅服务
-	Dao *dao.Dao
+	Dao  *dao.Dao
+	Main *main_service.Service // 大厅服务
 }
 
 func Init(addr, webAddr string) *Service {
@@ -58,7 +62,12 @@ func Init(addr, webAddr string) *Service {
 		panic(err)
 	}
 
-	httpServer := net.InitServer(webAddr, "http", HandlerRespone)
+	S = &Service{
+		Dao:  d,
+		Main: new(main_service.Service),
+	}
+
+	httpServer := net.InitServer(webAddr, "http", S.HandlerHttpRespone)
 
 	go func() {
 		err := httpServer.Listen()
@@ -71,8 +80,38 @@ func Init(addr, webAddr string) *Service {
 	// s := net.InitServer(addr, "tcp", HandlerRespone)
 	// s.Listen()
 
-	S = &Service{
-		Dao: d,
-	}
 	return S
 }
+
+// func (s *Service) testHandlerHttpRespone(reqClient *clientConn.ClientMsg) (*clientConn.ClientMsg, error) {
+// 	if reqClient.Tag == -1 {
+// 		// 心跳包
+// 		fmt.Printf("client send heartCheack\n")
+// 		return &clientConn.ClientMsg{
+// 			Tag: -1,
+// 		}, nil
+// 	}
+// 	fmt.Printf("client send tag:%v message:%s\n", reqClient.Tag, reqClient.Msg)
+// 	req := &im_main_proto.ChatSingleReq{}
+// 	err := json.Unmarshal(reqClient.Msg, req)
+// 	if err != nil {
+// 		errStr := fmt.Sprintf("json Marshal[%v] is err:%v", req, err)
+// 		fmt.Println(errStr)
+// 		return nil, fmt.Errorf(errStr)
+// 	}
+
+// 	res := &im_main_proto.ChatSingleRes{
+// 		TestStr: req.TestStr,
+// 	}
+
+// 	msg, err := json.Marshal(res)
+// 	if err != nil {
+// 		errStr := fmt.Sprintf("json Marshal[%v] is err:%v", res, err)
+// 		fmt.Println(errStr)
+// 		return nil, fmt.Errorf(errStr)
+// 	}
+// 	return &clientConn.ClientMsg{
+// 		Tag: reqClient.Tag,
+// 		Msg: msg,
+// 	}, nil
+// }

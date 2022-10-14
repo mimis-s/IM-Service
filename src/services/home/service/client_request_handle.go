@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/mimis-s/IM-Service/src/common/commonproto/github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
+	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
+	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 )
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/mimis-s/IM-Service/src/common/commonproto/github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
+	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 )
 
 /*

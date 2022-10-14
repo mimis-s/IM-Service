@@ -10,6 +10,9 @@ mkdir -p $out_path
 
 echo "[INFO] ==> compile common proto out_path:"$out_path
 
+mkdir -p $out_path/github.com/mimis-s/IM-Service/src/common
+ln -sf $out_path/ $out_path/github.com/mimis-s/IM-Service/src/common/commonproto
+
 errCode="0"
 
 echo_red() {
@@ -52,7 +55,6 @@ gen_service_proto() {
     #   cd -
 }
 
-# 编译客户端交互proto, 有golang和js两个版本
 echo "[INFO] ==> start compile common proto."
 all_client_protos=$(find $root_client_proto -name "*.proto" -type f)
 for client_proto in $all_client_protos; do
@@ -68,6 +70,10 @@ for api_path in $all_services_api_path; do
     gen_service_proto $api_path
 done
 echo "[INFO] ==> compile all services proto finish."
+
+rm -rf $out_path/github.com/mimis-s/IM-Service/src/common/commonproto
+rm -rf $out_path/github.com
+rm -rf $out_path/commonproto
 
 if [ $errCode != "0" ]; then
     echo_red "[ERROR] ==> compile has error, please check output."

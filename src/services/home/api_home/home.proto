@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "home_account.proto";
 
-package api_lobby;
+package api_home;
 
 service Main {
     rpc ClientRequestHandleProto(ClientRequestHandleReq) returns (ClientRequestHandleRes) {};

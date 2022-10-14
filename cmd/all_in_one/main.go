@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/mimis-s/IM-Service/src/services/gateway"
+	"github.com/mimis-s/IM-Service/src/services/home"
 	"github.com/mimis-s/IM-Service/web_client"
 )
 
@@ -18,7 +19,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	// 启动每个服务
 	go gateway.Boot(ctx)
-	go main.Boot(ctx)
+	go home.Boot(ctx)
 
 	// 运行网页客户端
 	go web_client.Boot(ctx)

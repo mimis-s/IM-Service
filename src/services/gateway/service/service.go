@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/mimis-s/IM-Service/src/services/gateway/dao"
+	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	home_service "github.com/mimis-s/IM-Service/src/services/home/service"
 	"github.com/mimis-s/golang_tools/net"
 	"github.com/mimis-s/golang_tools/net/clientConn"
@@ -63,7 +64,7 @@ func Init(addr, webAddr string) *Service {
 
 	S = &Service{
 		Dao:  d,
-		Main: new(main_service.Service),
+		Main: new(home_service.Service),
 	}
 
 	httpServer := net.InitServer(webAddr, "http", S.HandlerHttpRespone)

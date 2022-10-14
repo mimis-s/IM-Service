@@ -1,4 +1,4 @@
-package service
+package seralize
 
 import (
 	"hash/crc32"

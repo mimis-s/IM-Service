@@ -6,7 +6,9 @@ package im_error_proto
 import (
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -20,17 +22,485 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type ErrCode int32
+
+const (
+	ErrCode_success               ErrCode = 0
+	ErrCode_common_unexpected_err ErrCode = 1
+)
+
+var ErrCode_name = map[int32]string{
+	0: "success",
+	1: "common_unexpected_err",
+}
+
+var ErrCode_value = map[string]int32{
+	"success":               0,
+	"common_unexpected_err": 1,
+}
+
+func (x ErrCode) String() string {
+	return proto.EnumName(ErrCode_name, int32(x))
+}
+
+func (ErrCode) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_24fe73c7f0ddb19c, []int{0}
+}
+
+// 返回客户端错误
+type CommonError struct {
+	Code ErrCode `protobuf:"varint,1,opt,name=Code,proto3,enum=im_error_proto.ErrCode" json:"Code,omitempty"`
+	// 往返消息id
+	ReqMsgID uint32 `protobuf:"varint,2,opt,name=ReqMsgID,proto3" json:"ReqMsgID,omitempty"`
+	ResMsgID uint32 `protobuf:"varint,3,opt,name=ResMsgID,proto3" json:"ResMsgID,omitempty"`
+	// 往返消息数据
+	ReqPayload string `protobuf:"bytes,4,opt,name=ReqPayload,proto3" json:"ReqPayload,omitempty"`
+	ResPayload string `protobuf:"bytes,5,opt,name=ResPayload,proto3" json:"ResPayload,omitempty"`
+}
+
+func (m *CommonError) Reset()         { *m = CommonError{} }
+func (m *CommonError) String() string { return proto.CompactTextString(m) }
+func (*CommonError) ProtoMessage()    {}
+func (*CommonError) Descriptor() ([]byte, []int) {
+	return fileDescriptor_24fe73c7f0ddb19c, []int{0}
+}
+func (m *CommonError) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CommonError) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CommonError.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CommonError) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CommonError.Merge(m, src)
+}
+func (m *CommonError) XXX_Size() int {
+	return m.Size()
+}
+func (m *CommonError) XXX_DiscardUnknown() {
+	xxx_messageInfo_CommonError.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CommonError proto.InternalMessageInfo
+
+func (m *CommonError) GetCode() ErrCode {
+	if m != nil {
+		return m.Code
+	}
+	return ErrCode_success
+}
+
+func (m *CommonError) GetReqMsgID() uint32 {
+	if m != nil {
+		return m.ReqMsgID
+	}
+	return 0
+}
+
+func (m *CommonError) GetResMsgID() uint32 {
+	if m != nil {
+		return m.ResMsgID
+	}
+	return 0
+}
+
+func (m *CommonError) GetReqPayload() string {
+	if m != nil {
+		return m.ReqPayload
+	}
+	return ""
+}
+
+func (m *CommonError) GetResPayload() string {
+	if m != nil {
+		return m.ResPayload
+	}
+	return ""
+}
+
+func init() {
+	proto.RegisterEnum("im_error_proto.ErrCode", ErrCode_name, ErrCode_value)
+	proto.RegisterType((*CommonError)(nil), "im_error_proto.CommonError")
+}
+
 func init() { proto.RegisterFile("errors.proto", fileDescriptor_24fe73c7f0ddb19c) }
 
 var fileDescriptor_24fe73c7f0ddb19c = []byte{
-	// 129 bytes of a gzipped FileDescriptorProto
+	// 272 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x49, 0x2d, 0x2a, 0xca,
 	0x2f, 0x2a, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xcb, 0xcc, 0x8d, 0x07, 0x0b, 0xc4,
-	0x83, 0xf9, 0x4e, 0xb1, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c,
-	0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xe5, 0x9c,
-	0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x9f, 0x9b, 0x99, 0x9b, 0x59, 0xac,
-	0x5b, 0xac, 0xef, 0xe9, 0xab, 0x1b, 0x9c, 0x5a, 0x54, 0x96, 0x99, 0x9c, 0xaa, 0x5f, 0x5c, 0x94,
-	0xac, 0x9f, 0x9c, 0x9f, 0x9b, 0x9b, 0x9f, 0x07, 0xa5, 0xc0, 0xe6, 0xe9, 0xa3, 0x1a, 0x9f, 0xc4,
-	0x06, 0xa6, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x41, 0x4d, 0xfb, 0xe3, 0x85, 0x00, 0x00,
-	0x00,
+	0x83, 0xf9, 0x4a, 0x9b, 0x18, 0xb9, 0xb8, 0x9d, 0xf3, 0x73, 0x73, 0xf3, 0xf3, 0x5c, 0x41, 0xa2,
+	0x42, 0xda, 0x5c, 0x2c, 0xce, 0xf9, 0x29, 0xa9, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x7c, 0x46, 0xe2,
+	0x7a, 0xa8, 0xca, 0xf5, 0x5c, 0x8b, 0x8a, 0x40, 0xd2, 0x41, 0x60, 0x45, 0x42, 0x52, 0x5c, 0x1c,
+	0x41, 0xa9, 0x85, 0xbe, 0xc5, 0xe9, 0x9e, 0x2e, 0x12, 0x4c, 0x0a, 0x8c, 0x1a, 0xbc, 0x41, 0x70,
+	0x3e, 0x44, 0xae, 0x18, 0x22, 0xc7, 0x0c, 0x93, 0x83, 0xf0, 0x85, 0xe4, 0xb8, 0xb8, 0x82, 0x52,
+	0x0b, 0x03, 0x12, 0x2b, 0x73, 0xf2, 0x13, 0x53, 0x24, 0x58, 0x14, 0x18, 0x35, 0x38, 0x83, 0x90,
+	0x44, 0x20, 0xf2, 0xc5, 0x30, 0x79, 0x56, 0x98, 0x3c, 0x4c, 0x44, 0xcb, 0x90, 0x8b, 0x1d, 0xea,
+	0x10, 0x21, 0x6e, 0x2e, 0xf6, 0xe2, 0xd2, 0xe4, 0xe4, 0xd4, 0xe2, 0x62, 0x01, 0x06, 0x21, 0x49,
+	0x2e, 0xd1, 0x64, 0xb0, 0x5f, 0xe2, 0x4b, 0xf3, 0x52, 0x2b, 0x0a, 0x52, 0x93, 0x4b, 0x52, 0x53,
+	0x40, 0xce, 0x17, 0x60, 0x74, 0x8a, 0x3d, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07,
+	0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86,
+	0x28, 0xe7, 0xf4, 0xcc, 0x92, 0x8c, 0xd2, 0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0xfd, 0xdc, 0xcc, 0xdc,
+	0xcc, 0x62, 0xdd, 0x62, 0x7d, 0x4f, 0x5f, 0xdd, 0xe0, 0xd4, 0xa2, 0xb2, 0xcc, 0xe4, 0x54, 0xfd,
+	0xe2, 0xa2, 0x64, 0x7d, 0x88, 0xa1, 0x50, 0x0a, 0x1c, 0x10, 0xfa, 0xa8, 0xe1, 0x92, 0xc4, 0x06,
+	0xa6, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x58, 0x21, 0x0b, 0xfc, 0x6d, 0x01, 0x00, 0x00,
 }
+
+func (m *CommonError) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CommonError) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CommonError) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ResPayload) > 0 {
+		i -= len(m.ResPayload)
+		copy(dAtA[i:], m.ResPayload)
+		i = encodeVarintErrors(dAtA, i, uint64(len(m.ResPayload)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.ReqPayload) > 0 {
+		i -= len(m.ReqPayload)
+		copy(dAtA[i:], m.ReqPayload)
+		i = encodeVarintErrors(dAtA, i, uint64(len(m.ReqPayload)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.ResMsgID != 0 {
+		i = encodeVarintErrors(dAtA, i, uint64(m.ResMsgID))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.ReqMsgID != 0 {
+		i = encodeVarintErrors(dAtA, i, uint64(m.ReqMsgID))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Code != 0 {
+		i = encodeVarintErrors(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintErrors(dAtA []byte, offset int, v uint64) int {
+	offset -= sovErrors(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *CommonError) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovErrors(uint64(m.Code))
+	}
+	if m.ReqMsgID != 0 {
+		n += 1 + sovErrors(uint64(m.ReqMsgID))
+	}
+	if m.ResMsgID != 0 {
+		n += 1 + sovErrors(uint64(m.ResMsgID))
+	}
+	l = len(m.ReqPayload)
+	if l > 0 {
+		n += 1 + l + sovErrors(uint64(l))
+	}
+	l = len(m.ResPayload)
+	if l > 0 {
+		n += 1 + l + sovErrors(uint64(l))
+	}
+	return n
+}
+
+func sovErrors(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozErrors(x uint64) (n int) {
+	return sovErrors(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *CommonError) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowErrors
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CommonError: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CommonError: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowErrors
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= ErrCode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReqMsgID", wireType)
+			}
+			m.ReqMsgID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowErrors
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ReqMsgID |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ResMsgID", wireType)
+			}
+			m.ResMsgID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowErrors
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ResMsgID |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReqPayload", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowErrors
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthErrors
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthErrors
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ReqPayload = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ResPayload", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowErrors
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthErrors
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthErrors
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ResPayload = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipErrors(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthErrors
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipErrors(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowErrors
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowErrors
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowErrors
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthErrors
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupErrors
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthErrors
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthErrors        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowErrors          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupErrors = fmt.Errorf("proto: unexpected end of group")
+)

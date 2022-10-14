@@ -10,14 +10,14 @@ service Main {
 }
 
 message ClientRequestHandleReq {
-    int32 msgID = 1;
+    uint32 msgID = 1;
     bytes Payload = 2;
     im_main_proto.ClientOnlineInfo Client = 3;
 }
 
 message ClientRequestHandleRes {
     int32 ErrCode = 1;
-    int32 msgID = 2;
+    uint32 msgID = 2;
     bytes Payload = 3;
     im_main_proto.ClientOnlineInfo Client = 4;
 }

@@ -26,6 +26,7 @@ func newMsgMetaData(s interface{}) *msgMetaData {
 		return nil
 	}
 	typeOf := reflect.TypeOf(s)
+	fmt.Printf("name:%v crc32:%v", typeOf.Name(), GetMsgIDByName(typeOf.Name()))
 	return &msgMetaData{
 		OriginalStruct: s,
 		TypeOf:         typeOf,

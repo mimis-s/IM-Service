@@ -5,7 +5,7 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_main_proto"
-	"github.com/mimis-s/IM-Service/src/services/main/service/seralize"
+	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 )
 
 func init() {

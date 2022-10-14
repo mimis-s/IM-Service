@@ -6,8 +6,7 @@ import (
 	"fmt"
 
 	"github.com/mimis-s/IM-Service/src/services/gateway/dao"
-	"github.com/mimis-s/IM-Service/src/services/main/api_main"
-	main_service "github.com/mimis-s/IM-Service/src/services/main/service"
+	home_service "github.com/mimis-s/IM-Service/src/services/home/service"
 	"github.com/mimis-s/golang_tools/net"
 	"github.com/mimis-s/golang_tools/net/clientConn"
 )
@@ -22,11 +21,11 @@ func (s *Service) HandlerHttpRespone(reqClient *clientConn.ClientMsg) (*clientCo
 		}, nil
 	}
 
-	req := &api_main.ClientRequestHandleReq{
+	req := &api_home.ClientRequestHandleReq{
 		MsgID:   uint32(reqClient.Tag),
 		Payload: reqClient.Msg,
 	}
-	res := &api_main.ClientRequestHandleRes{}
+	res := &api_home.ClientRequestHandleRes{}
 
 	err := s.Main.ClientRequestHandleJson(context.Background(), req, res)
 	if err != nil {
@@ -52,7 +51,7 @@ var S *Service
 // 现在的rpcx调用都不用,先使用本地调用
 type Service struct {
 	Dao  *dao.Dao
-	Main *main_service.Service // 大厅服务
+	Main *home_service.Service // 大厅服务
 }
 
 func Init(addr, webAddr string) *Service {

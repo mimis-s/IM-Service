@@ -11,7 +11,7 @@ type Service struct {
 	Dao *dao.Dao
 }
 
-func Init(addr, webAddr string) *Service {
+func Init() *Service {
 
 	d, err := dao.New()
 	if err != nil {

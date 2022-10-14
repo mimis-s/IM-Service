@@ -7,13 +7,12 @@ import (
 	"reflect"
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
-	"github.com/mimis-s/IM-Service/src/services/main/api_main"
-	"github.com/mimis-s/IM-Service/src/services/main/service/seralize"
+	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 )
 
 var commonErrMsgID = seralize.GetMsgIdByStruct(im_error_proto.CommonError{})
 
-func dispatchMsg(ctx context.Context, req *api_main.ClientRequestHandleReq, res *api_main.ClientRequestHandleRes,
+func dispatchMsg(ctx context.Context, req *api_home.ClientRequestHandleReq, res *api_home.ClientRequestHandleRes,
 	decodeFun func([]byte, interface{}) error, encodeFun func(interface{}) ([]byte, error)) error {
 	// 通过msg_id拿到注册的handler结构
 	handler, find := seralize.RegisterHandlerMap[req.MsgID]
@@ -75,7 +74,7 @@ func dispatchMsg(ctx context.Context, req *api_main.ClientRequestHandleReq, res 
 }
 
 // 处理分发客户端发送的消息
-func (s *Service) ClientRequestHandleProto(ctx context.Context, req *api_main.ClientRequestHandleReq, res *api_main.ClientRequestHandleRes) error {
+func (s *Service) ClientRequestHandleProto(ctx context.Context, req *api_home.ClientRequestHandleReq, res *api_home.ClientRequestHandleRes) error {
 	decodeFun := func(buf []byte, m interface{}) error {
 		return seralize.Unmarshal(buf, m.(seralize.Message))
 	}
@@ -86,6 +85,6 @@ func (s *Service) ClientRequestHandleProto(ctx context.Context, req *api_main.Cl
 	return dispatchMsg(ctx, req, res, decodeFun, encodeFun)
 }
 
-func (s *Service) ClientRequestHandleJson(ctx context.Context, req *api_main.ClientRequestHandleReq, res *api_main.ClientRequestHandleRes) error {
+func (s *Service) ClientRequestHandleJson(ctx context.Context, req *api_home.ClientRequestHandleReq, res *api_home.ClientRequestHandleRes) error {
 	return dispatchMsg(ctx, req, res, json.Unmarshal, json.Marshal)
 }

@@ -18,6 +18,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	// 启动每个服务
 	go gateway.Boot(ctx)
+	go main.Boot(ctx)
 
 	// 运行网页客户端
 	go web_client.Boot(ctx)

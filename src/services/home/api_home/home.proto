@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-import "main_account.proto";
+import "home_account.proto";
 
-package api_main;
+package api_lobby;
 
 service Main {
     rpc ClientRequestHandleProto(ClientRequestHandleReq) returns (ClientRequestHandleRes) {};
@@ -12,12 +12,12 @@ service Main {
 message ClientRequestHandleReq {
     uint32 msgID = 1;
     bytes Payload = 2;
-    im_main_proto.ClientOnlineInfo Client = 3;
+    im_home_proto.ClientOnlineInfo Client = 3;
 }
 
 message ClientRequestHandleRes {
     int32 ErrCode = 1;
     uint32 msgID = 2;
     bytes Payload = 3;
-    im_main_proto.ClientOnlineInfo Client = 4;
+    im_home_proto.ClientOnlineInfo Client = 4;
 }

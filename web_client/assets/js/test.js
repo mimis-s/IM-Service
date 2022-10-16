@@ -1,7 +1,8 @@
 
 function testSend() {
     // 测试输出crc32加密
-    writeToScreen(GetCrc32("LoginReq"))
+    // writeToScreen(GetCrc32("LoginReq"))
+    writeToScreen(CRC32("LoginRes", 10))
 
     // if (!websocket) {
     //     return false;

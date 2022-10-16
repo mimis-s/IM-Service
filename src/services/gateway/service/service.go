@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
+	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/services/gateway/dao"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	home_service "github.com/mimis-s/IM-Service/src/services/home/service"
@@ -22,9 +22,14 @@ func (s *Service) HandlerHttpRespone(reqClient *clientConn.ClientMsg) (*clientCo
 		}, nil
 	}
 
+	// 先不记录client连接
 	req := &api_home.ClientRequestHandleReq{
 		MsgID:   uint32(reqClient.Tag),
 		Payload: reqClient.Msg,
+		Client: &im_home_proto.ClientOnlineInfo{
+			UserID:   1,
+			UserName: "test",
+		},
 	}
 	res := &api_home.ClientRequestHandleRes{}
 
@@ -35,15 +40,9 @@ func (s *Service) HandlerHttpRespone(reqClient *clientConn.ClientMsg) (*clientCo
 		return nil, fmt.Errorf(errStr)
 	}
 
-	msg, err := json.Marshal(res)
-	if err != nil {
-		errStr := fmt.Sprintf("json Marshal[%v] is err:%v", res, err)
-		fmt.Println(errStr)
-		return nil, fmt.Errorf(errStr)
-	}
 	return &clientConn.ClientMsg{
-		Tag: reqClient.Tag,
-		Msg: msg,
+		Tag: int(res.MsgID),
+		Msg: res.Payload,
 	}, nil
 }
 
@@ -82,36 +81,3 @@ func Init(addr, webAddr string) *Service {
 
 	return S
 }
-
-// func (s *Service) testHandlerHttpRespone(reqClient *clientConn.ClientMsg) (*clientConn.ClientMsg, error) {
-// 	if reqClient.Tag == -1 {
-// 		// 心跳包
-// 		fmt.Printf("client send heartCheack\n")
-// 		return &clientConn.ClientMsg{
-// 			Tag: -1,
-// 		}, nil
-// 	}
-// 	fmt.Printf("client send tag:%v message:%s\n", reqClient.Tag, reqClient.Msg)
-// 	req := &im_main_proto.ChatSingleReq{}
-// 	err := json.Unmarshal(reqClient.Msg, req)
-// 	if err != nil {
-// 		errStr := fmt.Sprintf("json Marshal[%v] is err:%v", req, err)
-// 		fmt.Println(errStr)
-// 		return nil, fmt.Errorf(errStr)
-// 	}
-
-// 	res := &im_main_proto.ChatSingleRes{
-// 		TestStr: req.TestStr,
-// 	}
-
-// 	msg, err := json.Marshal(res)
-// 	if err != nil {
-// 		errStr := fmt.Sprintf("json Marshal[%v] is err:%v", res, err)
-// 		fmt.Println(errStr)
-// 		return nil, fmt.Errorf(errStr)
-// 	}
-// 	return &clientConn.ClientMsg{
-// 		Tag: reqClient.Tag,
-// 		Msg: msg,
-// 	}, nil
-// }

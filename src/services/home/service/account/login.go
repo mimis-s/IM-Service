@@ -13,5 +13,9 @@ func init() {
 }
 
 func Login(ctx context.Context, req, res seralize.Message) im_error_proto.ErrCode {
+	reqMsg := req.(*im_home_proto.LoginReq)
+	resMsg := res.(*im_home_proto.LoginRes)
+	resMsg.UserID = reqMsg.UserID
+	resMsg.UserName = reqMsg.Password
 	return 0
 }

@@ -25,7 +25,7 @@ func dispatchMsg(ctx context.Context, req *api_home.ClientRequestHandleReq, res 
 	}
 
 	// 通过msg_id拿到原始的req请求
-	reqStruct := reflect.New(handler.ReqClient.TypeOf)
+	reqStruct := reflect.New(handler.ReqClient.TypeOf).Interface()
 	err := decodeFun(req.Payload, reqStruct)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] req msg_id[%v] decode is err:%v", req.Client.UserID, req.MsgID, err)
@@ -35,10 +35,10 @@ func dispatchMsg(ctx context.Context, req *api_home.ClientRequestHandleReq, res 
 	}
 
 	// 新建一个res请求
-	resStruct := reflect.New(handler.ResClient.TypeOf)
+	resStruct := reflect.New(handler.ResClient.TypeOf).Interface()
 
-	reqMessage := reqStruct.Interface().(seralize.Message)
-	resMessage := resStruct.Interface().(seralize.Message)
+	reqMessage := reqStruct.(seralize.Message)
+	resMessage := resStruct.(seralize.Message)
 
 	// 调用单独消息处理函数
 	errCode := handler.FuncHandler(ctx, reqMessage, resMessage)

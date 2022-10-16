@@ -11,12 +11,12 @@ function SendChat() {
     var payload = {
         TestStr: msg.value
     }
-    sendMessage(String(MESSAGE_ID.Chat), JSON.stringify(payload))
+    sendMessage(String(MESSAGE_ID.Chat.req), JSON.stringify(payload))
     msg.value = ""
     return false
 }
 
 // 服务器回发的聊天消息
-function SignleChat(payload) {
+function SignleChatBack(payload) {
     writeToScreen("我:" + payload.TestStr)
 }

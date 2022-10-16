@@ -26,7 +26,7 @@ func newMsgMetaData(s interface{}) *msgMetaData {
 		return nil
 	}
 	typeOf := reflect.TypeOf(s)
-	fmt.Printf("name:%v crc32:%v", typeOf.Name(), GetMsgIDByName(typeOf.Name()))
+	fmt.Printf("name:%v crc32:%v\n", typeOf.Name(), GetMsgIDByName(typeOf.Name()))
 	return &msgMetaData{
 		OriginalStruct: s,
 		TypeOf:         typeOf,
@@ -43,7 +43,7 @@ type MsgHandler struct {
 	FuncHandler handlerFunc
 }
 
-var RegisterHandlerMap map[uint32]*MsgHandler
+var RegisterHandlerMap = make(map[uint32]*MsgHandler)
 
 // 注册handler
 func RegisterHandler(req interface{}, res interface{}, f handlerFunc) {

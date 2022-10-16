@@ -1,24 +1,43 @@
-function GetCrc32(Instr) {
-    if (typeof (window.Crc32Table) != "undefined")
-        return;
-    window.Crc32Table = new Array(256);
-    var i, j;
-    var Crc;
-    for (i = 0; i < 256; i++) {
-        Crc = i;
-        for (j = 0; j < 8; j++) {
-            if (Crc & 1)
-                Crc = ((Crc >> 1) & 0x7FFFFFFF) ^ 0xEDB88320;
-            else
-                Crc = ((Crc >> 1) & 0x7FFFFFFF);
+// str是要变换的字符串,radix是生成编码的进制
+function CRC32(str, radix = 10) {
+    const Utf8Encode = function (string) {
+        string = string.replace(/\r\n/g, "\n");
+        let text = "";
+        for (let n = 0; n < string.length; n++) {
+            const c = string.charCodeAt(n);
+            if (c < 128) {
+                text += String.fromCharCode(c);
+            } else if ((c > 127) && (c < 2048)) {
+                text += String.fromCharCode((c >> 6) | 192);
+                text += String.fromCharCode((c & 63) | 128);
+            } else {
+                text += String.fromCharCode((c >> 12) | 224);
+                text += String.fromCharCode(((c >> 6) & 63) | 128);
+                text += String.fromCharCode((c & 63) | 128);
+            }
         }
-        Crc32Table[i] = Crc;
+        return text;
     }
-    if (typeof Instr != "string")
-        Instr = "" + Instr;
-    Crc = 0xFFFFFFFF;
-    for (i = 0; i < Instr.length; i++)
-        Crc = ((Crc >> 8) & 0x00FFFFFF) ^ Crc32Table[(Crc & 0xFF) ^ Instr.charCodeAt(i)];
-    Crc ^= 0xFFFFFFFF;
-    return Crc;
-} 
+
+    const makeCRCTable = function () {
+        let c;
+        const crcTable = [];
+        for (let n = 0; n < 256; n++) {
+            c = n;
+            for (let k = 0; k < 8; k++) {
+                c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+            }
+            crcTable[n] = c;
+        }
+        return crcTable;
+    }
+
+    const crcTable = makeCRCTable();
+    const strUTF8 = Utf8Encode(str);
+    let crc = 0 ^ (-1);
+    for (let i = 0; i < strUTF8.length; i++) {
+        crc = (crc >>> 8) ^ crcTable[(crc ^ strUTF8.charCodeAt(i)) & 0xFF];
+    }
+    crc = (crc ^ (-1)) >>> 0;
+    return crc.toString(radix);
+};

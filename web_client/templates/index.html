@@ -36,12 +36,21 @@
             height: 100%;
         }
     </style>
+
 </head>
 
 <body>
     <!--连接服务器-->
     <script>
-        createWebSocket()
+        var worker = new SharedWorker('assets/assets/js/websocket.js');
+        worker.port.onmessage = function (e) {
+            console.log("index:" + e);
+        };
+        // document.getElementById('btn').addEventListener('click', function (e) {
+        //     // 点击按钮时，通过port发送消息到shared worker
+        //     worker.port.postMessage('nihao' + Math.random());
+        // });
+
     </script>
     <div class="container">
         <!--页面切换用的iframe-->

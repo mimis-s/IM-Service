@@ -1,4 +1,64 @@
-// 这里面定义了websocket检测心跳包
+// 修改主要用于实现iframe+websocket多界面切换的想法
+
+var MESSAGE_ID = {
+    "HeartCheack": "-1",
+    "Chat": {
+        "req": CRC32("SignleChatReq", 10),
+        "res": CRC32("SignleChatRes", 10),
+    },
+    "Login": {
+        "req": CRC32("LoginReq", 10),
+        "res": CRC32("LoginRes", 10),
+    },
+    "Test": "2",
+}
+
+// str是要变换的字符串,radix是生成编码的进制
+function CRC32(str, radix = 10) {
+    const Utf8Encode = function (string) {
+        string = string.replace(/\r\n/g, "\n");
+        let text = "";
+        for (let n = 0; n < string.length; n++) {
+            const c = string.charCodeAt(n);
+            if (c < 128) {
+                text += String.fromCharCode(c);
+            } else if ((c > 127) && (c < 2048)) {
+                text += String.fromCharCode((c >> 6) | 192);
+                text += String.fromCharCode((c & 63) | 128);
+            } else {
+                text += String.fromCharCode((c >> 12) | 224);
+                text += String.fromCharCode(((c >> 6) & 63) | 128);
+                text += String.fromCharCode((c & 63) | 128);
+            }
+        }
+        return text;
+    }
+
+    const makeCRCTable = function () {
+        let c;
+        const crcTable = [];
+        for (let n = 0; n < 256; n++) {
+            c = n;
+            for (let k = 0; k < 8; k++) {
+                c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+            }
+            crcTable[n] = c;
+        }
+        return crcTable;
+    }
+
+    const crcTable = makeCRCTable();
+    const strUTF8 = Utf8Encode(str);
+    let crc = 0 ^ (-1);
+    for (let i = 0; i < strUTF8.length; i++) {
+        crc = (crc >>> 8) ^ crcTable[(crc ^ strUTF8.charCodeAt(i)) & 0xFF];
+    }
+    crc = (crc ^ (-1)) >>> 0;
+    return crc.toString(radix);
+};
+
+
+var portList = [];
 
 var url = "ws://localhost:8998/ws"
 
@@ -27,19 +87,16 @@ var heartCheck = {
 
 // 创建WebSocket链接
 function createWebSocket() {
-    if (window["WebSocket"]) {
-        if (!url) return
-        websocket = new WebSocket(url);  // WebSocket事件方法    
-        wsHandle();
-    } else {
-        writeToScreen('浏览器不支持websocket')
-    }
+    if (!url) return
+    websocket = new WebSocket(url);  // WebSocket事件方法    
+    return wsHandle();
+
 }
 
 /* 初始化ws各个事件的方法 */
 function wsHandle(url) {
     websocket.onopen = function (evt) {
-        writeToScreen("Connection open");
+        console.log("Connection open");
         heartCheck.start();
     }
     websocket.onclose = function (evt) {
@@ -52,7 +109,10 @@ function wsHandle(url) {
             console.log("received heartCheack")
         } else {
             console.log("received msg:" + evt.data);
-            RegisterFuncMap.get(msg_id)(data.payload);
+            // RegisterFuncMap.get(msg_id)(data.payload);
+            portList.forEach(port => {
+                port.postMessage(data);
+            });
         }
         heartCheck.reset();
     }
@@ -61,6 +121,7 @@ function wsHandle(url) {
         console.log('websocket 出错: ' + evt.data + '正在重连')
         reconnect();
     }
+    return websocket
 }
 
 /* ws重新连接 */
@@ -86,18 +147,37 @@ function sendMessage(tag, payload) {
 
 // 连接服务器
 function testOnConn() {
-    writeToScreen("加速连接服务器中......")
-    document.getElementById("connect_btn").disabled = "disabled"
-    document.getElementById("close_connect_btn").removeAttribute("disabled")
+    console.log("加速连接服务器中......")
+    // document.getElementById("connect_btn").disabled = "disabled"
+    // document.getElementById("close_connect_btn").removeAttribute("disabled")
 
     createWebSocket()
 }
 
 // 断开服务器
 function testUnConn() {
-    writeToScreen("服务器断开连接")
-    document.getElementById("close_connect_btn").disabled = "disabled"
-    document.getElementById("connect_btn").removeAttribute("disabled")
+    console.log("服务器断开连接")
+    // document.getElementById("close_connect_btn").disabled = "disabled"
+    // document.getElementById("connect_btn").removeAttribute("disabled")
 
     websocket.close()
 }
+
+// sharedworker每一次创建都会触发onconnect
+onconnect = function (e) {
+    // 当触发了这个事件时，就建立对应的websocket连接
+    if (!websocket) {
+        console.log("重连服务器")
+        websocket = createWebSocket()
+    }
+
+    var port = e.ports[0];
+    // 然后把这个连接对应的port放在portList中
+    portList.push(port);
+
+    port.addEventListener('message', function (evt) {
+        sendMessage(evt.data.msg_id, evt.data.payload)
+    });
+
+    port.start();
+};

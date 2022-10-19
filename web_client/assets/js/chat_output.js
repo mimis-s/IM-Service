@@ -14,7 +14,6 @@ function writeToScreen(message) {
     msec = timeNow.getMilliseconds()
     pre.innerHTML = "[" + year + "/" + month + "/" + day + " " + hour + ":" + min + ":" + sec + "." + msec + "]<br>"
     pre.innerHTML += message;
-    // output.appendChild(pre);
-    // output.scrollTop = output.scrollHeight
-    console.log(message)
+    output.appendChild(pre);
+    output.scrollTop = output.scrollHeight
 }

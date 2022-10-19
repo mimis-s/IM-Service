@@ -3,8 +3,8 @@
 var MESSAGE_ID = {
     "HeartCheack": "-1",
     "Chat": {
-        "req": CRC32("SignleChatReq", 10),
-        "res": CRC32("SignleChatRes", 10),
+        "req": CRC32("ChatSingleReq", 10),
+        "res": CRC32("ChatSingleRes", 10),
     },
     "Login": {
         "req": CRC32("LoginReq", 10),

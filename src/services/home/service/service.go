@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/mimis-s/IM-Service/src/services/gateway/dao"
 	_ "github.com/mimis-s/IM-Service/src/services/home/service/account"
+	_ "github.com/mimis-s/IM-Service/src/services/home/service/chat"
 )
 
 var S *Service

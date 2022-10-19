@@ -9,11 +9,9 @@
 
     <link rel="stylesheet" href="assets/assets/image/1.jpg">
     <link rel="stylesheet" href="assets/assets/css/chat.css">
-    <script type="text/javascript" src="assets/assets/js/test.js"></script>
     <script type="text/javascript" src="assets/assets/js/chat.js"></script>
-    <script type="text/javascript" src="assets/assets/js/output_screen.js"></script>
+    <script type="text/javascript" src="assets/assets/js/chat_output.js"></script>
     <script type="text/javascript" src="assets/assets/js/websocket.js"></script>
-    <script type="text/javascript" src="assets/assets/js/register.js"></script>
 
     <style>
         body {
@@ -41,13 +39,16 @@
                 <div id="message_output"></div>
                 <div class="message_input">
                     <textarea id="input_window"></textarea>
-                    <button id="connect_btn" onclick="testOnConn()">连接</button>
-                    <button id="close_connect_btn" onclick="testUnConn()">关闭</button>
                     <button id="send_message_btn" onclick="SendChat()">发送</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        create_chat_worker()
+    </script>
+
 </body>
 
 </html>

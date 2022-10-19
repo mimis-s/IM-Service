@@ -29,17 +29,18 @@ function Login() {
 
 // 服务器回发的聊天消息
 function LoginBack(payload) {
-    console.log("登录:" + payload.UserID)
+    console.log("登录成功:" + payload.UserID)
+
+    // 修改这个页面的父iframe, 登录成功之后进入聊天主界面
+    window.parent.frames[0].location = "chat";
 }
 
-function createWorker() {
+function create_login_worker() {
     if (!worker) {
         worker = new SharedWorker('assets/assets/js/websocket.js');
         worker.port.onmessage = function (e) {
             if (MESSAGE_ID.Login.res == e.data.msg_id) {
                 LoginBack(e.data.payload)
-            } else {
-                console.log("没有匹配的函数" + e.data.msg_id)
             }
         };
     }

@@ -101,6 +101,7 @@ function wsHandle(url) {
     }
     websocket.onclose = function (evt) {
         console.log('websocket 断开: ' + evt.code + ' ' + evt.reason + ' ' + evt.wasClean);
+        reconnect();
     }
     websocket.onmessage = function (evt) {
         var data = JSON.parse(evt.data)

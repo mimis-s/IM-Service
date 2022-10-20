@@ -31,8 +31,8 @@ function Login() {
 function LoginBack(payload) {
     console.log("登录成功:" + payload.UserID)
 
-    // 修改这个页面的父iframe, 登录成功之后进入聊天主界面
-    window.parent.frames[0].location = "chat";
+    // 修改这个页面的父iframe, 登录成功之后进入主界面
+    window.parent.frames[0].location = "home";
 }
 
 function create_login_worker() {

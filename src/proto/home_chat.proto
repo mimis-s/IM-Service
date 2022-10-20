@@ -5,10 +5,43 @@ package im_home_proto;
 // 生成golang文件的目录
 option go_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto";
 
+// 消息类型
+enum MessageType_Enum {
+    MessageType_Enum_Default = 0;
+    EnumTextType = 1;   // 文本
+    EnumImgType = 2;    // 图片
+    EnumFileType = 3;   // 文件
+}
+
+// 消息状态
+enum MessageStatus_Enum {
+    MessageStatus_Enum_Default = 0;
+    EnumSend    = 1;   // 发送中
+    EnumArrive  = 2;   // 送达
+    EnumRead    = 3;   // 已读
+}
+
+// 聊天消息
+message ChatMessage {
+    int64 SenderID = 1;         // 发送者userid
+    int64 ReceiverID = 2;       // 接收者userid
+
+    int32 MessageID = 3;                    // 消息ID(递增)
+    MessageType_Enum MessageType = 4;       // 消息类型
+    int64 SendTimeStamp = 5;                // 发送消息的时间戳
+    MessageStatus_Enum MessageStatus = 6;   // 消息状态
+    string Data = 7;    // 消息
+}
+
 message ChatSingleReq {
-    string TestStr = 1;
+    ChatMessage Data = 1;
 }
 
 message ChatSingleRes {
-    string TestStr = 1;
+    ChatMessage Data = 1;
+}
+
+// 转发给对方的聊天消息
+message ChatSingleToReceiver {
+    ChatMessage Data = 1;
 }

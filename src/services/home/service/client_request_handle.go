@@ -41,7 +41,7 @@ func dispatchMsg(ctx context.Context, req *api_home.ClientRequestHandleReq, res 
 	resMessage := resStruct.(seralize.Message)
 
 	// 调用单独消息处理函数
-	errCode := handler.FuncHandler(ctx, reqMessage, resMessage)
+	errCode := handler.FuncHandler(ctx, req, reqMessage, resMessage)
 	if errCode == im_error_proto.ErrCode_success {
 		// 调用没有报错,有返回值
 		if resMessage != nil {

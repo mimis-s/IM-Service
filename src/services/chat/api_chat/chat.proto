@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package api_chat;
+
+import "home_chat.proto";
+import "home_account.proto";
+import "errors.proto";
+
+service Gateway {
+    rpc ChatSingle(ChatSingleReq) returns (ChatSingleRes) {};
+}
+
+message ChatSingleReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    im_home_proto.ChatMessage Data = 2;
+}
+
+message ChatSingleRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    im_home_proto.ChatMessage Data = 2;
+}

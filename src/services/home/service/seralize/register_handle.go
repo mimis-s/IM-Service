@@ -6,6 +6,7 @@ import (
 	"reflect"
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
+	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 )
 
 /*
@@ -35,7 +36,7 @@ func newMsgMetaData(s interface{}) *msgMetaData {
 	}
 }
 
-type handlerFunc func(ctx context.Context, req, res Message) im_error_proto.ErrCode
+type handlerFunc func(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res Message) im_error_proto.ErrCode
 
 type MsgHandler struct {
 	ReqClient   *msgMetaData

@@ -62,7 +62,15 @@ $(function () {
 
             // 读取输入, 发送给服务器
             var payload = {
-                TestStr: message
+                Data: {
+                    SenderID: 1,
+                    ReceiverID: 2,
+                    MessageID: 3,
+                    MessageType: 1,
+                    SendTimeStamp: 1234145,
+                    MessageStatus: 1,
+                    Data: message,
+                },
             }
 
             var json = { "msg_id": String(MESSAGE_ID.Chat.req), "payload": JSON.stringify(payload) };
@@ -110,7 +118,8 @@ $(function () {
         worker = new SharedWorker('assets/assets/js/websocket.js');
         worker.port.onmessage = function (e) {
             if (MESSAGE_ID.Chat.res == e.data.msg_id) {
-                SohoExamle.Message.add(e.data.payload.TestStr, 'outgoing-message');
+                console.log(e.data.payload)
+                SohoExamle.Message.add(e.data.payload.Data.Data, 'outgoing-message');
             }
         };
     }

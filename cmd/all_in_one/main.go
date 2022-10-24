@@ -9,17 +9,32 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/mimis-s/IM-Service/src/services/chat"
+	"github.com/mimis-s/IM-Service/src/services/chat/api_chat"
 	"github.com/mimis-s/IM-Service/src/services/gateway"
 	"github.com/mimis-s/IM-Service/src/services/home"
+	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/web_client"
 )
 
+func initRpcxClient() {
+	etcdAddrs := []string{}
+	var timeout time.Duration
+	etcdBasePath := ""
+	isLocal := true
+	api_home.SingleNewHomeClient(etcdAddrs, timeout, etcdBasePath, isLocal)
+	api_chat.SingleNewChatClient(etcdAddrs, timeout, etcdBasePath, isLocal)
+}
+
 func main() {
+
+	initRpcxClient()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	// 启动每个服务
 	go gateway.Boot(ctx)
 	go home.Boot(ctx)
+	go chat.Boot(ctx)
 
 	// 运行网页客户端
 	go web_client.Boot(ctx)

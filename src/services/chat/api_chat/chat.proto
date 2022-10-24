@@ -6,7 +6,7 @@ import "home_chat.proto";
 import "home_account.proto";
 import "errors.proto";
 
-service Gateway {
+service Chat {
     rpc ChatSingle(ChatSingleReq) returns (ChatSingleRes) {};
 }
 

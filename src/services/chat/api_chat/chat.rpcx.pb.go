@@ -15,6 +15,7 @@ import (
 	context "context"
 	client "github.com/mimis-s/golang_tools/rpcx/client"
 	service "github.com/mimis-s/golang_tools/rpcx/service"
+	"sync"
 	"time"
 )
 
@@ -29,56 +30,104 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-var serverName string = "gateway"
+var serverName string = "chat"
 
-type GatewayClientInterface interface {
-	ChatSingle(context.Context, *ChatSingleReq) (*ChatSingleRes, error)
-}
+var callSingleMethodFunc func()
 
-func NewGatewayClient(etcdAddrs []string, timeout time.Duration, etcdBasePath string) GatewayClientInterface {
-	c := client.New(serverName, etcdAddrs, timeout, etcdBasePath)
+var ChatClientInstance ChatClientInterface
+var ChatClientOnce = new(sync.Once)
 
-	return &GatewayClient{
-		c: c,
+func newChatClient(etcdAddrs []string, timeout time.Duration, etcdBasePath string, isLocal bool) ChatClientInterface {
+	if !isLocal {
+		c := client.New(serverName, etcdAddrs, timeout, etcdBasePath)
+		return &ChatRpcxClient{
+			c: c,
+		}
+	} else {
+		return &ChatLocalClient{}
 	}
 }
 
-type GatewayClient struct {
+func SingleNewChatClient(etcdAddrs []string, timeout time.Duration, etcdBasePath string, isLocal bool) {
+	callSingleMethodFunc = func() {
+		c := newChatClient(etcdAddrs, timeout, etcdBasePath, isLocal)
+		ChatClientInstance = c
+	}
+}
+
+// 外部调用函数
+
+func ChatSingle(ctx context.Context,
+	in *ChatSingleReq) (*ChatSingleRes, error) {
+
+	if callSingleMethodFunc != nil {
+		ChatClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(ChatSingleRes)
+	out, err := ChatClientInstance.ChatSingle(ctx, in)
+	return out, err
+}
+
+type ChatClientInterface interface {
+	ChatSingle(context.Context, *ChatSingleReq) (*ChatSingleRes, error)
+}
+
+// rpcx客户端
+type ChatRpcxClient struct {
 	c *client.ClientManager
 }
 
-func (c *GatewayClient) ChatSingle(ctx context.Context,
+func (c *ChatRpcxClient) ChatSingle(ctx context.Context,
 	in *ChatSingleReq) (*ChatSingleRes, error) {
 	out := new(ChatSingleRes)
 	err := c.c.Call(ctx, "ChatSingle", in, out)
 	return out, err
 }
 
-type GatewayServiceInterface interface {
+// 本地调用客户端
+type ChatLocalClient struct {
+}
+
+func (c *ChatLocalClient) ChatSingle(ctx context.Context,
+	in *ChatSingleReq) (*ChatSingleRes, error) {
+	out := new(ChatSingleRes)
+	err := ChatServiceLocal.ChatSingle(ctx, in, out)
+	return out, err
+}
+
+type ChatServiceInterface interface {
 	ChatSingle(context.Context, *ChatSingleReq, *ChatSingleRes) error
 }
 
-func RegisterGatewayService(s *service.ServerManage, hdlr GatewayServiceInterface) error {
+var ChatServiceLocal ChatServiceInterface
+
+func RegisterChatService(s *service.ServerManage, hdlr ChatServiceInterface) error {
 	return s.RegisterOneService(serverName, hdlr)
 }
 
-func NewGatewayServiceAndRun(listenAddr, exposeAddr string, etcdAddrs []string, handler GatewayServiceInterface, etcdBasePath string) (*service.ServerManage, error) {
-	s, err := service.New(exposeAddr, etcdAddrs, etcdBasePath)
-	if err != nil {
-		return nil, err
-	}
-
-	err = RegisterGatewayService(s, handler)
-	if err != nil {
-		return nil, err
-	}
-
-	go func() {
-		err = s.Run(listenAddr)
+func NewChatServiceAndRun(listenAddr, exposeAddr string, etcdAddrs []string, handler ChatServiceInterface, etcdBasePath string, isLocal bool) (*service.ServerManage, error) {
+	if !isLocal {
+		s, err := service.New(exposeAddr, etcdAddrs, etcdBasePath)
 		if err != nil {
-			panic(fmt.Errorf("listen(%v) error(%v)", listenAddr, err))
+			return nil, err
 		}
-	}()
 
-	return s, nil
+		err = RegisterChatService(s, handler)
+		if err != nil {
+			return nil, err
+		}
+
+		go func() {
+			err = s.Run(listenAddr)
+			if err != nil {
+				panic(fmt.Errorf("listen(%v) error(%v)", listenAddr, err))
+			}
+		}()
+		return s, nil
+	}
+
+	// 本地调用的时候使用
+	ChatServiceLocal = handler
+	return nil, nil
 }

@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mimis-s/IM-Service/src/services/home/service"
+	"github.com/mimis-s/IM-Service/src/services/chat/service"
 )
 
 func Boot(ctx context.Context) {

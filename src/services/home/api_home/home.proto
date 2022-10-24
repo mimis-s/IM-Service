@@ -4,7 +4,7 @@ import "home_account.proto";
 
 package api_home;
 
-service Main {
+service Home {
     rpc ClientRequestHandleProto(ClientRequestHandleReq) returns (ClientRequestHandleRes) {};
     rpc ClientRequestHandleJson(ClientRequestHandleReq) returns (ClientRequestHandleRes) {};
 }

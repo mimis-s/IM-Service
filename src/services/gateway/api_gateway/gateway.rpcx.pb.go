@@ -13,6 +13,7 @@ import (
 	context "context"
 	client "github.com/mimis-s/golang_tools/rpcx/client"
 	service "github.com/mimis-s/golang_tools/rpcx/service"
+	"sync"
 	"time"
 )
 
@@ -29,26 +30,67 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 var serverName string = "gateway"
 
+var callSingleMethodFunc func()
+
+var GatewayClientInstance GatewayClientInterface
+var GatewayClientOnce = new(sync.Once)
+
+func newGatewayClient(etcdAddrs []string, timeout time.Duration, etcdBasePath string, isLocal bool) GatewayClientInterface {
+	if !isLocal {
+		c := client.New(serverName, etcdAddrs, timeout, etcdBasePath)
+		return &GatewayRpcxClient{
+			c: c,
+		}
+	} else {
+		return &GatewayLocalClient{}
+	}
+}
+
+func SingleNewGatewayClient(etcdAddrs []string, timeout time.Duration, etcdBasePath string, isLocal bool) {
+	callSingleMethodFunc = func() {
+		c := newGatewayClient(etcdAddrs, timeout, etcdBasePath, isLocal)
+		GatewayClientInstance = c
+	}
+}
+
+// 外部调用函数
+
+func NotifyClient(ctx context.Context,
+	in *NotifyClientReq) (*NotifyClientRes, error) {
+
+	if callSingleMethodFunc != nil {
+		GatewayClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(NotifyClientRes)
+	out, err := GatewayClientInstance.NotifyClient(ctx, in)
+	return out, err
+}
+
 type GatewayClientInterface interface {
 	NotifyClient(context.Context, *NotifyClientReq) (*NotifyClientRes, error)
 }
 
-func NewGatewayClient(etcdAddrs []string, timeout time.Duration, etcdBasePath string) GatewayClientInterface {
-	c := client.New(serverName, etcdAddrs, timeout, etcdBasePath)
-
-	return &GatewayClient{
-		c: c,
-	}
-}
-
-type GatewayClient struct {
+// rpcx客户端
+type GatewayRpcxClient struct {
 	c *client.ClientManager
 }
 
-func (c *GatewayClient) NotifyClient(ctx context.Context,
+func (c *GatewayRpcxClient) NotifyClient(ctx context.Context,
 	in *NotifyClientReq) (*NotifyClientRes, error) {
 	out := new(NotifyClientRes)
 	err := c.c.Call(ctx, "NotifyClient", in, out)
+	return out, err
+}
+
+// 本地调用客户端
+type GatewayLocalClient struct {
+}
+
+func (c *GatewayLocalClient) NotifyClient(ctx context.Context,
+	in *NotifyClientReq) (*NotifyClientRes, error) {
+	out := new(NotifyClientRes)
+	err := GatewayServiceLocal.NotifyClient(ctx, in, out)
 	return out, err
 }
 
@@ -56,27 +98,34 @@ type GatewayServiceInterface interface {
 	NotifyClient(context.Context, *NotifyClientReq, *NotifyClientRes) error
 }
 
+var GatewayServiceLocal GatewayServiceInterface
+
 func RegisterGatewayService(s *service.ServerManage, hdlr GatewayServiceInterface) error {
 	return s.RegisterOneService(serverName, hdlr)
 }
 
-func NewGatewayServiceAndRun(listenAddr, exposeAddr string, etcdAddrs []string, handler GatewayServiceInterface, etcdBasePath string) (*service.ServerManage, error) {
-	s, err := service.New(exposeAddr, etcdAddrs, etcdBasePath)
-	if err != nil {
-		return nil, err
-	}
-
-	err = RegisterGatewayService(s, handler)
-	if err != nil {
-		return nil, err
-	}
-
-	go func() {
-		err = s.Run(listenAddr)
+func NewGatewayServiceAndRun(listenAddr, exposeAddr string, etcdAddrs []string, handler GatewayServiceInterface, etcdBasePath string, isLocal bool) (*service.ServerManage, error) {
+	if !isLocal {
+		s, err := service.New(exposeAddr, etcdAddrs, etcdBasePath)
 		if err != nil {
-			panic(fmt.Errorf("listen(%v) error(%v)", listenAddr, err))
+			return nil, err
 		}
-	}()
 
-	return s, nil
+		err = RegisterGatewayService(s, handler)
+		if err != nil {
+			return nil, err
+		}
+
+		go func() {
+			err = s.Run(listenAddr)
+			if err != nil {
+				panic(fmt.Errorf("listen(%v) error(%v)", listenAddr, err))
+			}
+		}()
+		return s, nil
+	}
+
+	// 本地调用的时候使用
+	GatewayServiceLocal = handler
+	return nil, nil
 }

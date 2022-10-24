@@ -14,6 +14,7 @@ import (
 	context "context"
 	client "github.com/mimis-s/golang_tools/rpcx/client"
 	service "github.com/mimis-s/golang_tools/rpcx/service"
+	"sync"
 	"time"
 )
 
@@ -28,65 +29,132 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-var serverName string = "main"
+var serverName string = "home"
 
-type MainClientInterface interface {
+var callSingleMethodFunc func()
+
+var HomeClientInstance HomeClientInterface
+var HomeClientOnce = new(sync.Once)
+
+func newHomeClient(etcdAddrs []string, timeout time.Duration, etcdBasePath string, isLocal bool) HomeClientInterface {
+	if !isLocal {
+		c := client.New(serverName, etcdAddrs, timeout, etcdBasePath)
+		return &HomeRpcxClient{
+			c: c,
+		}
+	} else {
+		return &HomeLocalClient{}
+	}
+}
+
+func SingleNewHomeClient(etcdAddrs []string, timeout time.Duration, etcdBasePath string, isLocal bool) {
+	callSingleMethodFunc = func() {
+		c := newHomeClient(etcdAddrs, timeout, etcdBasePath, isLocal)
+		HomeClientInstance = c
+	}
+}
+
+// 外部调用函数
+
+func ClientRequestHandleProto(ctx context.Context,
+	in *ClientRequestHandleReq) (*ClientRequestHandleRes, error) {
+
+	if callSingleMethodFunc != nil {
+		HomeClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(ClientRequestHandleRes)
+	out, err := HomeClientInstance.ClientRequestHandleProto(ctx, in)
+	return out, err
+}
+
+func ClientRequestHandleJson(ctx context.Context,
+	in *ClientRequestHandleReq) (*ClientRequestHandleRes, error) {
+
+	if callSingleMethodFunc != nil {
+		HomeClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(ClientRequestHandleRes)
+	out, err := HomeClientInstance.ClientRequestHandleJson(ctx, in)
+	return out, err
+}
+
+type HomeClientInterface interface {
 	ClientRequestHandleProto(context.Context, *ClientRequestHandleReq) (*ClientRequestHandleRes, error)
 	ClientRequestHandleJson(context.Context, *ClientRequestHandleReq) (*ClientRequestHandleRes, error)
 }
 
-func NewMainClient(etcdAddrs []string, timeout time.Duration, etcdBasePath string) MainClientInterface {
-	c := client.New(serverName, etcdAddrs, timeout, etcdBasePath)
-
-	return &MainClient{
-		c: c,
-	}
-}
-
-type MainClient struct {
+// rpcx客户端
+type HomeRpcxClient struct {
 	c *client.ClientManager
 }
 
-func (c *MainClient) ClientRequestHandleProto(ctx context.Context,
+func (c *HomeRpcxClient) ClientRequestHandleProto(ctx context.Context,
 	in *ClientRequestHandleReq) (*ClientRequestHandleRes, error) {
 	out := new(ClientRequestHandleRes)
 	err := c.c.Call(ctx, "ClientRequestHandleProto", in, out)
 	return out, err
 }
 
-func (c *MainClient) ClientRequestHandleJson(ctx context.Context,
+func (c *HomeRpcxClient) ClientRequestHandleJson(ctx context.Context,
 	in *ClientRequestHandleReq) (*ClientRequestHandleRes, error) {
 	out := new(ClientRequestHandleRes)
 	err := c.c.Call(ctx, "ClientRequestHandleJson", in, out)
 	return out, err
 }
 
-type MainServiceInterface interface {
+// 本地调用客户端
+type HomeLocalClient struct {
+}
+
+func (c *HomeLocalClient) ClientRequestHandleProto(ctx context.Context,
+	in *ClientRequestHandleReq) (*ClientRequestHandleRes, error) {
+	out := new(ClientRequestHandleRes)
+	err := HomeServiceLocal.ClientRequestHandleProto(ctx, in, out)
+	return out, err
+}
+
+func (c *HomeLocalClient) ClientRequestHandleJson(ctx context.Context,
+	in *ClientRequestHandleReq) (*ClientRequestHandleRes, error) {
+	out := new(ClientRequestHandleRes)
+	err := HomeServiceLocal.ClientRequestHandleJson(ctx, in, out)
+	return out, err
+}
+
+type HomeServiceInterface interface {
 	ClientRequestHandleProto(context.Context, *ClientRequestHandleReq, *ClientRequestHandleRes) error
 	ClientRequestHandleJson(context.Context, *ClientRequestHandleReq, *ClientRequestHandleRes) error
 }
 
-func RegisterMainService(s *service.ServerManage, hdlr MainServiceInterface) error {
+var HomeServiceLocal HomeServiceInterface
+
+func RegisterHomeService(s *service.ServerManage, hdlr HomeServiceInterface) error {
 	return s.RegisterOneService(serverName, hdlr)
 }
 
-func NewMainServiceAndRun(listenAddr, exposeAddr string, etcdAddrs []string, handler MainServiceInterface, etcdBasePath string) (*service.ServerManage, error) {
-	s, err := service.New(exposeAddr, etcdAddrs, etcdBasePath)
-	if err != nil {
-		return nil, err
-	}
-
-	err = RegisterMainService(s, handler)
-	if err != nil {
-		return nil, err
-	}
-
-	go func() {
-		err = s.Run(listenAddr)
+func NewHomeServiceAndRun(listenAddr, exposeAddr string, etcdAddrs []string, handler HomeServiceInterface, etcdBasePath string, isLocal bool) (*service.ServerManage, error) {
+	if !isLocal {
+		s, err := service.New(exposeAddr, etcdAddrs, etcdBasePath)
 		if err != nil {
-			panic(fmt.Errorf("listen(%v) error(%v)", listenAddr, err))
+			return nil, err
 		}
-	}()
 
-	return s, nil
+		err = RegisterHomeService(s, handler)
+		if err != nil {
+			return nil, err
+		}
+
+		go func() {
+			err = s.Run(listenAddr)
+			if err != nil {
+				panic(fmt.Errorf("listen(%v) error(%v)", listenAddr, err))
+			}
+		}()
+		return s, nil
+	}
+
+	// 本地调用的时候使用
+	HomeServiceLocal = handler
+	return nil, nil
 }

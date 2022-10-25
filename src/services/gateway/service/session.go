@@ -17,7 +17,7 @@ var cacheClient = sync.Map{}
 
 // session记录每一个客户端的连接情况
 type Session struct {
-	UserID int64
+	clientInfo *im_home_proto.ClientOnlineInfo
 }
 
 func NewSession(clientConn.ClientConn) clientConn.ClientSession {
@@ -52,8 +52,12 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 		} else if s.GetClientConn().GetConnType() == clientConn.ClientConn_HTTP_Enum {
 			proto.Unmarshal(reqClient.Msg, loginReq)
 		}
-		s.UserID = loginReq.UserID
-		fmt.Printf("用户[%v] IP[%v]登录成功", s.UserID, s.GetClientConn().GetIP())
+		s.clientInfo = &im_home_proto.ClientOnlineInfo{
+			UserID:   loginReq.UserID,
+			UserName: "张三",
+		}
+		s.clientInfo.UserID = loginReq.UserID
+		fmt.Printf("用户[%v] IP[%v]登录成功", loginReq.UserID, s.GetClientConn().GetIP())
 		cacheClient.Store(loginReq.UserID, s)
 	}
 
@@ -61,10 +65,7 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 	req := &api_home.ClientRequestHandleReq{
 		MsgID:   uint32(reqClient.Tag),
 		Payload: reqClient.Msg,
-		Client: &im_home_proto.ClientOnlineInfo{
-			UserID:   1,
-			UserName: "test",
-		},
+		Client:  s.clientInfo,
 	}
 
 	res, err := api_home.ClientRequestHandleJson(context.Background(), req)
@@ -81,6 +82,6 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 }
 
 func (s *Session) DisConnectCallBack() {
-	fmt.Printf("用户[%v] IP[%v]断开连接", s.UserID, s.GetClientConn().GetIP())
-	cacheClient.Delete(s.UserID)
+	fmt.Printf("用户[%v] IP[%v]断开连接", s.clientInfo.UserID, s.GetClientConn().GetIP())
+	cacheClient.Delete(s.clientInfo.UserID)
 }

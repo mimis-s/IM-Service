@@ -640,6 +640,8 @@ github.com/mimis-s/golang_tools v0.0.0-20221025024421-ccc1ea4ead26 h1:BdtqgGPsgx
 github.com/mimis-s/golang_tools v0.0.0-20221025024421-ccc1ea4ead26/go.mod h1:PUrLk/obaUfrFrMZxOZ9G8ffjQly2Yf5nW86TRCqxbM=
 github.com/mimis-s/golang_tools v0.0.0-20221025025948-abca62a59c55 h1:Sc33ZvXULNmVihBoQJqNWJ6i7CUL6zUwJXw1OMxP0sM=
 github.com/mimis-s/golang_tools v0.0.0-20221025025948-abca62a59c55/go.mod h1:PUrLk/obaUfrFrMZxOZ9G8ffjQly2Yf5nW86TRCqxbM=
+github.com/mimis-s/golang_tools v0.0.0-20221025040303-103517fc3288 h1:PWVQtoskWhyjjmEhPHk7vQPURUO+bMmXUGN0MlH9gG4=
+github.com/mimis-s/golang_tools v0.0.0-20221025040303-103517fc3288/go.mod h1:PUrLk/obaUfrFrMZxOZ9G8ffjQly2Yf5nW86TRCqxbM=
 github.com/minio/md5-simd v1.1.2/go.mod h1:MzdKDxYpY2BT9XQFocsiZf/NKVtR7nkE4RoEpN+20RM=
 github.com/minio/minio-go/v7 v7.0.40/go.mod h1:nCrRzjoSUQh8hgKKtu3Y708OLvRLtuASMg2/nvmbarw=
 github.com/minio/sha256-simd v1.0.0/go.mod h1:OuYzVNI5vcoYIAmbIvHPl3N3jUzVedXbKy5RFepssQM=

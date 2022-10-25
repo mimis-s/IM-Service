@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/proto"
+	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/golang_tools/net/clientConn"
 )
 
@@ -13,7 +14,8 @@ import (
 	如果接收端不在线，则直接丢弃包, 这个过程要在返回发送端消息之前，确保接收端在线
 */
 
-func SendToUser(sendUserID, receiverUserID int64, msg_id uint32, msg interface{}) error {
+func SendToUser(sendUserID, receiverUserID int64, msg interface{}) error {
+	msg_id := seralize.GetMsgIdByStruct(msg)
 	c, ok := cacheClient.Load(receiverUserID)
 	if !ok {
 		// 接收方未登录, 消息无法到达

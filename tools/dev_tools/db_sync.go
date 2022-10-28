@@ -11,6 +11,10 @@ import (
 	"xorm.io/xorm/log"
 )
 
+/*
+	将golang结构转为数据库结构
+*/
+
 func main() {
 	user := flag.String("u", "zhangbin", "mysql user")
 	pwd := flag.String("p", "zb1998810", "mysql password")

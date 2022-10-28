@@ -1,0 +1,56 @@
+kind: reverse
+name: im_zhangbin #数据库名称
+source:
+  database: mysql
+  conn_str: dev:dev123@tcp(192.168.1.22:3306)/greenly_zhangbin?charset=utf8
+targets:
+- type: codes
+  table_mapper: snake # how table name map to class or struct name
+  column_mapper: snake # how column name map to class or struct field name
+  table_prefix: "" # table prefix
+  multiple_files: false # generate multiple files or one
+  language: golang
+  file_name: gen.struct.go
+  template: | # template for code file, it has higher perior than template_path
+    // 数据库表结构定义
+    package dbmodel
+
+    {{$ilen := len .Imports}}
+    {{if gt $ilen 0}}
+    import (
+      {{range .Imports}}"{{.}}"{{end}}
+    )
+    {{end}}
+
+    {{range .Tables}}
+    type {{TableMapper .Name}} struct {
+    {{$table := .}}
+    {{range .ColumnsSeq}} {{$col := $table.GetColumn .}} {{$colname := ColumnMapper $col.Name}} {{if eq $colname "CreatedAt"}} {{else if eq $colname "UpdatedAt"}} {{else if eq $colname "DeletedAt"}} {{else}} {{ColumnMapper $col.Name}} 	{{Type $col}} `{{Tag $table $col}}`
+    {{end}} {{end}} CreatedAt time.Time `xorm:"created"`
+    UpdatedAt time.Time `xorm:"updated"`
+    DeletedAt time.Time `xorm:"deleted"`
+    }
+    {{end}}
+  output_dir: dbmodel # code output directory
+
+- type: codes
+  table_mapper: snake # how table name map to class or struct name
+  column_mapper: snake # how column name map to class or struct field name
+  table_prefix: "" # table prefix
+  multiple_files: false # generate multiple files or one
+  language: golang
+  file_name: gen.sync.go
+  template_path: dbmodel/reverse/gen.sync.tmpl # template path for code file, it has higher perior than template field on language
+  output_dir: dbmodel # code output directory
+
+
+- type: codes
+  table_mapper: snake
+  column_mapper: snake
+  multiple_files: false
+  output_dir: ./dbmodel
+  language: golang
+  table_name: false
+  file_name: gen.name.go
+  template_path: dbmodel/reverse/gen.name.tmpl # template path for code file, it has higher perior than template field on language
+

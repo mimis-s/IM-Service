@@ -21,15 +21,15 @@ func InitSync(orm *xorm.Engine) error {
 }
 
 // GetShardInfo 获取所有表的分区数量，大于1的都认为要分区
-func GetShardInfo() map[string]int {
-    info := make(map[string]int)
+func GetShardInfo() map[string]DbTableInterface {
+    info := make(map[string]DbTableInterface)
     {{range .Tables}}
     {{$table := .}}
-    info["{{$table.Name}}"] = new({{TableMapper .Name}}).ShardNum()
+    info["{{$table.Name}}"] = new({{TableMapper .Name}})
     {{end}}
     return info
 }
 
-func sync(orm *xorm.Engine, table TableInterface) error {
+func sync(orm *xorm.Engine, table DbTableInterface) error {
     return orm.Sync2(table)
 }

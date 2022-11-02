@@ -16,9 +16,9 @@ import (
 */
 
 func main() {
-	user := flag.String("u", "zhangbin", "mysql user")
-	pwd := flag.String("p", "zb1998810", "mysql password")
-	addr := flag.String("a", "139.155.88.221", "mysql address")
+	user := flag.String("u", "root", "mysql user")
+	pwd := flag.String("p", "dev123", "mysql password")
+	addr := flag.String("a", "localhost", "mysql address")
 	database := flag.String("d", "im_zhangbin", "mysql database")
 	cmd := flag.String("cmd", "sync", "sync|clean")
 
@@ -48,7 +48,7 @@ func main() {
 
 	switch *cmd {
 	case "sync":
-		err = dbmodel.InitDbSync(orm)
+		err = dbmodel.InitSync(orm)
 		if err != nil {
 			fmt.Printf("init database[%v] error:%v\n", dataSourceName, err)
 			os.Exit(1)

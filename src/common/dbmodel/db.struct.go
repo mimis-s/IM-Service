@@ -7,6 +7,8 @@ import (
 
 type AccountUser struct {
 	UserID           int64                     `xorm:"not null pk comment('PARTITION:HASH|10') BIGINT"`
+	UserName         string                    `xorm:"not null index VARCHAR(255)"`
+	Password         string                    `xorm:"not null index VARCHAR(255)"`
 	UserExtraInfo    TBJsonField_UserExtraInfo `xorm:"not null comment('#TBJsonField_UserExtraInfo#额外数据') TEXT"`
 	LatestLoginTime  int64                     `xorm:"comment('最近登录时间戳') BIGINT"`
 	LatestLogoutTime int64                     `xorm:"comment('最近登出时间戳') BIGINT"`

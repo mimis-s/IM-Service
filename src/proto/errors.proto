@@ -10,6 +10,13 @@ enum ErrCode {
     success = 0; // 成功
 
     common_unexpected_err = 1; // 未预期的错误
+
+    // 数据库
+	db_read_err = 2;
+	db_write_err = 3;
+
+    // account服务
+    account_user_name_repeat = 4;   // 用户名重复
 }
 
 // 返回客户端错误

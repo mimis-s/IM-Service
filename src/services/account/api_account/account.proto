@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package api_account;
+
+import "home_chat.proto";
+import "home_account.proto";
+import "errors.proto";
+
+service Account {
+    rpc Login(LoginReq) returns (LoginRes) {};
+    rpc Register(RegisterReq) returns (RegisterRes) {};
+}
+
+// 登录
+message LoginReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    im_home_proto.LoginReq Data = 2;
+}
+
+message LoginRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    im_home_proto.LoginRes Data = 2;
+}
+
+// 注册
+message RegisterReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    im_home_proto.RegisterReq Data = 2;
+}
+
+message RegisterRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    im_home_proto.RegisterRes Data = 2;
+}

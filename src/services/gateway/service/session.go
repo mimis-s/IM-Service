@@ -18,14 +18,17 @@ var cacheClient = sync.Map{}
 // session记录每一个客户端的连接情况
 type Session struct {
 	clientInfo *im_home_proto.ClientOnlineInfo
+	clientConn clientConn.ClientConn
 }
 
-func NewSession(clientConn.ClientConn) clientConn.ClientSession {
-	return &Session{}
+func NewSession(clientConn clientConn.ClientConn) clientConn.ClientSession {
+	return &Session{
+		clientConn: clientConn,
+	}
 }
 
 func (s *Session) GetClientConn() clientConn.ClientConn {
-	return nil
+	return s.clientConn
 }
 
 func (s *Session) ConnectCallBack() {
@@ -49,7 +52,7 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 		loginReq := &im_home_proto.LoginReq{}
 		if s.GetClientConn().GetConnType() == clientConn.ClientConn_HTTP_Enum {
 			json.Unmarshal(reqClient.Msg, loginReq)
-		} else if s.GetClientConn().GetConnType() == clientConn.ClientConn_HTTP_Enum {
+		} else if s.GetClientConn().GetConnType() == clientConn.ClientConn_TCP_Enum {
 			proto.Unmarshal(reqClient.Msg, loginReq)
 		}
 		s.clientInfo = &im_home_proto.ClientOnlineInfo{
@@ -57,7 +60,7 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 			UserName: "张三",
 		}
 		s.clientInfo.UserID = loginReq.UserID
-		fmt.Printf("用户[%v] IP[%v]登录成功", loginReq.UserID, s.GetClientConn().GetIP())
+		fmt.Printf("用户[%v] IP[%v]尝试登录\n", loginReq.UserID, s.GetClientConn().GetIP())
 		cacheClient.Store(loginReq.UserID, s)
 	}
 

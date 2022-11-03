@@ -1,6 +1,9 @@
 package dao
 
-import "xorm.io/xorm"
+import (
+	_ "github.com/go-sql-driver/mysql"
+	"xorm.io/xorm"
+)
 
 type Dao struct {
 	Engine *xorm.Engine

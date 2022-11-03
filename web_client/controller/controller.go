@@ -11,6 +11,11 @@ func Login(c *gin.Context) {
 	c.HTML(200, "login.html", nil)
 }
 
+// 注册界面
+func Register(c *gin.Context) {
+	c.HTML(200, "register.html", nil)
+}
+
 // 主界面
 func Home(c *gin.Context) {
 	c.HTML(200, "home.html", nil)

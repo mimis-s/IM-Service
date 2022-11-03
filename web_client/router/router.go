@@ -18,6 +18,7 @@ func Start(port string, htmlEmbed embed.FS, assetsEmbed embed.FS) {
 
 	engine.GET("/", controller.Index)
 	engine.GET("/login", controller.Login)
+	engine.GET("/register", controller.Register)
 	engine.GET("/home", controller.Home)
 
 	engine.Run(port)

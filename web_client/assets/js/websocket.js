@@ -10,6 +10,11 @@ var MESSAGE_ID = {
         "req": CRC32("LoginReq", 10),
         "res": CRC32("LoginRes", 10),
     },
+    "Register": {
+        "req": CRC32("RegisterReq", 10),
+        "res": CRC32("RegisterRes", 10),
+    },
+    "ErrCode": CRC32("CommonError", 10),
     "Test": "2",
 }
 
@@ -108,6 +113,9 @@ function wsHandle(url) {
         var msg_id = String(data.msg_id)
         if (msg_id == MESSAGE_ID.HeartCheack) {
             console.log("received heartCheack")
+        } else if (msg_id == MESSAGE_ID.ErrCode) {
+            // 出错了
+            portList[0].postMessage(data);
         } else {
             console.log("received msg:" + evt.data);
             // RegisterFuncMap.get(msg_id)(data.payload);

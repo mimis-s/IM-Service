@@ -20,8 +20,18 @@ func init() {
 func Login(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
 	reqMsg := req.(*im_home_proto.LoginReq)
 	resMsg := res.(*im_home_proto.LoginRes)
-	resMsg.UserID = reqMsg.UserID
-	resMsg.UserName = reqMsg.Password
+
+	resRpc, err := api_account.Login(ctx, &api_account.LoginReq{
+		ClientInfo: clientInfo.Client,
+		Data:       reqMsg,
+	})
+	if err != nil {
+		fmt.Printf("login user[%v] is err:%v", reqMsg.UserID, err)
+		return resRpc.ErrCode
+	}
+
+	resMsg.UserID = resRpc.Data.UserID
+	resMsg.UserName = resRpc.Data.UserName
 	return 0
 }
 

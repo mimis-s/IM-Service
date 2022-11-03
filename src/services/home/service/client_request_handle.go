@@ -69,6 +69,7 @@ func dispatchMsg(ctx context.Context, req *api_home.ClientRequestHandleReq, res 
 	}
 
 	resPayload, _ := encodeFun(commonErr)
+	res.MsgID = seralize.GetMsgIdByStruct(im_error_proto.CommonError{})
 	res.Payload = resPayload
 
 	return nil

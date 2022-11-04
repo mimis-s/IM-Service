@@ -14,6 +14,18 @@ go.mod的名字必须是项目的远程路径
 
 4.服务器消息发送可以是客户端请求返回，也可以是主动调用
 
+# 数据库反转工具xorm reverse
+https://github.com/laixyz/reverse, 使用xorm -f xxx(yaml配置文件路径)
+
+原版将数据库url放在yaml文件conn_str字段, 项目中修改为命令行参数输入
+原版: xorm -f dbmodel/reverse/custom.yaml
+改版: xorm -f dbmodel/reverse/custom.yaml --dsn 'root:dev123@tcp(localhost:3306)/im_zhangbin?charset=utf8'
+
+# 数据库结构生成
+tools/sql_tools/db_sync.go文件
+命令行: go run db_sync.go -d im_zhangbin -u root -p dev123
+
+
 #### 开发进度
 
 # 服务器

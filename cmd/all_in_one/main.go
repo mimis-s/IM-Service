@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/mimis-s/IM-Service/src/common/event"
 	"github.com/mimis-s/IM-Service/src/services/account"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/chat"
@@ -34,6 +35,15 @@ func main() {
 	initRpcxClient()
 
 	ctx, cancel := context.WithCancel(context.Background())
+
+	// 初始化消息队列生产者
+	url := "amqp://dev:dev123@localhost:5672/"
+	durable := false
+	err := event.InitProducers(url, durable)
+	if err != nil {
+		panic(err)
+	}
+
 	// 启动每个服务
 	go gateway.Boot(ctx)
 	go home.Boot(ctx)

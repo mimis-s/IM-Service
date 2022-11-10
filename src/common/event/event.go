@@ -17,13 +17,14 @@ type mqProducersStruct struct {
 
 var mqProducers *mqProducersStruct
 
-func InitProducers(url string, durable bool) {
+func InitProducers(url string, durable bool) error {
 	p, err := rabbitmq.InitProducers(url, exchangeName, durable)
 	if err != nil {
 		fmt.Printf("err:%v", err)
-		return
+		return err
 	}
 	mqProducers = &mqProducersStruct{p}
+	return nil
 }
 
 func Publish(r *rabbitmq.EventStruct, payload interface{}) error {

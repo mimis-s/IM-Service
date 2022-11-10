@@ -7,7 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
-	github.com/mimis-s/golang_tools v0.0.0-20221025040303-103517fc3288
+	github.com/mimis-s/golang_tools v0.0.0-20221110035104-58b1944bb4ad
 	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
 	xorm.io/xorm v1.2.5
 )
@@ -71,6 +71,7 @@ require (
 	github.com/smallnest/quick v0.0.0-20220703133648-f13409fa6c67 // indirect
 	github.com/smallnest/rpcx v1.7.11 // indirect
 	github.com/soheilhy/cmux v0.1.5 // indirect
+	github.com/streadway/amqp v1.0.0 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/templexxx/cpufeat v0.0.0-20180724012125-cef66df7f161 // indirect
 	github.com/templexxx/xor v0.0.0-20191217153810-f85b25db303b // indirect

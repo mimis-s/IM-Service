@@ -5,5 +5,7 @@ import (
 )
 
 var (
-	Event_SingleMessage = &rabbitmq.EventStruct{"single.message", SingleMessage{}}
+	Event_SingleMessage    = &rabbitmq.EventStruct{"user.message.single", SingleMessage{}}
+	Event_ApplyFriend      = &rabbitmq.EventStruct{"user.message.apply.friend", ApplyFriend{}}
+	Event_AgreeApplyFriend = &rabbitmq.EventStruct{"user.message.agree.apply.friend", AgreeApplyFriend{}}
 )

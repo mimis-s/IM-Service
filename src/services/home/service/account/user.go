@@ -2,10 +2,10 @@ package account
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
@@ -26,7 +26,7 @@ func Login(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req
 		Data:       reqMsg,
 	})
 	if err != nil {
-		fmt.Printf("login user[%v] is err:%v", reqMsg.UserID, err)
+		im_log.Error("login user[%v] is err:%v", reqMsg.UserID, err)
 		return resRpc.ErrCode
 	}
 
@@ -45,7 +45,7 @@ func Register(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, 
 	})
 
 	if err != nil {
-		fmt.Printf("register user[%v] is err:%v", reqMsg.UserName, err)
+		im_log.Error("register user[%v] is err:%v", reqMsg.UserName, err)
 		return resRpc.ErrCode
 	}
 

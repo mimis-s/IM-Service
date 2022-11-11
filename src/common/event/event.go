@@ -1,8 +1,7 @@
 package event
 
 import (
-	"fmt"
-
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/golang_tools/mq/rabbitmq"
 )
 
@@ -20,7 +19,7 @@ var mqProducers *mqProducersStruct
 func InitProducers(url string, durable bool) error {
 	p, err := rabbitmq.InitProducers(url, exchangeName, durable)
 	if err != nil {
-		fmt.Printf("err:%v", err)
+		im_log.Error("err:%v", err)
 		return err
 	}
 	mqProducers = &mqProducersStruct{p}

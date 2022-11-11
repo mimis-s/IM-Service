@@ -2,8 +2,8 @@ package gateway
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/gateway/service"
 )
 
@@ -13,6 +13,6 @@ func Boot(ctx context.Context) {
 
 	select {
 	case <-ctx.Done():
-		fmt.Printf("gateway service is stop\n")
+		im_log.Info("gateway service is stop\n")
 	}
 }

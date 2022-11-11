@@ -8,6 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/golang_tools/net/clientConn"
@@ -38,7 +39,7 @@ func (s *Session) ConnectCallBack() {
 func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.ClientMsg, error) {
 	if reqClient.Tag == -1 {
 		// 心跳包
-		fmt.Printf("client send heartCheack\n")
+		im_log.Info("client send heartCheack\n")
 		return &clientConn.ClientMsg{
 			Tag: -1,
 		}, nil
@@ -60,7 +61,7 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 			UserName: "张三",
 		}
 		s.clientInfo.UserID = loginReq.UserID
-		fmt.Printf("用户[%v] IP[%v]尝试登录\n", loginReq.UserID, s.GetClientConn().GetIP())
+		im_log.Info("用户[%v] IP[%v]尝试登录\n", loginReq.UserID, s.GetClientConn().GetIP())
 		cacheClient.Store(loginReq.UserID, s)
 	}
 
@@ -85,6 +86,6 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 }
 
 func (s *Session) DisConnectCallBack() {
-	fmt.Printf("用户[%v] IP[%v]断开连接", s.clientInfo.UserID, s.GetClientConn().GetIP())
+	im_log.Info("用户[%v] IP[%v]断开连接", s.clientInfo.UserID, s.GetClientConn().GetIP())
 	cacheClient.Delete(s.clientInfo.UserID)
 }

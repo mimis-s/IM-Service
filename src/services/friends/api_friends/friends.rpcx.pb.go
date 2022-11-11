@@ -93,10 +93,23 @@ func DelFriends(ctx context.Context,
 	return out, err
 }
 
+func AgreeFriendApply(ctx context.Context,
+	in *AgreeFriendApplyReq) (*AgreeFriendApplyRes, error) {
+
+	if callSingleMethodFunc != nil {
+		FriendsClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(AgreeFriendApplyRes)
+	out, err := FriendsClientInstance.AgreeFriendApply(ctx, in)
+	return out, err
+}
+
 type FriendsClientInterface interface {
 	GetFriendsList(context.Context, *GetFriendsListReq) (*GetFriendsListRes, error)
 	ApplyFriends(context.Context, *ApplyFriendsReq) (*ApplyFriendsRes, error)
 	DelFriends(context.Context, *DelFriendsReq) (*DelFriendsRes, error)
+	AgreeFriendApply(context.Context, *AgreeFriendApplyReq) (*AgreeFriendApplyRes, error)
 }
 
 // rpcx客户端
@@ -125,6 +138,13 @@ func (c *FriendsRpcxClient) DelFriends(ctx context.Context,
 	return out, err
 }
 
+func (c *FriendsRpcxClient) AgreeFriendApply(ctx context.Context,
+	in *AgreeFriendApplyReq) (*AgreeFriendApplyRes, error) {
+	out := new(AgreeFriendApplyRes)
+	err := c.c.Call(ctx, "AgreeFriendApply", in, out)
+	return out, err
+}
+
 // 本地调用客户端
 type FriendsLocalClient struct {
 }
@@ -150,10 +170,18 @@ func (c *FriendsLocalClient) DelFriends(ctx context.Context,
 	return out, err
 }
 
+func (c *FriendsLocalClient) AgreeFriendApply(ctx context.Context,
+	in *AgreeFriendApplyReq) (*AgreeFriendApplyRes, error) {
+	out := new(AgreeFriendApplyRes)
+	err := FriendsServiceLocal.AgreeFriendApply(ctx, in, out)
+	return out, err
+}
+
 type FriendsServiceInterface interface {
 	GetFriendsList(context.Context, *GetFriendsListReq, *GetFriendsListRes) error
 	ApplyFriends(context.Context, *ApplyFriendsReq, *ApplyFriendsRes) error
 	DelFriends(context.Context, *DelFriendsReq, *DelFriendsRes) error
+	AgreeFriendApply(context.Context, *AgreeFriendApplyReq, *AgreeFriendApplyRes) error
 }
 
 var FriendsServiceLocal FriendsServiceInterface

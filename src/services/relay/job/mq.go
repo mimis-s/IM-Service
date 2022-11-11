@@ -21,6 +21,8 @@ func InitMQ(s *service.Service) *Job {
 	event.InitConsumers(url, durable,
 		[]*rabbitmq.ConsumersQueue{
 			{event.Event_SingleMessage, j.singleMessage},
+			{event.Event_ApplyFriend, j.applyFriend},
+			{event.Event_AgreeApplyFriend, j.agreeApplyFriend},
 		},
 	)
 
@@ -37,5 +39,21 @@ func (j *Job) singleMessage(payload interface{}) error {
 
 	send_to.SendToUser(singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, chatSingleToReceiver)
 
+	return nil
+}
+
+// 转发好友请求
+func (j *Job) applyFriend(payload interface{}) error {
+	applyFriendData := payload.(*event.ApplyFriend)
+
+	send_to.SendToUser(applyFriendData.Message.SenderID, applyFriendData.Message.ReceiverID, applyFriendData)
+	return nil
+}
+
+// 转发同意好友申请
+func (j *Job) agreeApplyFriend(payload interface{}) error {
+	agreeApplyFriendData := payload.(*event.AgreeApplyFriend)
+
+	send_to.SendToUser(agreeApplyFriendData.Message.SenderID, agreeApplyFriendData.Message.ReceiverID, agreeApplyFriendData)
 	return nil
 }

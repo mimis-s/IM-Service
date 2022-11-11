@@ -18,3 +18,9 @@ message ApplyFriendsToReceiver {
     int64 SenderID = 1;         // 发送者userid
     int64 ReceiverID = 2;       // 接收者userid
 }
+
+// 同意好友申请转发
+message AgreeApplyFriendsToReceiver {
+    int64 SenderID = 1;         // 发送者userid
+    int64 ReceiverID = 2;       // 接收者userid
+}

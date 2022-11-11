@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/event"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/chat/api_chat"
 )
 
@@ -23,7 +23,7 @@ func (s *Service) ChatSingle(ctx context.Context, req *api_chat.ChatSingleReq, r
 
 	err := event.Publish(event.Event_SingleMessage, singleMessage)
 	if err != nil {
-		fmt.Printf("err:%v", err)
+		im_log.Error("err:%v", err)
 		res.ErrCode = im_error_proto.ErrCode_common_unexpected_err
 		return err
 	}

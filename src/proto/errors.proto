@@ -20,6 +20,8 @@ enum ErrCode {
     account_account_not_found = 1002;   // 账号不存在
     account_password_incorrect = 1003;  // 密码错误
 
+    // friends服务
+    friends_user_already_be_friend = 2001;  // 已经是好友了
 }
 
 // 返回客户端错误

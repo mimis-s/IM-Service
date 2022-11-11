@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	_ "embed"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/mimis-s/IM-Service/src/common/event"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/chat"
@@ -63,7 +63,7 @@ func main() {
 	select {
 	case <-ctx.Done():
 		time.Sleep(time.Second * 5)
-		fmt.Printf("stop service:%v", "im-service")
+		im_log.Info("stop service:%v", "im-service")
 	}
 }
 

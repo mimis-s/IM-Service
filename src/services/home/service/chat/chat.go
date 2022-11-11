@@ -2,10 +2,10 @@ package chat
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/chat/api_chat"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
@@ -24,8 +24,8 @@ func ChatSingle(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq
 	}
 	resRpc, err := api_chat.ChatSingle(context.Background(), reqRpc)
 	if err != nil {
-		fmt.Printf("chat single rpc is err:%v", err)
-		return im_error_proto.ErrCode_common_unexpected_err
+		im_log.Error("chat single rpc is err:%v", err)
+		return resRpc.ErrCode
 	}
 	resMsg.Data = resRpc.Data
 	return 0

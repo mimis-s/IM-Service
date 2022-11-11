@@ -29,6 +29,15 @@ message ApplyFriendsRes {
     int64 ApplyFriendsID = 1;
 }
 
+// 同意好友申请
+message AgreeFriendApplyReq {
+    int64 FriendsID = 1;   // 对方的ID
+}
+
+message AgreeFriendApplyRes {
+    int64 FriendsID = 1;
+}
+
 // 删除好友
 message DelFriendsReq {
     int64 FriendsID = 1;

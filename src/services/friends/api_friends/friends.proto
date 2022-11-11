@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package api_friends;
+
+import "home_friends.proto";
+import "home_account.proto";
+import "errors.proto";
+
+service Friends {
+    // 获取好友列表
+    rpc GetFriendsList(GetFriendsListReq) returns (GetFriendsListRes) {};
+
+    // 添加好友
+    rpc ApplyFriends(ApplyFriendsReq) returns (ApplyFriendsRes) {};
+
+    // 删除好友
+    rpc DelFriends(DelFriendsReq) returns (DelFriendsRes) {};
+}
+
+// 获取好友列表
+message GetFriendsListReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    im_home_proto.GetFriendsListReq Data = 2;
+}
+
+message GetFriendsListRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    im_home_proto.GetFriendsListRes Data = 2;
+}
+
+// 添加好友
+message ApplyFriendsReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    im_home_proto.ApplyFriendsReq Data = 2;
+}
+
+message ApplyFriendsRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    im_home_proto.ApplyFriendsRes Data = 2;
+}
+
+// 删除好友
+message DelFriendsReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    im_home_proto.DelFriendsReq Data = 2;
+}
+
+message DelFriendsRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    im_home_proto.DelFriendsRes Data = 2;
+}

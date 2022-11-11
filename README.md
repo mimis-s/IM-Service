@@ -29,7 +29,7 @@ tools/sql_tools/db_sync.go文件
 # 开发进度
 
 # 服务器
-<font color=“red”>- [√]</font>  基本网络框架, 网页websocket, 客户端TCP, 各个服务之间rpcx
+<font color=“red”>- [x]</font>  基本网络框架, 网页websocket, 客户端TCP, 各个服务之间rpcx
 
 [√] 数据库管理,导出,导入工具xorm, 每个服务dao的完善
 

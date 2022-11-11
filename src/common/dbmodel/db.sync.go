@@ -15,6 +15,11 @@ func InitSync(orm *xorm.Engine) error {
 		fmt.Print(fmt.Errorf("sync &AccountUser error:%v", err))
 	}
 
+	err = sync(orm, &Friends{})
+	if err != nil {
+		fmt.Print(fmt.Errorf("sync &Friends error:%v", err))
+	}
+
 	return nil
 }
 
@@ -23,6 +28,8 @@ func GetShardInfo() map[string]DbTableInterface {
 	info := make(map[string]DbTableInterface)
 
 	info["account_user"] = new(AccountUser)
+
+	info["friends"] = new(Friends)
 
 	return info
 }

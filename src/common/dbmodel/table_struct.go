@@ -6,6 +6,8 @@ type DbSubTreasury string
 const (
 	DbSubTreasury_Account = "account"
 	DbSubTreasury_Chat    = "chat"
+	DbSubTreasury_Relay   = "relay"
+	DbSubTreasury_Friends = "friends"
 )
 
 // 分表

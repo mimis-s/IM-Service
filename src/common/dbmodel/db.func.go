@@ -9,7 +9,19 @@ func (tb *AccountUser) SubName() string {
 	return "account_user"
 }
 
+func (tb *Friends) SubName() string {
+	return "friends"
+}
+
 func (tb *AccountUser) String() string {
+	data, err := json.Marshal(tb)
+	if err != nil {
+		return fmt.Sprintf("%+v", tb)
+	}
+	return string(data)
+}
+
+func (tb *Friends) String() string {
 	data, err := json.Marshal(tb)
 	if err != nil {
 		return fmt.Sprintf("%+v", tb)

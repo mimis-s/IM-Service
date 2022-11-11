@@ -2,11 +2,16 @@ package dao
 
 import (
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/mimis-s/IM-Service/src/common/dbmodel"
 	"xorm.io/xorm"
 )
 
+type TableSession struct {
+	Account *xorm.Session
+}
+
 type Dao struct {
-	Engine *xorm.Engine
+	Session *TableSession
 }
 
 func New() (*Dao, error) {
@@ -18,8 +23,9 @@ func New() (*Dao, error) {
 		panic(err)
 	}
 	dao := &Dao{
-		Engine: engine,
-	}
+		Session: &TableSession{
+			Account: engine.Table((*dbmodel.AccountUser).SubName(nil)),
+		}}
 
 	return dao, nil
 }

@@ -3,7 +3,9 @@
 package dbmodel
 
 type tAccountUser struct {
-	UserID           string
+	UserId           string
+	UserName         string
+	Password         string
 	UserExtraInfo    string
 	LatestLoginTime  string
 	LatestLogoutTime string
@@ -16,7 +18,9 @@ type tAccountUser struct {
 }
 
 var TAccountUser = &tAccountUser{
-	UserID:           "user_i_d",
+	UserId:           "user_id",
+	UserName:         "user_name",
+	Password:         "password",
 	UserExtraInfo:    "user_extra_info",
 	LatestLoginTime:  "latest_login_time",
 	LatestLogoutTime: "latest_logout_time",
@@ -26,4 +30,22 @@ var TAccountUser = &tAccountUser{
 	CreatedAt:        "created_at",
 	UpdatedAt:        "updated_at",
 	DeletedAt:        "deleted_at",
+}
+
+type tFriends struct {
+	Id        string
+	UserId    string
+	Friends   string
+	CreatedAt string
+	UpdatedAt string
+	DeletedAt string
+}
+
+var TFriends = &tFriends{
+	Id:        "id",
+	UserId:    "user_id",
+	Friends:   "friends",
+	CreatedAt: "created_at",
+	UpdatedAt: "updated_at",
+	DeletedAt: "deleted_at",
 }

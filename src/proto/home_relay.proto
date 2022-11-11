@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package im_home_proto;
+import "home_chat.proto";
+
+
+// 生成golang文件的目录
+option go_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto";
+
+
+// 转发给对方的聊天消息
+message ChatSingleToReceiver {
+    ChatMessage Data = 1;
+}
+
+// 好友申请转发
+message ApplyFriendsToReceiver {
+    int64 SenderID = 1;         // 发送者userid
+    int64 ReceiverID = 2;       // 接收者userid
+}

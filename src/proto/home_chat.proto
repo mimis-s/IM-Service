@@ -40,8 +40,3 @@ message ChatSingleReq {
 message ChatSingleRes {
     ChatMessage Data = 1;
 }
-
-// 转发给对方的聊天消息
-message ChatSingleToReceiver {
-    ChatMessage Data = 1;
-}

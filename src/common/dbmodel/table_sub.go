@@ -12,3 +12,12 @@ func (tb *AccountUser) SubTableNum() int {
 func (tb *AccountUser) BindSubTreasury() DbSubTreasury {
 	return DbSubTreasury_Account
 }
+
+// 好友表
+func (tb *Friends) SubTableNum() int {
+	return 1
+}
+
+func (tb *Friends) BindSubTreasury() DbSubTreasury {
+	return DbSubTreasury_Account
+}

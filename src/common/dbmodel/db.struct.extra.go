@@ -13,3 +13,7 @@ type TBJsonField_UserPayInfo struct {
 	VipYellow int `json:"vip_yellow"` // 黄钻
 	VipGreen  int `json:"vip_green"`  // 绿钻
 }
+
+type TBJsonField_Friends struct {
+	IDs []int64
+}

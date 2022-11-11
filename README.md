@@ -30,8 +30,7 @@ tools/sql_tools/db_sync.go文件
 
 # 服务器
 - [x] 基本网络框架, 网页websocket, 客户端TCP, 各个服务之间rpcx
-
-[√] 数据库管理,导出,导入工具xorm, 每个服务dao的完善
+- [x] 数据库管理,导出,导入工具xorm, 每个服务dao的完善
 
 [√] gateway网关服搭建基本完成, 完成接收, 发送消息
 

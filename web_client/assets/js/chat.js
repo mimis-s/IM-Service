@@ -117,9 +117,16 @@ $(function () {
     if (!worker) {
         worker = new SharedWorker('assets/assets/js/websocket.js');
         worker.port.onmessage = function (e) {
+            // 聊天消息回发
             if (MESSAGE_ID.Chat.res == e.data.msg_id) {
                 console.log(e.data.payload)
                 SohoExamle.Message.add(e.data.payload.Data.Data, 'outgoing-message');
+            }
+
+            // 接收对端消息
+            if (MESSAGE_ID.Chat.relay == e.data.msg_id) {
+                console.log(e.data.payload)
+                SohoExamle.Message.add(e.data.payload.Data.Data, '');
             }
         };
     }

@@ -5,6 +5,7 @@ var MESSAGE_ID = {
     "Chat": {
         "req": CRC32("ChatSingleReq", 10),
         "res": CRC32("ChatSingleRes", 10),
+        "relay": CRC32("ChatSingleToReceiver", 10),
     },
     "Login": {
         "req": CRC32("LoginReq", 10),
@@ -14,6 +15,25 @@ var MESSAGE_ID = {
         "req": CRC32("RegisterReq", 10),
         "res": CRC32("RegisterRes", 10),
     },
+    "GetFriendsList": {
+        "req": CRC32("GetFriendsListReq", 10),
+        "res": CRC32("GetFriendsListRes", 10),
+    },
+    "ApplyFriends": {
+        "req": CRC32("ApplyFriendsReq", 10),
+        "res": CRC32("ApplyFriendsRes", 10),
+        "relay": CRC32("ApplyFriendsToReceiver", 10),
+    },
+    "AgreeFriendApply": {
+        "req": CRC32("AgreeFriendApplyReq", 10),
+        "res": CRC32("AgreeFriendApplyRes", 10),
+        "relay": CRC32("AgreeApplyFriendsToReceiver", 10),
+    },
+    "DelFriends": {
+        "req": CRC32("DelFriendsReq", 10),
+        "res": CRC32("DelFriendsRes", 10),
+    },
+
     "ErrCode": CRC32("CommonError", 10),
     "Test": "2",
 }

@@ -31,12 +31,10 @@ function InitFriends(e) {
         console.log("好友申请回发" + e.data.payload)
     }
 
-    // 对方同意好友申请
+    // 接收对方好友申请
     if (MESSAGE_ID.ApplyFriends.relay == e.data.msg_id) {
-        console.log("对方同意好友申请" + e.data.payload)
+        console.log("接收对方好友申请" + e.data.payload)
     }
-
-    console.log("同意好友申请的id:" + MESSAGE_ID.ApplyFriends.relay)
 
     // 获取好友列表
     if (MESSAGE_ID.GetFriendsList.res == e.data.msg_id) {

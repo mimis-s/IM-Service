@@ -5,6 +5,7 @@ import (
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	_ "github.com/mimis-s/IM-Service/src/services/home/service/account"
 	_ "github.com/mimis-s/IM-Service/src/services/home/service/chat"
+	_ "github.com/mimis-s/IM-Service/src/services/home/service/friends"
 )
 
 var S *Service

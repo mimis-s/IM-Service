@@ -1,19 +1,18 @@
-var worker;
-
 $(function () {
 
     // 提交好友申请
-    $(document).on('submit', 'addFriends', function (e) {
+    $(document).on('click', '#addFriends button.btn', function (e) {
+        console.log("提交好友申请")
         e.preventDefault();
 
-        var applyFriendID = $(this).find('input[id=applyFriendID]').val();
+        var applyFriendID = $('#addFriends').find('input[id=applyFriendID]').val();
         applyFriendID = $.trim(applyFriendID);
 
         if (applyFriendID) {
 
             // 读取输入, 发送给服务器
             var payload = {
-                ApplyFriendsID: applyFriendID,
+                ApplyFriendsID: Number(applyFriendID),
             }
 
             var json = { "msg_id": String(MESSAGE_ID.ApplyFriends.req), "payload": JSON.stringify(payload) };
@@ -24,23 +23,27 @@ $(function () {
             input.focus();
         }
     });
+});
 
-    if (!worker) {
-        worker = new SharedWorker('assets/assets/js/websocket.js');
-        worker.port.onmessage = function (e) {
-            // 好友申请回发
-            if (MESSAGE_ID.ApplyFriends.res == e.data.msg_id) {
-                console.log(e.data.payload)
-            }
-
-            // 对方同意好友申请
-            if (MESSAGE_ID.ApplyFriends.relay == e.data.msg_id) {
-                console.log(e.data.payload)
-            }
-        };
+function InitFriends(e) {
+    // 好友申请回发
+    if (MESSAGE_ID.ApplyFriends.res == e.data.msg_id) {
+        console.log("好友申请回发" + e.data.payload)
     }
 
-});
+    // 对方同意好友申请
+    if (MESSAGE_ID.ApplyFriends.relay == e.data.msg_id) {
+        console.log("对方同意好友申请" + e.data.payload)
+    }
+
+    console.log("同意好友申请的id:" + MESSAGE_ID.ApplyFriends.relay)
+
+    // 获取好友列表
+    if (MESSAGE_ID.GetFriendsList.res == e.data.msg_id) {
+        console.log("获取好友列表" + e.data.payload)
+    }
+}
+
 
 // 发送图片
 // <div class="message-item">

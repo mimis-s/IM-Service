@@ -34,7 +34,6 @@
     <script>
         var worker = new SharedWorker('assets/assets/js/websocket.js');
         worker.port.onmessage = function (e) {
-            console.log("index:" + e);
             if (MESSAGE_ID.ErrCode == e.data.msg_id) {
                 alert("错误码: " + e.data.payload.Code)
             }

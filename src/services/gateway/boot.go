@@ -8,7 +8,7 @@ import (
 )
 
 func Boot(ctx context.Context) {
-	// Http服务, web客户端连接
+	// TCP服务, web客户端连接
 	service.Init("localhost:8888", "localhost:8998")
 
 	select {

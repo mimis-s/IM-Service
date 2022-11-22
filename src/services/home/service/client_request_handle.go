@@ -61,7 +61,7 @@ func dispatchMsg(ctx context.Context, req *api_home.ClientRequestHandleReq, res 
 	}
 
 	// 如果errcode不是0, 则说明要返回错误码
-	commonErr := im_error_proto.CommonError{
+	commonErr := &im_error_proto.CommonError{
 		Code:       errCode,
 		ReqMsgID:   req.MsgID,
 		ReqPayload: string(req.Payload),

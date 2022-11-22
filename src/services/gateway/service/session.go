@@ -72,9 +72,24 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 		Client:  s.clientInfo,
 	}
 
-	res, err := api_home.ClientRequestHandleJson(context.Background(), req)
+	if s.GetClientConn().GetConnType() == clientConn.ClientConn_HTTP_Enum {
+
+		res, err := api_home.ClientRequestHandleJson(context.Background(), req)
+		if err != nil {
+			errStr := fmt.Sprintf("Client Request Handle Json[%v] is err:%v", req, err)
+			fmt.Println(errStr)
+			return nil, fmt.Errorf(errStr)
+		}
+
+		return &clientConn.ClientMsg{
+			Tag: int(res.MsgID),
+			Msg: res.Payload,
+		}, nil
+	}
+
+	res, err := api_home.ClientRequestHandleProto(context.Background(), req)
 	if err != nil {
-		errStr := fmt.Sprintf("Client Request Handle Json[%v] is err:%v", req, err)
+		errStr := fmt.Sprintf("Client Request Handle proto[%v] is err:%v", req, err)
 		fmt.Println(errStr)
 		return nil, fmt.Errorf(errStr)
 	}

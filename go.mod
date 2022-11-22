@@ -7,7 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
-	github.com/mimis-s/golang_tools v0.0.0-20221110040358-b045ef92c533
+	github.com/mimis-s/golang_tools v0.0.0-20221122042603-91129721778e
 	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
 	xorm.io/xorm v1.2.5
 )

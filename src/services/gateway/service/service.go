@@ -33,8 +33,14 @@ func Init(addr, webAddr string) *Service {
 	}()
 
 	// 客户端连接的TCP连接
-	// s := net.InitServer(addr, "tcp", HandlerRespone)
-	// s.Listen()
+	tcpServer := net.InitServer(addr, "tcp", NewSession)
+	tcpServer.Listen()
+	go func() {
+		err := tcpServer.Listen()
+		if err != nil {
+			panic(err)
+		}
+	}()
 
 	return S
 }

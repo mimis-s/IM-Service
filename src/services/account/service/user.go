@@ -114,7 +114,7 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 	}
 
 	res.Data = &im_home_proto.GetUserInfoRes{
-		BFriend: false, // 暂时固定为非好友
+		Relation: im_home_proto.Enum_UserRelation_Enum_UserRelation_Stranger, // 暂时固定为非好友
 		Data: &im_home_proto.UserInfo{
 			UserID:    userInfo.UserId,
 			UserName:  userInfo.UserName,

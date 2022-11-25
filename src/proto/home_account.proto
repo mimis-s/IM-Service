@@ -46,6 +46,11 @@ enum Enum_UserStatus{
     Enum_UserStatus_Online = 1;     // 在线
 }
 
+enum Enum_UserRelation{
+    Enum_UserRelation_Stranger = 0;     // 陌生人(不是好友)
+    Enum_UserRelation_Friend = 1;       // 关系是好友
+}
+
 // 用户信息
 message UserInfo {
     int64 UserID = 1;
@@ -63,5 +68,5 @@ message GetUserInfoReq {
 
 message GetUserInfoRes {
     UserInfo Data = 1;
-    bool BFriend = 2; // 是否是好友
+    Enum_UserRelation Relation = 2; // 用户和本人的关系
 }

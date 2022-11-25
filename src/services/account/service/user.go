@@ -40,8 +40,13 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 
 	// 成功登录
 	res.Data = &im_home_proto.LoginRes{
-		UserID:   userInfo.UserId,
-		UserName: userInfo.UserName,
+		Info: &im_home_proto.UserInfo{
+			UserID:    userInfo.UserId,
+			UserName:  userInfo.UserName,
+			Region:    int32(userInfo.UserExtraInfo.Nation),
+			Autograph: userInfo.UserExtraInfo.PersonalSignature,
+			Status:    im_home_proto.Enum_UserStatus_Enum_UserStatus_Online,
+		},
 	}
 
 	return nil

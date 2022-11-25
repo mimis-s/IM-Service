@@ -30,8 +30,7 @@ func Login(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req
 		return resRpc.ErrCode
 	}
 
-	resMsg.UserID = resRpc.Data.UserID
-	resMsg.UserName = resRpc.Data.UserName
+	resMsg.Info = resRpc.Data.Info
 	return 0
 }
 

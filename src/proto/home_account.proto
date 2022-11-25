@@ -12,8 +12,7 @@ message LoginReq {
 }
 
 message LoginRes {
-    int64 UserID = 1;
-    string UserName = 2;
+    UserInfo Info = 1;
 }
 
 // 注册

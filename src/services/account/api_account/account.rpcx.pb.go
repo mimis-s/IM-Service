@@ -81,9 +81,22 @@ func Register(ctx context.Context,
 	return out, err
 }
 
+func GetUserInfo(ctx context.Context,
+	in *GetUserInfoReq) (*GetUserInfoRes, error) {
+
+	if callSingleMethodFunc != nil {
+		AccountClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(GetUserInfoRes)
+	out, err := AccountClientInstance.GetUserInfo(ctx, in)
+	return out, err
+}
+
 type AccountClientInterface interface {
 	Login(context.Context, *LoginReq) (*LoginRes, error)
 	Register(context.Context, *RegisterReq) (*RegisterRes, error)
+	GetUserInfo(context.Context, *GetUserInfoReq) (*GetUserInfoRes, error)
 }
 
 // rpcx客户端
@@ -105,6 +118,13 @@ func (c *AccountRpcxClient) Register(ctx context.Context,
 	return out, err
 }
 
+func (c *AccountRpcxClient) GetUserInfo(ctx context.Context,
+	in *GetUserInfoReq) (*GetUserInfoRes, error) {
+	out := new(GetUserInfoRes)
+	err := c.c.Call(ctx, "GetUserInfo", in, out)
+	return out, err
+}
+
 // 本地调用客户端
 type AccountLocalClient struct {
 }
@@ -123,9 +143,17 @@ func (c *AccountLocalClient) Register(ctx context.Context,
 	return out, err
 }
 
+func (c *AccountLocalClient) GetUserInfo(ctx context.Context,
+	in *GetUserInfoReq) (*GetUserInfoRes, error) {
+	out := new(GetUserInfoRes)
+	err := AccountServiceLocal.GetUserInfo(ctx, in, out)
+	return out, err
+}
+
 type AccountServiceInterface interface {
 	Login(context.Context, *LoginReq, *LoginRes) error
 	Register(context.Context, *RegisterReq, *RegisterRes) error
+	GetUserInfo(context.Context, *GetUserInfoReq, *GetUserInfoRes) error
 }
 
 var AccountServiceLocal AccountServiceInterface

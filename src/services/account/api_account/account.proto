@@ -9,6 +9,7 @@ import "errors.proto";
 service Account {
     rpc Login(LoginReq) returns (LoginRes) {};
     rpc Register(RegisterReq) returns (RegisterRes) {};
+    rpc GetUserInfo(GetUserInfoReq) returns (GetUserInfoRes) {};
 }
 
 // 登录
@@ -31,4 +32,15 @@ message RegisterReq {
 message RegisterRes {
     im_error_proto.ErrCode ErrCode = 1;
     im_home_proto.RegisterRes Data = 2;
+}
+
+// 获取用户信息
+message GetUserInfoReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    im_home_proto.GetUserInfoReq Data = 2;
+}
+
+message GetUserInfoRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    im_home_proto.GetUserInfoRes Data = 2;
 }

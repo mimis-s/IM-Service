@@ -14,7 +14,7 @@ import (
 func init() {
 	seralize.RegisterHandler(im_home_proto.LoginReq{}, im_home_proto.LoginRes{}, Login)
 	seralize.RegisterHandler(im_home_proto.RegisterReq{}, im_home_proto.RegisterRes{}, Register)
-
+	seralize.RegisterHandler(im_home_proto.GetUserInfoReq{}, im_home_proto.GetUserInfoRes{}, GetUserInfo)
 }
 
 func Login(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
@@ -51,5 +51,23 @@ func Register(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, 
 
 	resMsg.UserID = resRpc.Data.UserID
 	resMsg.UserName = resRpc.Data.UserName
+	return 0
+}
+
+func GetUserInfo(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
+	reqMsg := req.(*im_home_proto.GetUserInfoReq)
+	resMsg := res.(*im_home_proto.GetUserInfoRes)
+
+	resRpc, err := api_account.GetUserInfo(ctx, &api_account.GetUserInfoReq{
+		ClientInfo: clientInfo.Client,
+		Data:       reqMsg,
+	})
+
+	if err != nil {
+		im_log.Error("user[%v] get user[%v] info is err:%v", clientInfo.Client.UserID, reqMsg.UserID, err)
+		return resRpc.ErrCode
+	}
+
+	resMsg.Data = resRpc.Data.Data
 	return 0
 }

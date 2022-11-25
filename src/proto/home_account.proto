@@ -40,3 +40,27 @@ message ClientOnlineInfo {
     int64 CurLoginTimestamp = 9;        // 本次登录时间
     int32 ClientLocalZone = 10;         // 客户端时区
 }
+
+enum Enum_UserStatus{
+    Enum_UserStatus_Outline = 0;    // 默认离线
+    Enum_UserStatus_Online = 1;     // 在线
+}
+
+// 用户信息
+message UserInfo {
+    int64 UserID = 1;
+    string UserName = 2;
+    int32 Region = 3;                   // 地区(中国,美国....)
+    string Autograph = 4;               // 个性签名
+    Enum_UserStatus Status = 5;         // 在线状态
+    string HeadImg = 6;                 // 头像图片(存到文件服务器上面, 业务服务器只存储路径)
+}
+
+// 获取用户信息
+message GetUserInfoReq {
+    int64 UserID = 1;
+}
+
+message GetUserInfoRes {
+    UserInfo Data = 1;
+}

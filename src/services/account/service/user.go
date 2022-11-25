@@ -8,6 +8,7 @@ import (
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 )
 
@@ -17,7 +18,7 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("role id[%v] register db is err:%v", req.Data.UserID, err)
-		fmt.Println(errStr)
+		im_log.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -25,7 +26,7 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 		// 该账号不存在
 		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
 		errStr := fmt.Sprintf("role id[%v] login but account is not find", req.Data.UserID)
-		fmt.Println(errStr)
+		im_log.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -33,7 +34,7 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 	if req.Data.Password != userInfo.Password {
 		res.ErrCode = im_error_proto.ErrCode_account_password_incorrect
 		errStr := fmt.Sprintf("role id[%v] login but password is incorrect", req.Data.UserID)
-		fmt.Println(errStr)
+		im_log.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -54,7 +55,7 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("role name[%v] register db is err:%v", req.Data.UserName, err)
-		fmt.Println(errStr)
+		im_log.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -62,7 +63,7 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 		// 重名
 		res.ErrCode = im_error_proto.ErrCode_account_user_name_repeat
 		errStr := fmt.Sprintf("role name[%v] register db, but name is repeat", req.Data.UserName)
-		fmt.Println(errStr)
+		im_log.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 	userInfo := &dbmodel.AccountUser{
@@ -81,7 +82,7 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		errStr := fmt.Sprintf("role name[%v] register db write is err:%v", req.Data.UserName, err)
-		fmt.Println(errStr)
+		im_log.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -89,6 +90,40 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 		UserID:   userInfo.UserId,
 		UserName: userInfo.UserName,
 	}
+
+	return nil
+}
+
+// 获取用户信息
+func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoReq, res *api_account.GetUserInfoRes) error {
+
+	userInfo, find, err := s.Dao.GetUserInfoFromID(req.Data.UserID)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_read_err
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but db is err:%v", req.ClientInfo.UserID, req.Data.UserID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	if !find {
+		// 没有找到说明没有这个人
+		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but db is not found", req.ClientInfo.UserID, req.Data.UserID)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	res.Data = &im_home_proto.GetUserInfoRes{
+		Data: &im_home_proto.UserInfo{
+			UserID:    userInfo.UserId,
+			UserName:  userInfo.UserName,
+			Region:    int32(userInfo.UserExtraInfo.Nation),
+			Autograph: userInfo.UserExtraInfo.PersonalSignature,
+			Status:    im_home_proto.Enum_UserStatus_Enum_UserStatus_Online,
+		},
+	}
+
+	// 因为头像涉及到分布式文件存储服务, 所以这里先不给头像
 
 	return nil
 }

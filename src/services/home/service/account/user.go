@@ -69,5 +69,6 @@ func GetUserInfo(ctx context.Context, clientInfo *api_home.ClientRequestHandleRe
 	}
 
 	resMsg.Data = resRpc.Data.Data
+	resMsg.BFriend = resRpc.Data.BFriend
 	return 0
 }

@@ -63,4 +63,5 @@ message GetUserInfoReq {
 
 message GetUserInfoRes {
     UserInfo Data = 1;
+    bool BFriend = 2; // 是否是好友
 }

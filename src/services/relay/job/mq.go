@@ -34,7 +34,7 @@ func InitMQ(s *service.Service) *Job {
 func (j *Job) singleMessage(payload interface{}) error {
 	singleMessage := payload.(*event.SingleMessage)
 
-	chatSingleToReceiver := im_home_proto.ChatSingleToReceiver{
+	chatSingleToReceiver := &im_home_proto.ChatSingleToReceiver{
 		Data: singleMessage.Message,
 	}
 	msg_id := seralize.GetMsgIdByStruct(im_home_proto.ChatSingleToReceiver{})

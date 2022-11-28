@@ -1,6 +1,9 @@
 package dao
 
 import (
+	"time"
+
+	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
 )
@@ -11,6 +14,23 @@ type TableSession struct {
 
 type Dao struct {
 	Session *TableSession
+	Cache   *redis.Client
+}
+
+func newRedisClient() *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr:               "localhost:8988",
+		Password:           "",
+		DB:                 1,
+		MaxRetries:         2,
+		DialTimeout:        time.Second * 10,
+		ReadTimeout:        time.Second * 5,
+		WriteTimeout:       time.Second * 5,
+		PoolTimeout:        time.Second * 10,
+		IdleTimeout:        time.Minute * 10,
+		IdleCheckFrequency: time.Second * 30,
+	})
+	return client
 }
 
 func New() (*Dao, error) {
@@ -25,7 +45,9 @@ func New() (*Dao, error) {
 		Session: &TableSession{
 			// Account: engine.Table((*dbmodel.AccountUser).SubName(nil)),
 			Account: engine.Table("account_user"),
-		}}
+		},
+		Cache: newRedisClient(),
+	}
 
 	return dao, nil
 }

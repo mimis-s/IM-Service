@@ -99,7 +99,7 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 	return nil
 }
 
-// 获取用户信息
+// 获取用户信息(客户端)
 func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoReq, res *api_account.GetUserInfoRes) error {
 
 	userInfo, find, err := s.Dao.GetUserInfoFromID(req.Data.UserID)
@@ -118,6 +118,15 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 		return fmt.Errorf(errStr)
 	}
 
+	// 获取在线状态
+	status, err := s.Dao.CacheGetUserStatus(userInfo.UserId)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_read_err
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but redis db is err:%v", req.ClientInfo.UserID, req.Data.UserID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
 	res.Data = &im_home_proto.GetUserInfoRes{
 		Relation: im_home_proto.Enum_UserRelation_Enum_UserRelation_Stranger, // 暂时固定为非好友
 		Data: &im_home_proto.UserInfo{
@@ -125,11 +134,50 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 			UserName:  userInfo.UserName,
 			Region:    int32(userInfo.UserExtraInfo.Nation),
 			Autograph: userInfo.UserExtraInfo.PersonalSignature,
-			Status:    im_home_proto.Enum_UserStatus_Enum_UserStatus_Online,
+			Status:    status,
 		},
 	}
 
 	// 因为头像涉及到分布式文件存储服务, 所以这里先不给头像
+
+	return nil
+}
+
+// 获取用户信息(服务器)
+func (s *Service) GetUserInfoService(ctx context.Context, req *api_account.GetUserInfoServiceReq, res *api_account.GetUserInfoServiceRes) error {
+
+	userInfo, find, err := s.Dao.GetUserInfoFromID(req.UserID)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_read_err
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but db is err:%v", req.ClientInfo.UserID, req.UserID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	if !find {
+		// 没有找到说明没有这个人
+		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but db is not found", req.ClientInfo.UserID, req.UserID)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	// 获取在线状态
+	status, err := s.Dao.CacheGetUserStatus(userInfo.UserId)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_read_err
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but redis db is err:%v", req.ClientInfo.UserID, req.UserID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	res.Data = &im_home_proto.UserInfo{
+		UserID:    userInfo.UserId,
+		UserName:  userInfo.UserName,
+		Region:    int32(userInfo.UserExtraInfo.Nation),
+		Autograph: userInfo.UserExtraInfo.PersonalSignature,
+		Status:    status,
+	}
 
 	return nil
 }

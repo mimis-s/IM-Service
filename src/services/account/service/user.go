@@ -119,7 +119,7 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 	}
 
 	// 获取在线状态
-	status, err := s.Dao.CacheGetUserStatus(userInfo.UserId)
+	status, err := s.Dao.CacheGetUserStatus([]int64{userInfo.UserId})
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but redis db is err:%v", req.ClientInfo.UserID, req.Data.UserID, err)
@@ -134,7 +134,7 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 			UserName:  userInfo.UserName,
 			Region:    int32(userInfo.UserExtraInfo.Nation),
 			Autograph: userInfo.UserExtraInfo.PersonalSignature,
-			Status:    status,
+			Status:    status[0],
 		},
 	}
 
@@ -163,7 +163,7 @@ func (s *Service) GetUserInfoService(ctx context.Context, req *api_account.GetUs
 	}
 
 	// 获取在线状态
-	status, err := s.Dao.CacheGetUserStatus(userInfo.UserId)
+	status, err := s.Dao.CacheGetUserStatus([]int64{userInfo.UserId})
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but redis db is err:%v", req.ClientInfo.UserID, req.UserID, err)
@@ -176,7 +176,55 @@ func (s *Service) GetUserInfoService(ctx context.Context, req *api_account.GetUs
 		UserName:  userInfo.UserName,
 		Region:    int32(userInfo.UserExtraInfo.Nation),
 		Autograph: userInfo.UserExtraInfo.PersonalSignature,
-		Status:    status,
+		Status:    status[0],
+	}
+
+	return nil
+}
+
+// 获取用户信息(服务器),多个用户
+func (s *Service) GetUsersInfoService(ctx context.Context, req *api_account.GetUsersInfoServiceReq, res *api_account.GetUsersInfoServiceRes) error {
+
+	userInfos, err := s.Dao.GetUserInfoFromIDs(req.UserIDs)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_read_err
+		errStr := fmt.Sprintf("user[%v] get users[%v] info, but db is err:%v", req.ClientInfo.UserID, req.UserIDs, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	if len(userInfos) == 0 {
+		// 没有找到说明没有这个人
+		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
+		errStr := fmt.Sprintf("user[%v] get users[%v] info, but db is not found", req.ClientInfo.UserID, req.UserIDs)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	userIDs := make([]int64, 0, len(userInfos))
+	for _, v := range userInfos {
+		userIDs = append(userIDs, v.UserId)
+	}
+
+	// 获取在线状态
+	status, err := s.Dao.CacheGetUserStatus(userIDs)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_read_err
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but redis db is err:%v", req.ClientInfo.UserID, req.UserIDs, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	res.Datas = make([]*im_home_proto.UserInfo, 0, len(userInfos))
+
+	for index, userInfo := range userInfos {
+		res.Datas = append(res.Datas, &im_home_proto.UserInfo{
+			UserID:    userInfo.UserId,
+			UserName:  userInfo.UserName,
+			Region:    int32(userInfo.UserExtraInfo.Nation),
+			Autograph: userInfo.UserExtraInfo.PersonalSignature,
+			Status:    status[index],
+		})
 	}
 
 	return nil

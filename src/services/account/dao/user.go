@@ -17,6 +17,17 @@ func (d *Dao) GetUserInfoFromID(userID int64) (*dbmodel.AccountUser, bool, error
 	return info, find, err
 }
 
+func (d *Dao) GetUserInfoFromIDs(userID []int64) ([]*dbmodel.AccountUser, error) {
+	listUser := make([]*dbmodel.AccountUser, 0)
+	err := d.Session.Account.In("user_id", userID).Find(&listUser)
+	if err != nil {
+		errStr := fmt.Sprintf("user ID[%v] get info is err:%v", userID, err)
+		fmt.Println(errStr)
+		return nil, fmt.Errorf(errStr)
+	}
+	return listUser, err
+}
+
 func (d *Dao) GetUserInfoFromName(userName string) (*dbmodel.AccountUser, bool, error) {
 	info := &dbmodel.AccountUser{}
 	find, err := d.Session.Account.Table("account_user").Where("user_name = ?", userName).Get(info)

@@ -9,6 +9,7 @@ import (
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
 	"github.com/mimis-s/IM-Service/src/common/event"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
+	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/friends/api_friends"
 )
 
@@ -17,10 +18,10 @@ import (
 	网页客户端只能实时获取
 */
 
-func (s *Service) InitFriendsList(userInfo *im_home_proto.ClientOnlineInfo) (*dbmodel.Friends, im_error_proto.ErrCode, error) {
-	dbFriends, find, err := s.Dao.GetFriends(userInfo.UserID)
+func (s *Service) InitFriendsList(userID int64) (*dbmodel.Friends, im_error_proto.ErrCode, error) {
+	dbFriends, find, err := s.Dao.GetFriends(userID)
 	if err != nil {
-		errStr := fmt.Sprintf("user[%v] get friends list, but db is err:%v", userInfo.UserID, err)
+		errStr := fmt.Sprintf("user[%v] get friends list, but db is err:%v", userID, err)
 		im_log.Error(errStr)
 		return nil, im_error_proto.ErrCode_db_read_err, fmt.Errorf(errStr)
 	}
@@ -28,14 +29,14 @@ func (s *Service) InitFriendsList(userInfo *im_home_proto.ClientOnlineInfo) (*db
 	if !find {
 		// 找不到说明是新账号, 插入一个
 		dbFriends = &dbmodel.Friends{
-			UserId: userInfo.UserID,
+			UserId: userID,
 			Friends: dbmodel.TBJsonField_Friends{
 				IDs: make([]int64, 0),
 			},
 		}
-		err = s.Dao.InsertFriends(userInfo, dbFriends)
+		err = s.Dao.InsertFriends(userID, dbFriends)
 		if err != nil {
-			errStr := fmt.Sprintf("user[%v] get friends list, but insert db is err:%v", userInfo.UserID, err)
+			errStr := fmt.Sprintf("user[%v] get friends list, but insert db is err:%v", userID, err)
 			im_log.Error(errStr)
 			return nil, im_error_proto.ErrCode_db_write_err, fmt.Errorf(errStr)
 		}
@@ -45,7 +46,7 @@ func (s *Service) InitFriendsList(userInfo *im_home_proto.ClientOnlineInfo) (*db
 
 func (s *Service) GetFriendsList(ctx context.Context, req *api_friends.GetFriendsListReq, res *api_friends.GetFriendsListRes) error {
 
-	dbFriends, errCode, err := s.InitFriendsList(req.ClientInfo)
+	dbFriends, errCode, err := s.InitFriendsList(req.ClientInfo.UserID)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] get friends list, but init list is err:%v", req.ClientInfo.UserID, err)
 		im_log.Error(errStr)
@@ -53,32 +54,53 @@ func (s *Service) GetFriendsList(ctx context.Context, req *api_friends.GetFriend
 		return fmt.Errorf(errStr)
 	}
 
-	listFriends := make([]*im_home_proto.UserInfo, 0, len(dbFriends.Friends.IDs))
+	// 获取好友的信息
 
-	for _, id := range dbFriends.Friends.IDs {
-		listFriends = append(listFriends, &im_home_proto.UserInfo{
-			UserID: id,
-		})
+	getUsersInfoServiceReq := &api_account.GetUsersInfoServiceReq{
+		ClientInfo: req.ClientInfo,
+		UserIDs:    dbFriends.Friends.IDs,
+	}
+
+	getUsersInfoServiceRes, err := api_account.GetUsersInfoService(context.Background(), getUsersInfoServiceReq)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] Get Users[%v] Info Service, but insert db is err:%v", req.ClientInfo.UserID, dbFriends.Friends.IDs, err)
+		im_log.Error(errStr)
+		res.ErrCode = getUsersInfoServiceRes.ErrCode
+		return fmt.Errorf(errStr)
 	}
 
 	res.Data = &im_home_proto.GetFriendsListRes{
-		List: listFriends,
+		List: getUsersInfoServiceRes.Datas,
 	}
 
 	return nil
 }
 
 func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriendsReq, res *api_friends.ApplyFriendsRes) error {
-	dbFriends, errCode, err := s.InitFriendsList(req.ClientInfo)
+	// 判断添加的这个id是否存在
+	userInfoReq := &api_account.GetUserInfoServiceReq{
+		ClientInfo: req.ClientInfo,
+		UserID:     req.Data.ApplyFriendsID,
+	}
+	userInfoRes, err := api_account.GetUserInfoService(context.Background(), userInfoReq)
 	if err != nil {
-		errStr := fmt.Sprintf("user[%v] get friends list, but init list is err:%v", req.ClientInfo.UserID, err)
+		errStr := fmt.Sprintf("user[%v] get User[%v] Info is err:%v", req.ClientInfo.UserID, req.Data.ApplyFriendsID, err)
+		im_log.Error(errStr)
+		res.ErrCode = userInfoRes.ErrCode
+		return fmt.Errorf(errStr)
+	}
+
+	// 自己
+	dbSelfFriends, errCode, err := s.InitFriendsList(req.ClientInfo.UserID)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] Apply Friends, but init list is err:%v", req.ClientInfo.UserID, err)
 		im_log.Error(errStr)
 		res.ErrCode = errCode
 		return fmt.Errorf(errStr)
 	}
 
 	// 判断是不是好友
-	for _, fID := range dbFriends.Friends.IDs {
+	for _, fID := range dbSelfFriends.Friends.IDs {
 		if req.Data.ApplyFriendsID == fID {
 			// 已经是好友
 			errStr := fmt.Sprintf("user[%v] apply friend, but [%v] already friend", req.ClientInfo.UserID, req.Data.ApplyFriendsID)
@@ -86,6 +108,33 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 			im_log.Error(errStr)
 			return fmt.Errorf(errStr)
 		}
+	}
+
+	// 好友
+	dbOtherFriends, errCode, err := s.InitFriendsList(req.Data.ApplyFriendsID)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] Apply Friends, but user[%v] init list is err:%v", req.ClientInfo.UserID, req.Data.ApplyFriendsID, err)
+		im_log.Error(errStr)
+		res.ErrCode = errCode
+		return fmt.Errorf(errStr)
+	}
+
+	// 修改数据库数据
+	dbSelfFriends.Friends.ApplyFriendIDs = append(dbSelfFriends.Friends.ApplyFriendIDs, req.Data.ApplyFriendsID)
+	dbOtherFriends.Friends.ReceiveApplyIDs = append(dbSelfFriends.Friends.ReceiveApplyIDs, req.ClientInfo.UserID)
+	err = s.Dao.UpdateFriends(req.ClientInfo.UserID, dbSelfFriends)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] Apply Friends, but update db is err:%v", req.ClientInfo.UserID, err)
+		im_log.Error(errStr)
+		res.ErrCode = im_error_proto.ErrCode_db_write_err
+		return fmt.Errorf(errStr)
+	}
+	err = s.Dao.UpdateFriends(req.Data.ApplyFriendsID, dbOtherFriends)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] Apply Friends, but user[%v] update db is err:%v", req.ClientInfo.UserID, req.Data.ApplyFriendsID, err)
+		im_log.Error(errStr)
+		res.ErrCode = im_error_proto.ErrCode_db_write_err
+		return fmt.Errorf(errStr)
 	}
 
 	// 转发给对方
@@ -105,9 +154,7 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 	}
 
 	res.Data = &im_home_proto.ApplyFriendsRes{
-		FriendInfo: &im_home_proto.UserInfo{
-			UserID: req.Data.ApplyFriendsID,
-		},
+		FriendInfo: userInfoRes.Data,
 	}
 
 	return nil
@@ -115,15 +162,15 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 
 func (s *Service) AgreeFriendApply(ctx context.Context, req *api_friends.AgreeFriendApplyReq, res *api_friends.AgreeFriendApplyRes) error {
 
-	dbFriends, errCode, err := s.InitFriendsList(req.ClientInfo)
+	dbSelfFriends, errCode, err := s.InitFriendsList(req.ClientInfo.UserID)
 	if err != nil {
-		errStr := fmt.Sprintf("user[%v] get friends list, but init list is err:%v", req.ClientInfo.UserID, err)
+		errStr := fmt.Sprintf("user[%v] Agree Friend Apply, but init list is err:%v", req.ClientInfo.UserID, err)
 		im_log.Error(errStr)
 		res.ErrCode = errCode
 		return fmt.Errorf(errStr)
 	}
 
-	for _, id := range dbFriends.Friends.IDs {
+	for _, id := range dbSelfFriends.Friends.IDs {
 		if id == req.Data.FriendsID {
 			// 已经是好友
 			errStr := fmt.Sprintf("user[%v] agree apply friend, but [%v] already friend", req.ClientInfo.UserID, req.Data.FriendsID)
@@ -133,12 +180,42 @@ func (s *Service) AgreeFriendApply(ctx context.Context, req *api_friends.AgreeFr
 		}
 	}
 
-	dbFriends.Friends.IDs = append(dbFriends.Friends.IDs, req.Data.FriendsID)
+	dbOtherFriends, errCode, err := s.InitFriendsList(req.Data.FriendsID)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] Agree Friend[%v] Apply, but init list is err:%v", req.ClientInfo.UserID, req.Data.FriendsID, err)
+		im_log.Error(errStr)
+		res.ErrCode = errCode
+		return fmt.Errorf(errStr)
+	}
+
+	dbSelfFriends.Friends.IDs = append(dbSelfFriends.Friends.IDs, req.Data.FriendsID)
+	dbOtherFriends.Friends.IDs = append(dbOtherFriends.Friends.IDs, req.ClientInfo.UserID)
+
+	// 删除申请列表和接收列表中对应的id
+	for i := 0; i < len(dbSelfFriends.Friends.ReceiveApplyIDs); i++ {
+		if dbSelfFriends.Friends.ReceiveApplyIDs[i] == req.Data.FriendsID {
+			dbSelfFriends.Friends.ReceiveApplyIDs = append(dbSelfFriends.Friends.ReceiveApplyIDs[:i], dbSelfFriends.Friends.ReceiveApplyIDs[i+1:]...)
+		}
+	}
+
+	for i := 0; i < len(dbOtherFriends.Friends.ApplyFriendIDs); i++ {
+		if dbOtherFriends.Friends.ApplyFriendIDs[i] == req.ClientInfo.UserID {
+			dbOtherFriends.Friends.ApplyFriendIDs = append(dbOtherFriends.Friends.ApplyFriendIDs[:i], dbOtherFriends.Friends.ApplyFriendIDs[i+1:]...)
+		}
+	}
 
 	// 更新数据库
-	err = s.Dao.UpdateFriends(req.ClientInfo, dbFriends)
+	err = s.Dao.UpdateFriends(req.ClientInfo.UserID, dbSelfFriends)
 	if err != nil {
-		errStr := fmt.Sprintf("user[%v] update friends list, but db is err:%v", req.ClientInfo.UserID, err)
+		errStr := fmt.Sprintf("user[%v] update friend, but db is err:%v", req.ClientInfo.UserID, err)
+		im_log.Error(errStr)
+		res.ErrCode = im_error_proto.ErrCode_db_write_err
+		return fmt.Errorf(errStr)
+	}
+
+	err = s.Dao.UpdateFriends(req.Data.FriendsID, dbOtherFriends)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] update friend[%v], but db is err:%v", req.ClientInfo.UserID, req.Data.FriendsID, err)
 		im_log.Error(errStr)
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		return fmt.Errorf(errStr)
@@ -158,6 +235,9 @@ func (s *Service) AgreeFriendApply(ctx context.Context, req *api_friends.AgreeFr
 		im_log.Error(errStr)
 		res.ErrCode = errCode
 		return fmt.Errorf(errStr)
+	}
+	res.Data = &im_home_proto.AgreeFriendApplyRes{
+		FriendsID: req.Data.FriendsID,
 	}
 	return nil
 }

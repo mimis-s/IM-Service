@@ -3,7 +3,7 @@ package dao
 import (
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
 )
@@ -19,7 +19,7 @@ type Dao struct {
 
 func newRedisClient() *redis.Client {
 	client := redis.NewClient(&redis.Options{
-		Addr:               "localhost:8988",
+		Addr:               "localhost:6379",
 		Password:           "",
 		DB:                 1,
 		MaxRetries:         2,

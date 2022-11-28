@@ -105,11 +105,24 @@ func GetUserInfoService(ctx context.Context,
 	return out, err
 }
 
+func GetUsersInfoService(ctx context.Context,
+	in *GetUsersInfoServiceReq) (*GetUsersInfoServiceRes, error) {
+
+	if callSingleMethodFunc != nil {
+		AccountClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(GetUsersInfoServiceRes)
+	out, err := AccountClientInstance.GetUsersInfoService(ctx, in)
+	return out, err
+}
+
 type AccountClientInterface interface {
 	Login(context.Context, *LoginReq) (*LoginRes, error)
 	Register(context.Context, *RegisterReq) (*RegisterRes, error)
 	GetUserInfo(context.Context, *GetUserInfoReq) (*GetUserInfoRes, error)
 	GetUserInfoService(context.Context, *GetUserInfoServiceReq) (*GetUserInfoServiceRes, error)
+	GetUsersInfoService(context.Context, *GetUsersInfoServiceReq) (*GetUsersInfoServiceRes, error)
 }
 
 // rpcx客户端
@@ -145,6 +158,13 @@ func (c *AccountRpcxClient) GetUserInfoService(ctx context.Context,
 	return out, err
 }
 
+func (c *AccountRpcxClient) GetUsersInfoService(ctx context.Context,
+	in *GetUsersInfoServiceReq) (*GetUsersInfoServiceRes, error) {
+	out := new(GetUsersInfoServiceRes)
+	err := c.c.Call(ctx, "GetUsersInfoService", in, out)
+	return out, err
+}
+
 // 本地调用客户端
 type AccountLocalClient struct {
 }
@@ -177,11 +197,19 @@ func (c *AccountLocalClient) GetUserInfoService(ctx context.Context,
 	return out, err
 }
 
+func (c *AccountLocalClient) GetUsersInfoService(ctx context.Context,
+	in *GetUsersInfoServiceReq) (*GetUsersInfoServiceRes, error) {
+	out := new(GetUsersInfoServiceRes)
+	err := AccountServiceLocal.GetUsersInfoService(ctx, in, out)
+	return out, err
+}
+
 type AccountServiceInterface interface {
 	Login(context.Context, *LoginReq, *LoginRes) error
 	Register(context.Context, *RegisterReq, *RegisterRes) error
 	GetUserInfo(context.Context, *GetUserInfoReq, *GetUserInfoRes) error
 	GetUserInfoService(context.Context, *GetUserInfoServiceReq, *GetUserInfoServiceRes) error
+	GetUsersInfoService(context.Context, *GetUsersInfoServiceReq, *GetUsersInfoServiceRes) error
 }
 
 var AccountServiceLocal AccountServiceInterface

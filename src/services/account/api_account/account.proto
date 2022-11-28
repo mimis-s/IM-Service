@@ -11,6 +11,7 @@ service Account {
     rpc Register(RegisterReq) returns (RegisterRes) {};
     rpc GetUserInfo(GetUserInfoReq) returns (GetUserInfoRes) {};    // 客户端获取用户信息
     rpc GetUserInfoService(GetUserInfoServiceReq) returns (GetUserInfoServiceRes) {};    // 服务器获取用户信息  
+    rpc GetUsersInfoService(GetUsersInfoServiceReq) returns (GetUsersInfoServiceRes) {}; // 服务器获取用户信息,多个用户
 }
 
 // 登录
@@ -55,4 +56,15 @@ message GetUserInfoServiceReq {
 message GetUserInfoServiceRes {
     im_error_proto.ErrCode ErrCode = 1;
     im_home_proto.UserInfo Data = 2;
+}
+
+// 获取用户信息(服务器),多个用户
+message GetUsersInfoServiceReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    repeated int64 UserIDs = 2;
+}
+
+message GetUsersInfoServiceRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    repeated im_home_proto.UserInfo Datas = 2;
 }

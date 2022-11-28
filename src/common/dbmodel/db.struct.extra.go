@@ -15,5 +15,7 @@ type TBJsonField_UserPayInfo struct {
 }
 
 type TBJsonField_Friends struct {
-	IDs []int64
+	IDs             []int64
+	ApplyFriendIDs  []int64 // 发送的好友申请
+	ReceiveApplyIDs []int64 // 收到的好友申请
 }

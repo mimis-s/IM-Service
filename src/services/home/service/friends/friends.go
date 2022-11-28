@@ -46,7 +46,7 @@ func ApplyFriends(ctx context.Context, clientInfo *api_home.ClientRequestHandleR
 		im_log.Error("apply friends[%v] rpc is err:%v", reqMsg.ApplyFriendsID, err)
 		return resRpc.ErrCode
 	}
-	resMsg.ApplyFriendsID = resRpc.Data.ApplyFriendsID
+	resMsg.FriendInfo = resRpc.Data.FriendInfo
 	return 0
 }
 

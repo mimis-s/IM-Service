@@ -53,10 +53,10 @@ func (s *Service) GetFriendsList(ctx context.Context, req *api_friends.GetFriend
 		return fmt.Errorf(errStr)
 	}
 
-	listFriends := make([]*im_home_proto.GetFriendsListRes_BriedFriends, 0, len(dbFriends.Friends.IDs))
+	listFriends := make([]*im_home_proto.UserInfo, 0, len(dbFriends.Friends.IDs))
 
 	for _, id := range dbFriends.Friends.IDs {
-		listFriends = append(listFriends, &im_home_proto.GetFriendsListRes_BriedFriends{
+		listFriends = append(listFriends, &im_home_proto.UserInfo{
 			UserID: id,
 		})
 	}
@@ -105,7 +105,9 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 	}
 
 	res.Data = &im_home_proto.ApplyFriendsRes{
-		ApplyFriendsID: req.Data.ApplyFriendsID,
+		FriendInfo: &im_home_proto.UserInfo{
+			UserID: req.Data.ApplyFriendsID,
+		},
 	}
 
 	return nil

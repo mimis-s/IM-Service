@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package im_home_proto;
+import "home_account.proto";
 
 // 生成golang文件的目录
 option go_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto";
@@ -11,13 +12,7 @@ message GetFriendsListReq {
 }
 
 message GetFriendsListRes {
-    message BriedFriends {
-        // 好友简要信息
-        int64 UserID = 1;
-        string UserName = 2;
-        bool bOnline = 3;
-    }
-    repeated BriedFriends List = 1;
+    repeated UserInfo List = 1;
 }
 
 // 添加好友
@@ -26,7 +21,7 @@ message ApplyFriendsReq {
 }
 
 message ApplyFriendsRes {
-    int64 ApplyFriendsID = 1;
+    UserInfo FriendInfo = 1;
 }
 
 // 同意好友申请

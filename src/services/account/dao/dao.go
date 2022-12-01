@@ -47,7 +47,8 @@ func New() (*Dao, error) {
 	// 分布式文件存储
 	dfsConfig := &dfs.Config{
 		Type:       dfs.DFSType_Minio,
-		Bucket:     "im_zhangbin",
+		Enable:     true,
+		Bucket:     "im-zhangbin",
 		ExpireDays: 30,
 		Url:        "localhost:9000",
 		KeyID:      "admin",

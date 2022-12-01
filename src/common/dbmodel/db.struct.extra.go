@@ -4,7 +4,7 @@ type TBJsonField_UserExtraInfo struct {
 	NikeName          string `json:"nike_name"`          // 昵称
 	Nation            int    `json:"nation"`             // 国家
 	PersonalSignature string `json:"personal_signature"` // 个性签名
-	HeadUrl           string `json:"head_url"`           // 头像地址
+	HeadUrl           string `json:"head_url"`           // 头像地址(这个地址好像没有用,先不管)
 	PhoneNumber       string `json:"phone_number"`       // 电话号码
 }
 

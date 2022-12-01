@@ -41,12 +41,23 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 	// 成功登录
 	res.Data = &im_home_proto.LoginRes{
 		Info: &im_home_proto.UserInfo{
-			UserID:    userInfo.UserId,
-			UserName:  userInfo.UserName,
-			Region:    int32(userInfo.UserExtraInfo.Nation),
-			Autograph: userInfo.UserExtraInfo.PersonalSignature,
-			Status:    im_home_proto.Enum_UserStatus_Enum_UserStatus_Online,
+			UserID:      userInfo.UserId,
+			UserName:    userInfo.UserName,
+			Region:      int32(userInfo.UserExtraInfo.Nation),
+			Autograph:   userInfo.UserExtraInfo.PersonalSignature,
+			Status:      im_home_proto.Enum_UserStatus_Enum_UserStatus_Online,
+			PhoneNumber: userInfo.UserExtraInfo.PhoneNumber,
 		},
+	}
+
+	// 下载头像
+	headImg, err := s.Dao.DownLoadUserHead(userInfo.UserId)
+	if err != nil {
+		// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
+		errStr := fmt.Sprintf("user[%v] login, but dfs down load head is err:%v", userInfo.UserId, err)
+		im_log.Warn(errStr)
+	} else {
+		res.Data.Info.HeadImg = string(headImg)
 	}
 
 	return nil
@@ -76,8 +87,10 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 		UserName: req.Data.UserName,
 		Password: req.Data.Password,
 		UserExtraInfo: dbmodel.TBJsonField_UserExtraInfo{
-			NikeName: req.Data.UserName,
-			Nation:   1, // 国家暂时固定ID为1
+			NikeName:          req.Data.UserName,
+			Nation:            int(req.Data.Region),
+			PersonalSignature: req.Data.Autograph,
+			PhoneNumber:       req.Data.PhoneNumber,
 		},
 		Level: 1,
 		Exp:   0,
@@ -89,6 +102,14 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 		errStr := fmt.Sprintf("role name[%v] register db write is err:%v", req.Data.UserName, err)
 		im_log.Error(errStr)
 		return fmt.Errorf(errStr)
+	}
+
+	// 上传头像
+	err = s.Dao.UpLoadUserHead(userInfo.UserId, []byte(req.Data.HeadImg))
+	if err != nil {
+		// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
+		errStr := fmt.Sprintf("user id[%v] register, but dfs up load head is err:%v", userInfo.UserId, err)
+		im_log.Warn(errStr)
 	}
 
 	res.Data = &im_home_proto.RegisterRes{
@@ -130,15 +151,23 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 	res.Data = &im_home_proto.GetUserInfoRes{
 		Relation: im_home_proto.Enum_UserRelation_Enum_UserRelation_Stranger, // 暂时固定为非好友
 		Data: &im_home_proto.UserInfo{
-			UserID:    userInfo.UserId,
-			UserName:  userInfo.UserName,
-			Region:    int32(userInfo.UserExtraInfo.Nation),
-			Autograph: userInfo.UserExtraInfo.PersonalSignature,
-			Status:    status[0],
+			UserID:      userInfo.UserId,
+			UserName:    userInfo.UserName,
+			Region:      int32(userInfo.UserExtraInfo.Nation),
+			Autograph:   userInfo.UserExtraInfo.PersonalSignature,
+			Status:      status[0],
+			PhoneNumber: userInfo.UserExtraInfo.PhoneNumber,
 		},
 	}
 
-	// 因为头像涉及到分布式文件存储服务, 所以这里先不给头像
+	// 下载头像
+	headImg, err := s.Dao.DownLoadUserHead(userInfo.UserId)
+	if err != nil {
+		// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but dfs down load head is err:%v", req.ClientInfo.UserID, userInfo.UserId, err)
+		im_log.Warn(errStr)
+	}
+	res.Data.Data.HeadImg = string(headImg)
 
 	return nil
 }
@@ -172,11 +201,12 @@ func (s *Service) GetUserInfoService(ctx context.Context, req *api_account.GetUs
 	}
 
 	res.Data = &im_home_proto.UserInfo{
-		UserID:    userInfo.UserId,
-		UserName:  userInfo.UserName,
-		Region:    int32(userInfo.UserExtraInfo.Nation),
-		Autograph: userInfo.UserExtraInfo.PersonalSignature,
-		Status:    status[0],
+		UserID:      userInfo.UserId,
+		UserName:    userInfo.UserName,
+		Region:      int32(userInfo.UserExtraInfo.Nation),
+		Autograph:   userInfo.UserExtraInfo.PersonalSignature,
+		Status:      status[0],
+		PhoneNumber: userInfo.UserExtraInfo.PhoneNumber,
 	}
 
 	return nil
@@ -219,11 +249,12 @@ func (s *Service) GetUsersInfoService(ctx context.Context, req *api_account.GetU
 
 	for index, userInfo := range userInfos {
 		res.Datas = append(res.Datas, &im_home_proto.UserInfo{
-			UserID:    userInfo.UserId,
-			UserName:  userInfo.UserName,
-			Region:    int32(userInfo.UserExtraInfo.Nation),
-			Autograph: userInfo.UserExtraInfo.PersonalSignature,
-			Status:    status[index],
+			UserID:      userInfo.UserId,
+			UserName:    userInfo.UserName,
+			Region:      int32(userInfo.UserExtraInfo.Nation),
+			Autograph:   userInfo.UserExtraInfo.PersonalSignature,
+			Status:      status[index],
+			PhoneNumber: userInfo.UserExtraInfo.PhoneNumber,
 		})
 	}
 

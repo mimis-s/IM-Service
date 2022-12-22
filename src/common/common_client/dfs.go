@@ -1,4 +1,4 @@
-package define
+package common_client
 
 /*
 	dfs文件存储服务器不同文件的存储路径定义

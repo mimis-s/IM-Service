@@ -1,46 +1,70 @@
 # config示例文件，启动时实际调用config里面的配置文件
 
+server: "server_1"  // 服务器名称
+is_test: true       // 是否是测试环境
+is_local: true      // 是否是本地启动
 etcd:
-  path_prefix: etcd-namespace #etcd的命名空间，例如: /zhangbin
+  time_out: 5 // 超时时间(单位s)
+  etc_base_path: /zhangbin #etcd的存储路径，例如: /zhangbin
   addrs:
-    - 139.155.88.221:2385
+    - localhost:2379
 redis:
-  addr: "139.155.88.221:2379"
-  db: redis-db # 数据库,888,切换数据库select 888
+  addr: "localhost:6379"
+  db: 1 # 数据库,888,切换数据库select 888
+  # password: "123"
 mq:   # 消息队列
-  url: "mq-dsn" #例如 amqp://dev:dev123@localhost:5672/
+  durable: false // 数据是否持久
+  url: "amqp://dev:dev123@localhost:5672/" #例如 amqp://dev:dev123@localhost:5672/
 log:  # 日志输出文件
   path: "/log"
 dfs:  # 分布式文件服务
   enable: true
   type: "minio"
-  url: "139.155.88.221:9000"
+  url: "localhost:9000"
   bucket: dfs-bucket
   key_id: "admin"
   key: "admin123456"
 
 db:
-  - tag: "gateway"
+  - tag: "account"
     master:
-      addr: "139.155.88.221:3306"
-      db: "im-zhangbin"
-      user: "zhangbin"
-      passwd: "zhangbin"
+      addr: "localhost:3306"
+      db_name: "im_zhangbin"
+      user: "root"
+      password: "dev123"
+  - tag: "chat"
+    master:
+      addr: "localhost:3306"
+      db_name: "im_zhangbin"
+      user: "root"
+      password: "dev123"
   - tag: "friends"
     master:
-      addr: "139.155.88.221:3306"
-      db: "im-zhangbin"
-      user: "zhangbin"
-      passwd: "zhangbin"
+      addr: "localhost:3306"
+      db_name: "im_zhangbin"
+      user: "root"
+      password: "dev123"
+  - tag: "gateway"
+    master:
+      addr: "localhost:3306"
+      db_name: "im_zhangbin"
+      user: "root"
+      password: "dev123"
   - tag: "group"
     master:
-      addr: "139.155.88.221:3306"
-      db: "im-zhangbin"
-      user: "zhangbin"
-      passwd: "zhangbin"
-  - tag: "lobby"
+      addr: "localhost:3306"
+      db_name: "im_zhangbin"
+      user: "root"
+      password: "dev123"
+  - tag: "home"
     master:
-      addr: "139.155.88.221:3306"
-      db: "im-zhangbin"
-      user: "zhangbin"
-      passwd: "zhangbin"
+      addr: "localhost:3306"
+      db_name: "im_zhangbin"
+      user: "root"
+      password: "dev123"
+  - tag: "relay"
+    master:
+      addr: "localhost:3306"
+      db_name: "im_zhangbin"
+      user: "root"
+      password: "dev123"

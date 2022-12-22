@@ -1,11 +1,15 @@
 package dao
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/mimis-s/IM-Service/src/common/boot_config"
+	"github.com/mimis-s/IM-Service/src/common/common_client"
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/golang_tools/dfs"
 	"xorm.io/xorm"
 )
@@ -36,25 +40,17 @@ func newRedisClient() *redis.Client {
 	return client
 }
 
-func New() (*Dao, error) {
+func New(configOptions *boot_config.ConfigOptions) (*Dao, error) {
 
 	// 初始化数据库xorm
-	engine, err := xorm.NewEngine("mysql", "root:dev123@tcp(localhost:3306)/im_zhangbin?charset=utf8")
+
+	engine, err := common_client.NewEngine(common_client.ENUM_MYSQL_DB_TAG_Account)
 	if err != nil {
-		panic(err)
+		im_log.Warn("account dao new engine is err:%v", err)
+		return nil, fmt.Errorf("account dao new engine is err:%v", err)
 	}
 
-	// 分布式文件存储
-	dfsConfig := &dfs.Config{
-		Type:       dfs.DFSType_Minio,
-		Enable:     true,
-		Bucket:     "im-zhangbin",
-		ExpireDays: 30,
-		Url:        "localhost:9000",
-		KeyID:      "admin",
-		Key:        "admin123456",
-	}
-	dfsHandler, err := dfs.NewDFSHandler(dfsConfig)
+	dfsHandler, err := dfs.NewDFSHandler(&configOptions.BootConfigFile.DFS)
 	if err != nil {
 		panic(err)
 	}

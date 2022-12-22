@@ -8,6 +8,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/mimis-s/IM-Service/src/common/boot_config"
+	"github.com/mimis-s/IM-Service/src/common/common_client"
 	"github.com/mimis-s/IM-Service/src/common/event"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account"
@@ -23,11 +25,11 @@ import (
 	"github.com/mimis-s/IM-Service/web_client"
 )
 
-func initRpcxClient() {
-	etcdAddrs := []string{}
-	var timeout time.Duration
-	etcdBasePath := ""
-	isLocal := true
+func initRpcxClient(configOptions *boot_config.ConfigOptions) {
+	etcdAddrs := configOptions.BootConfigFile.Etcd.Addrs
+	timeout := time.Duration(configOptions.BootConfigFile.Etcd.Timeout * int(time.Second))
+	etcdBasePath := configOptions.BootConfigFile.Etcd.EtcdBasePath
+	isLocal := configOptions.BootConfigFile.IsLocal
 	api_home.SingleNewHomeClient(etcdAddrs, timeout, etcdBasePath, isLocal)
 	api_chat.SingleNewChatClient(etcdAddrs, timeout, etcdBasePath, isLocal)
 	api_account.SingleNewAccountClient(etcdAddrs, timeout, etcdBasePath, isLocal)
@@ -36,28 +38,32 @@ func initRpcxClient() {
 
 func main() {
 
-	initRpcxClient()
+	configOptions := boot_config.ParseBootConfigOptions()
+	initRpcxClient(configOptions)
 
 	ctx, cancel := context.WithCancel(context.Background())
 
 	// 初始化消息队列生产者
-	url := "amqp://dev:dev123@localhost:5672/"
-	durable := false
-	err := event.InitProducers(url, durable)
+	// url := "amqp://dev:dev123@localhost:5672/"
+	// durable := false
+	err := event.InitProducers(configOptions.BootConfigFile.MQ.Url, configOptions.BootConfigFile.MQ.Durable)
 	if err != nil {
 		panic(err)
 	}
 
+	// 注册数据库
+	common_client.RegisterParseMysql(configOptions.BootConfigFile.DB)
+
 	// 启动每个服务
-	go gateway.Boot(ctx)
-	go home.Boot(ctx)
-	go chat.Boot(ctx)
-	go account.Boot(ctx)
-	go relay.Boot(ctx)
-	go friends.Boot(ctx)
+	go gateway.Boot(ctx, configOptions)
+	go home.Boot(ctx, configOptions)
+	go chat.Boot(ctx, configOptions)
+	go account.Boot(ctx, configOptions)
+	go relay.Boot(ctx, configOptions)
+	go friends.Boot(ctx, configOptions)
 
 	// 运行网页客户端
-	go web_client.Boot(ctx)
+	go web_client.Boot(ctx, configOptions)
 
 	go GracefulStop(cancel)
 	select {

@@ -10,6 +10,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/mimis-s/golang_tools v0.0.0-20221201025952-b914d265bff2
 	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
+	gopkg.in/yaml.v3 v3.0.1
 	xorm.io/xorm v1.2.5
 )
 
@@ -69,6 +70,7 @@ require (
 	github.com/marten-seemann/qtls-go1-19 v0.1.0-beta.1 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/miekg/dns v1.1.50 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/minio/minio-go/v7 v7.0.40 // indirect

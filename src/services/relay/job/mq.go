@@ -1,6 +1,7 @@
 package job
 
 import (
+	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/event"
 	send_to "github.com/mimis-s/IM-Service/src/services/gateway/service"
@@ -13,9 +14,9 @@ type Job struct {
 	s *service.Service
 }
 
-func InitMQ(s *service.Service) *Job {
-	url := "amqp://dev:dev123@localhost:5672/"
-	durable := false
+func InitMQ(s *service.Service, configOptions *boot_config.ConfigOptions) *Job {
+	url := configOptions.BootConfigFile.MQ.Url
+	durable := configOptions.BootConfigFile.MQ.Durable
 
 	j := &Job{s}
 

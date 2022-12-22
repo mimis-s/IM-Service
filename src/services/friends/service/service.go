@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/services/friends/api_friends"
 	"github.com/mimis-s/IM-Service/src/services/friends/dao"
 )
@@ -11,8 +12,8 @@ type Service struct {
 	Dao *dao.Dao
 }
 
-func Init() *Service {
-	d, err := dao.New()
+func Init(configOptions *boot_config.ConfigOptions) *Service {
+	d, err := dao.New(configOptions)
 	if err != nil {
 		panic(err)
 	}

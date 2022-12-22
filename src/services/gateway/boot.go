@@ -3,11 +3,12 @@ package gateway
 import (
 	"context"
 
+	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/gateway/service"
 )
 
-func Boot(ctx context.Context) {
+func Boot(ctx context.Context, configOptions *boot_config.ConfigOptions) {
 	// TCP服务, web客户端连接
 	service.Init("localhost:8888", "localhost:8998")
 

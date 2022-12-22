@@ -3,7 +3,7 @@ package dao
 import (
 	"strconv"
 
-	"github.com/mimis-s/IM-Service/src/common/define"
+	"github.com/mimis-s/IM-Service/src/common/common_client"
 )
 
 /*
@@ -21,9 +21,9 @@ func (d *Dao) downLoadDFS(path, fileName string) ([]byte, error) {
 
 // 用户头像上传和下载
 func (d *Dao) UpLoadUserHead(userID int64, payload []byte) error {
-	return d.upLoadDFS(define.ENUM_DFS_PATH_UserHead, strconv.FormatInt(userID, 10), payload)
+	return d.upLoadDFS(common_client.ENUM_DFS_PATH_UserHead, strconv.FormatInt(userID, 10), payload)
 }
 
 func (d *Dao) DownLoadUserHead(userID int64) ([]byte, error) {
-	return d.downLoadDFS(define.ENUM_DFS_PATH_UserHead, strconv.FormatInt(userID, 10))
+	return d.downLoadDFS(common_client.ENUM_DFS_PATH_UserHead, strconv.FormatInt(userID, 10))
 }

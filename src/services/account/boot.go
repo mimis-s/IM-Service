@@ -3,12 +3,13 @@ package account
 import (
 	"context"
 
+	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/service"
 )
 
-func Boot(ctx context.Context) {
-	service.Init()
+func Boot(ctx context.Context, configOptions *boot_config.ConfigOptions) {
+	service.Init(configOptions)
 
 	select {
 	case <-ctx.Done():

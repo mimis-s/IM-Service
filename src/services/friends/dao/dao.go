@@ -1,8 +1,13 @@
 package dao
 
 import (
+	"fmt"
+
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/mimis-s/IM-Service/src/common/boot_config"
+	"github.com/mimis-s/IM-Service/src/common/common_client"
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"xorm.io/xorm"
 )
 
@@ -14,15 +19,13 @@ type Dao struct {
 	Session *TableSession
 }
 
-func New() (*Dao, error) {
+func New(configOptions *boot_config.ConfigOptions) (*Dao, error) {
 
-	// 初始化数据库xorm
-
-	engine, err := xorm.NewEngine("mysql", "root:dev123@tcp(localhost:3306)/im_zhangbin?charset=utf8")
+	engine, err := common_client.NewEngine(common_client.ENUM_MYSQL_DB_TAG_Friends)
 	if err != nil {
-		panic(err)
+		im_log.Warn("friends dao new engine is err:%v", err)
+		return nil, fmt.Errorf("friends dao new engine is err:%v", err)
 	}
-
 	dao := &Dao{
 		Session: &TableSession{
 			Friends: engine.Table((*dbmodel.Friends).SubName(nil)),

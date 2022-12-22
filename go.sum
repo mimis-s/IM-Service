@@ -640,8 +640,9 @@ github.com/mattn/go-isatty v0.0.14 h1:yVuAays6BHfxijgZPzw+3Zlu5yQgKGP2/hcQbHb7S9
 github.com/mattn/go-isatty v0.0.14/go.mod h1:7GGIvUiUoEMVVmxf/4nioHXj79iQHKdU27kJ6hsGG94=
 github.com/mattn/go-runewidth v0.0.2/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
 github.com/mattn/go-sqlite3 v1.14.6/go.mod h1:NyWgC/yNuGj7Q9rpYnZvas74GogHl5/Z4A/KQRfk6bU=
-github.com/mattn/go-sqlite3 v1.14.8 h1:gDp86IdQsN/xWjIEmr9MF6o9mpksUgh0fu+9ByFxzIU=
 github.com/mattn/go-sqlite3 v1.14.8/go.mod h1:NyWgC/yNuGj7Q9rpYnZvas74GogHl5/Z4A/KQRfk6bU=
+github.com/mattn/go-sqlite3 v2.0.3+incompatible h1:gXHsfypPkaMZrKbD5209QV9jbUTJKjyR5WD3HYQSd+U=
+github.com/mattn/go-sqlite3 v2.0.3+incompatible/go.mod h1:FPy6KqzDD04eiIsT53CuJW3U88zkxoIYsOqkbpncsNc=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/microcosm-cc/bluemonday v1.0.1/go.mod h1:hsXNsILzKxV+sX77C5b8FSuKF00vh2OMYv+xgHpAMF4=
 github.com/miekg/dns v1.0.14/go.mod h1:W1PPwlIAgtquWBMBEV9nkV9Cazfe8ScdGz/Lj7v3Nrg=
@@ -649,10 +650,6 @@ github.com/miekg/dns v1.1.26/go.mod h1:bPDLeHnStXmXAq1m/Ch/hvfNHr14JKNPMBo3VZKju
 github.com/miekg/dns v1.1.27/go.mod h1:KNUDUusw/aVsxyTYZM1oqvCicbwhgbNgztCETuNZ7xM=
 github.com/miekg/dns v1.1.50 h1:DQUfb9uc6smULcREF09Uc+/Gd46YWqJd5DbpPE9xkcA=
 github.com/miekg/dns v1.1.50/go.mod h1:e3IlAVfNqAllflbibAZEWOXOQ+Ynzk/dDozDxY7XnME=
-github.com/mimis-s/golang_tools v0.0.0-20221122042603-91129721778e h1:13BCKllIVb9HJOBmyWI+OIllq3qk5Mf18908E1rE+xA=
-github.com/mimis-s/golang_tools v0.0.0-20221122042603-91129721778e/go.mod h1:SrEzE7jZZ17eaJ3KVEM0Gl5o0nw5VH23QA5cyYcPbZU=
-github.com/mimis-s/golang_tools v0.0.0-20221201025616-0b9dcf03367e h1:m1S/RzlpWpfcqxaAplXIO3YAT0Lzo9e61U+nKCP7b74=
-github.com/mimis-s/golang_tools v0.0.0-20221201025616-0b9dcf03367e/go.mod h1:SrEzE7jZZ17eaJ3KVEM0Gl5o0nw5VH23QA5cyYcPbZU=
 github.com/mimis-s/golang_tools v0.0.0-20221201025952-b914d265bff2 h1:zY6gvbhAvYsoT0tBQBHpIQsb1qAAQoJh+QaOo982vho=
 github.com/mimis-s/golang_tools v0.0.0-20221201025952-b914d265bff2/go.mod h1:SrEzE7jZZ17eaJ3KVEM0Gl5o0nw5VH23QA5cyYcPbZU=
 github.com/minio/md5-simd v1.1.2 h1:Gdi1DZK69+ZVMoNHRXJyNcxrMA4dSxoYHZSQbirFg34=

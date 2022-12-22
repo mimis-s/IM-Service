@@ -101,6 +101,11 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 }
 
 func (s *Session) DisConnectCallBack() {
+	if s.clientInfo == nil {
+		// 用户没有登录
+		im_log.Info("IP[%v]断开连接", s.GetClientConn().GetIP())
+		return
+	}
 	im_log.Info("用户[%v] IP[%v]断开连接", s.clientInfo.UserID, s.GetClientConn().GetIP())
 	cacheClient.Delete(s.clientInfo.UserID)
 }

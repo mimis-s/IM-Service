@@ -1,4 +1,5 @@
 cmd/all_in_one/local_ops
+cmd/all_in_one/local_ops/boot_config.yaml
 .vscode
 _debug_bin
 __debug_bin

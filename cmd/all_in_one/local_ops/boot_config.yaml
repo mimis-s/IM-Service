@@ -21,7 +21,7 @@ dfs:  # 分布式文件服务
   enable: true
   type: "minio"
   url: "localhost:9000"
-  bucket: dfs-bucket
+  bucket: im-zhangbin
   key_id: "admin"
   key: "admin123456"
 

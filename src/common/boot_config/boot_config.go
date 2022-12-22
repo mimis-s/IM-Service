@@ -93,7 +93,7 @@ func ParseBootConfigOptions() *ConfigOptions {
 
 	err = yaml.Unmarshal(yamlFile, bootConfig.BootConfigFile)
 	if err != nil {
-		errStr := fmt.Sprintf("unmarshal yaml[%v] is err:%v", yamlFile, err)
+		errStr := fmt.Sprintf("unmarshal yaml[%v] is err:%v", string(yamlFile), err)
 		panic(errStr)
 	}
 	return bootConfig
@@ -147,6 +147,34 @@ func setValue(field reflect.Value, strData string) {
 	}
 }
 
+// 填入启服参数
+func setFlagValue(fOriginDesc *flagOriginDesc) {
+
+	switch fOriginDesc.fieldStruct.Type.Kind() {
+	case reflect.Bool:
+		fOriginDesc.value.SetBool(*fOriginDesc.flagValuePtr.(*bool))
+	case reflect.Int, reflect.Int64:
+		fOriginDesc.value.SetInt(*fOriginDesc.flagValuePtr.(*int64))
+	case reflect.String:
+		fOriginDesc.value.SetString(*fOriginDesc.flagValuePtr.(*string))
+	case reflect.Slice:
+		strValues := strings.Split(*fOriginDesc.flagValuePtr.(*string), ",")
+		if len(strValues) == 1 && strValues[0] == "" {
+			strValues = []string{}
+		}
+		fOriginDesc.value.Set(reflect.MakeSlice(fOriginDesc.value.Type(), len(strValues), len(strValues)))
+		for i := 0; i < len(strValues); i++ {
+			setValue(fOriginDesc.value.Index(i), strValues[i])
+		}
+
+	case reflect.Float32, reflect.Float64:
+		fOriginDesc.value.SetFloat(*fOriginDesc.flagValuePtr.(*float64))
+	default:
+		errStr := fmt.Sprintf("cmd arg[%v] type[%v] not support", fOriginDesc.fieldStruct.Name, fOriginDesc.fieldStruct.Type.Name())
+		panic(errStr)
+	}
+}
+
 // 初始化原始数据结构体
 func initParseFlagOriginDesc(filedValue reflect.Value, filedStruct reflect.StructField, tagName string) *flagOriginDesc {
 
@@ -178,7 +206,6 @@ func initParseFlagOriginDesc(filedValue reflect.Value, filedStruct reflect.Struc
 				panic(errStr)
 			}
 			fOriginDesc.flagValuePtr = flag.CommandLine.Bool(cmd, boolValue, desc)
-			fOriginDesc.value.SetBool(*fOriginDesc.flagValuePtr.(*bool))
 		case reflect.Int, reflect.Int64:
 			intValue, err := strconv.ParseInt(defaultValue, 10, 64)
 			if err != nil {
@@ -186,21 +213,10 @@ func initParseFlagOriginDesc(filedValue reflect.Value, filedStruct reflect.Struc
 				panic(errStr)
 			}
 			fOriginDesc.flagValuePtr = flag.CommandLine.Int64(cmd, intValue, desc)
-			fOriginDesc.value.SetInt(*fOriginDesc.flagValuePtr.(*int64))
 		case reflect.String:
 			fOriginDesc.flagValuePtr = flag.CommandLine.String(cmd, defaultValue, desc)
-			fOriginDesc.value.SetString(*fOriginDesc.flagValuePtr.(*string))
 		case reflect.Slice:
 			fOriginDesc.flagValuePtr = flag.CommandLine.String(cmd, defaultValue, desc)
-			strValues := strings.Split(*fOriginDesc.flagValuePtr.(*string), ",")
-			if len(strValues) == 1 && strValues[0] == "" {
-				strValues = []string{}
-			}
-			fOriginDesc.value.Set(reflect.MakeSlice(fOriginDesc.value.Type(), len(strValues), len(strValues)))
-			for i := 0; i < len(strValues); i++ {
-				setValue(fOriginDesc.value.Index(i), strValues[i])
-			}
-
 		case reflect.Float32, reflect.Float64:
 			floatValue, err := strconv.ParseFloat(defaultValue, 64)
 			if err != nil {
@@ -208,7 +224,6 @@ func initParseFlagOriginDesc(filedValue reflect.Value, filedStruct reflect.Struc
 				panic(errStr)
 			}
 			fOriginDesc.flagValuePtr = flag.CommandLine.Float64(cmd, floatValue, desc)
-			fOriginDesc.value.SetFloat(*fOriginDesc.flagValuePtr.(*float64))
 		default:
 			errStr := fmt.Sprintf("cmd arg[%v] tag:%v type[%v] not support", filedStruct.Name, tagName, filedStruct.Type.Name())
 			panic(errStr)
@@ -220,17 +235,26 @@ func initParseFlagOriginDesc(filedValue reflect.Value, filedStruct reflect.Struc
 
 func parseBootFlagStruct(data *BootFlags) {
 
-	flag.Parse()
-
 	// 首先初始化原始结构体
 	tagName := "flag"
 	rValue := reflect.ValueOf(data).Elem() // 值反射
 	rType := reflect.TypeOf(data).Elem()   // 类型反射
 
+	fOriginDescArray := make([]*flagOriginDesc, 0, rValue.NumField())
+
 	for i := 0; i < rValue.NumField(); i++ {
 		filedValue := rValue.Field(i)
 		filedStruct := rType.Field(i)
 		// 初始化参数,为参数赋值
-		initParseFlagOriginDesc(filedValue, filedStruct, tagName)
+		fOriginDesc := initParseFlagOriginDesc(filedValue, filedStruct, tagName)
+		fOriginDescArray = append(fOriginDescArray, fOriginDesc)
+	}
+	// 赋值
+	flag.Parse()
+
+	for i := 0; i < len(fOriginDescArray); i++ {
+		if fOriginDescArray[i] != nil {
+			setFlagValue(fOriginDescArray[i])
+		}
 	}
 }

@@ -1,10 +1,10 @@
 # config示例文件，启动时实际调用config里面的配置文件
 
-server: "server_1"  // 服务器名称
-is_test: true       // 是否是测试环境
-is_local: true      // 是否是本地启动
+server: "server_1"  # 服务器名称
+is_test: true       # 是否是测试环境
+is_local: true      # 是否是本地启动
 etcd:
-  time_out: 5 // 超时时间(单位s)
+  time_out: 5 # 超时时间(单位s)
   etc_base_path: /zhangbin #etcd的存储路径，例如: /zhangbin
   addrs:
     - localhost:2379
@@ -13,7 +13,7 @@ redis:
   db: 1 # 数据库,888,切换数据库select 888
   # password: "123"
 mq:   # 消息队列
-  durable: false // 数据是否持久
+  durable: false # 数据是否持久
   url: "amqp://dev:dev123@localhost:5672/" #例如 amqp://dev:dev123@localhost:5672/
 log:  # 日志输出文件
   path: "/log"

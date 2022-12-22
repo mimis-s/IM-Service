@@ -16,7 +16,7 @@ mq:   # 消息队列
   durable: false # 数据是否持久
   url: "amqp://dev:dev123@localhost:5672/" #例如 amqp://dev:dev123@localhost:5672/
 log:  # 日志输出文件
-  path: "/log"
+  path: "local_ops/log"
 dfs:  # 分布式文件服务
   enable: true
   type: "minio"

@@ -15,6 +15,8 @@ func init() {
 	seralize.RegisterHandler(im_home_proto.LoginReq{}, im_home_proto.LoginRes{}, Login)
 	seralize.RegisterHandler(im_home_proto.RegisterReq{}, im_home_proto.RegisterRes{}, Register)
 	seralize.RegisterHandler(im_home_proto.GetUserInfoReq{}, im_home_proto.GetUserInfoRes{}, GetUserInfo)
+	seralize.RegisterHandler(im_home_proto.ModifyUserInfoReq{}, im_home_proto.ModifyUserInfoRes{}, ModifyUserInfo)
+
 }
 
 func Login(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
@@ -69,5 +71,23 @@ func GetUserInfo(ctx context.Context, clientInfo *api_home.ClientRequestHandleRe
 
 	resMsg.Data = resRpc.Data.Data
 	resMsg.Relation = resRpc.Data.Relation
+	return 0
+}
+
+func ModifyUserInfo(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
+	reqMsg := req.(*im_home_proto.ModifyUserInfoReq)
+	resMsg := res.(*im_home_proto.ModifyUserInfoRes)
+
+	resRpc, err := api_account.ModifyUserInfo(ctx, &api_account.ModifyUserInfoReq{
+		ClientInfo: clientInfo.Client,
+		Data:       reqMsg,
+	})
+
+	if err != nil {
+		im_log.Error("user[%v] modify user[%v] info is err:%v", clientInfo.Client.UserID, reqMsg.Data.UserID, err)
+		return resRpc.ErrCode
+	}
+
+	resMsg.Data = resRpc.Data.Data
 	return 0
 }

@@ -74,3 +74,12 @@ message GetUserInfoRes {
     UserInfo Data = 1;
     Enum_UserRelation Relation = 2; // 用户和本人的关系
 }
+
+// 修改用户信息
+message ModifyUserInfoReq {
+    UserInfo Data = 1;
+}
+
+message ModifyUserInfoRes {
+    UserInfo Data = 1;
+}

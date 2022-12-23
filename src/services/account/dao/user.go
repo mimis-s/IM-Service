@@ -48,3 +48,13 @@ func (d *Dao) InsertUserInfo(info *dbmodel.AccountUser) error {
 	}
 	return nil
 }
+
+func (d *Dao) UpdateUserInfo(info *dbmodel.AccountUser) error {
+	_, err := d.Session.Account.Where("user_id=?", info.UserId).Update(info)
+	if err != nil {
+		errStr := fmt.Sprintf("user id[%v] name[%v] update userinfo is err:%v", info.UserId, info.UserName, err)
+		fmt.Println(errStr)
+		return fmt.Errorf(errStr)
+	}
+	return nil
+}

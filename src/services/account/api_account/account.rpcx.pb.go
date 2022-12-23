@@ -117,12 +117,25 @@ func GetUsersInfoService(ctx context.Context,
 	return out, err
 }
 
+func ModifyUserInfo(ctx context.Context,
+	in *ModifyUserInfoReq) (*ModifyUserInfoRes, error) {
+
+	if callSingleMethodFunc != nil {
+		AccountClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(ModifyUserInfoRes)
+	out, err := AccountClientInstance.ModifyUserInfo(ctx, in)
+	return out, err
+}
+
 type AccountClientInterface interface {
 	Login(context.Context, *LoginReq) (*LoginRes, error)
 	Register(context.Context, *RegisterReq) (*RegisterRes, error)
 	GetUserInfo(context.Context, *GetUserInfoReq) (*GetUserInfoRes, error)
 	GetUserInfoService(context.Context, *GetUserInfoServiceReq) (*GetUserInfoServiceRes, error)
 	GetUsersInfoService(context.Context, *GetUsersInfoServiceReq) (*GetUsersInfoServiceRes, error)
+	ModifyUserInfo(context.Context, *ModifyUserInfoReq) (*ModifyUserInfoRes, error)
 }
 
 // rpcx客户端
@@ -165,6 +178,13 @@ func (c *AccountRpcxClient) GetUsersInfoService(ctx context.Context,
 	return out, err
 }
 
+func (c *AccountRpcxClient) ModifyUserInfo(ctx context.Context,
+	in *ModifyUserInfoReq) (*ModifyUserInfoRes, error) {
+	out := new(ModifyUserInfoRes)
+	err := c.c.Call(ctx, "ModifyUserInfo", in, out)
+	return out, err
+}
+
 // 本地调用客户端
 type AccountLocalClient struct {
 }
@@ -204,12 +224,20 @@ func (c *AccountLocalClient) GetUsersInfoService(ctx context.Context,
 	return out, err
 }
 
+func (c *AccountLocalClient) ModifyUserInfo(ctx context.Context,
+	in *ModifyUserInfoReq) (*ModifyUserInfoRes, error) {
+	out := new(ModifyUserInfoRes)
+	err := AccountServiceLocal.ModifyUserInfo(ctx, in, out)
+	return out, err
+}
+
 type AccountServiceInterface interface {
 	Login(context.Context, *LoginReq, *LoginRes) error
 	Register(context.Context, *RegisterReq, *RegisterRes) error
 	GetUserInfo(context.Context, *GetUserInfoReq, *GetUserInfoRes) error
 	GetUserInfoService(context.Context, *GetUserInfoServiceReq, *GetUserInfoServiceRes) error
 	GetUsersInfoService(context.Context, *GetUsersInfoServiceReq, *GetUsersInfoServiceRes) error
+	ModifyUserInfo(context.Context, *ModifyUserInfoReq, *ModifyUserInfoRes) error
 }
 
 var AccountServiceLocal AccountServiceInterface

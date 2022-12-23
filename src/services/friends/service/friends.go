@@ -56,21 +56,28 @@ func (s *Service) GetFriendsList(ctx context.Context, req *api_friends.GetFriend
 
 	// 获取好友的信息
 
-	getUsersInfoServiceReq := &api_account.GetUsersInfoServiceReq{
-		ClientInfo: req.ClientInfo,
-		UserIDs:    dbFriends.Friends.IDs,
-	}
+	if len(dbFriends.Friends.IDs) != 0 {
+		getUsersInfoServiceReq := &api_account.GetUsersInfoServiceReq{
+			ClientInfo: req.ClientInfo,
+			UserIDs:    dbFriends.Friends.IDs,
+		}
 
-	getUsersInfoServiceRes, err := api_account.GetUsersInfoService(context.Background(), getUsersInfoServiceReq)
-	if err != nil {
-		errStr := fmt.Sprintf("user[%v] Get Users[%v] Info Service, but insert db is err:%v", req.ClientInfo.UserID, dbFriends.Friends.IDs, err)
-		im_log.Error(errStr)
-		res.ErrCode = getUsersInfoServiceRes.ErrCode
-		return fmt.Errorf(errStr)
-	}
+		getUsersInfoServiceRes, err := api_account.GetUsersInfoService(context.Background(), getUsersInfoServiceReq)
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] Get Users[%v] Info Service, but insert db is err:%v", req.ClientInfo.UserID, dbFriends.Friends.IDs, err)
+			im_log.Error(errStr)
+			res.ErrCode = getUsersInfoServiceRes.ErrCode
+			return fmt.Errorf(errStr)
+		}
 
-	res.Data = &im_home_proto.GetFriendsListRes{
-		List: getUsersInfoServiceRes.Datas,
+		res.Data = &im_home_proto.GetFriendsListRes{
+			List: getUsersInfoServiceRes.Datas,
+		}
+	} else {
+		// 还没有好友
+		res.Data = &im_home_proto.GetFriendsListRes{
+			List: []*im_home_proto.UserInfo{},
+		}
 	}
 
 	return nil

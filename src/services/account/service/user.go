@@ -260,3 +260,106 @@ func (s *Service) GetUsersInfoService(ctx context.Context, req *api_account.GetU
 
 	return nil
 }
+
+// 修改用户信息
+func (s *Service) ModifyUserInfo(ctx context.Context, req *api_account.ModifyUserInfoReq, res *api_account.ModifyUserInfoRes) error {
+	userInfo, find, err := s.Dao.GetUserInfoFromID(req.Data.Data.UserID)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_read_err
+		errStr := fmt.Sprintf("user[%v] modify user[%v] info, but db is err:%v", req.ClientInfo.UserID, req.Data.Data.UserID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	if !find {
+		// 没有找到说明没有这个人
+		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
+		errStr := fmt.Sprintf("user[%v] modify user[%v] info, but db is not found", req.ClientInfo.UserID, req.Data.Data.UserID)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	bUpdate := false
+
+	// 如果修改了用户名,判断是否有重名
+	if req.Data.Data.UserName != "" && userInfo.UserName != req.Data.Data.UserName {
+		_, find, err = s.Dao.GetUserInfoFromName(req.Data.Data.UserName)
+		if err != nil {
+			res.ErrCode = im_error_proto.ErrCode_db_read_err
+			errStr := fmt.Sprintf("role name[%v] get db is err:%v", req.Data.Data.UserName, err)
+			im_log.Error(errStr)
+			return fmt.Errorf(errStr)
+		}
+
+		if find {
+			// 重名
+			res.ErrCode = im_error_proto.ErrCode_account_user_name_repeat
+			errStr := fmt.Sprintf("role name[%v] modify db, but name is repeat", req.Data.Data.UserName)
+			im_log.Error(errStr)
+			return fmt.Errorf(errStr)
+		}
+		bUpdate = true
+		userInfo.UserName = req.Data.Data.UserName
+	}
+	// 国家
+	if req.Data.Data.Region != 0 && userInfo.UserExtraInfo.Nation != int(req.Data.Data.Region) {
+		userInfo.UserExtraInfo.Nation = int(req.Data.Data.Region)
+		bUpdate = true
+	}
+	// 签名
+	if req.Data.Data.Autograph != "" && userInfo.UserExtraInfo.PersonalSignature != req.Data.Data.Autograph {
+		userInfo.UserExtraInfo.PersonalSignature = req.Data.Data.Autograph
+		bUpdate = true
+	}
+
+	// 电话
+	if req.Data.Data.PhoneNumber != "" && userInfo.UserExtraInfo.PhoneNumber != req.Data.Data.PhoneNumber {
+		userInfo.UserExtraInfo.PhoneNumber = req.Data.Data.PhoneNumber
+		bUpdate = true
+	}
+
+	if bUpdate {
+		err = s.Dao.UpdateUserInfo(userInfo)
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] modify user info, but update db[%v] is err:%v", userInfo.UserId, userInfo, err)
+			im_log.Warn(errStr)
+			res.ErrCode = im_error_proto.ErrCode_db_write_err
+			return fmt.Errorf(errStr)
+		}
+	}
+
+	res.Data = &im_home_proto.ModifyUserInfoRes{
+		Data: &im_home_proto.UserInfo{
+			UserID:      userInfo.UserId,
+			UserName:    userInfo.UserName,
+			Region:      int32(userInfo.UserExtraInfo.Nation),
+			Autograph:   userInfo.UserExtraInfo.PersonalSignature,
+			Status:      im_home_proto.Enum_UserStatus_Enum_UserStatus_Online,
+			PhoneNumber: userInfo.UserExtraInfo.PhoneNumber,
+		},
+	}
+
+	// 头像如果变动,只需要上传文件服务器
+	if req.Data.Data.HeadImg != "" {
+		// 上传头像
+		err = s.Dao.UpLoadUserHead(userInfo.UserId, []byte(req.Data.Data.HeadImg))
+		if err != nil {
+			// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
+			errStr := fmt.Sprintf("user[%v] modify head imag, but dfs up load head is err:%v", userInfo.UserId, err)
+			im_log.Warn(errStr)
+		}
+		res.Data.Data.HeadImg = string(req.Data.Data.HeadImg)
+	} else {
+		// 下载头像
+		headImg, err := s.Dao.DownLoadUserHead(userInfo.UserId)
+		if err != nil {
+			// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
+			errStr := fmt.Sprintf("user[%v] login, but dfs down load head is err:%v", userInfo.UserId, err)
+			im_log.Warn(errStr)
+		} else {
+			res.Data.Data.HeadImg = string(headImg)
+		}
+	}
+
+	return nil
+}

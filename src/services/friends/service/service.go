@@ -22,11 +22,11 @@ func Init(configOptions *boot_config.ConfigOptions) *Service {
 		Dao: d,
 	}
 
-	listenAddr := ""
-	addr := ""
-	etcdAddrs := []string{}
-	etcdBasePath := ""
-	isLocal := true
+	listenAddr := configOptions.CommandFlags.RpcListenPort
+	addr := configOptions.CommandFlags.RpcExposePort
+	etcdAddrs := configOptions.BootConfigFile.Etcd.Addrs
+	etcdBasePath := configOptions.BootConfigFile.Etcd.EtcdBasePath
+	isLocal := configOptions.BootConfigFile.IsLocal
 	// 启动rpcx服务
 	api_friends.NewFriendsServiceAndRun(listenAddr, addr, etcdAddrs, S, etcdBasePath, isLocal)
 	return S

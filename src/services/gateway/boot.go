@@ -10,7 +10,7 @@ import (
 
 func Boot(ctx context.Context, configOptions *boot_config.ConfigOptions) {
 	// TCP服务, web客户端连接
-	service.Init("localhost:8888", "localhost:8998")
+	service.Init(configOptions)
 
 	select {
 	case <-ctx.Done():

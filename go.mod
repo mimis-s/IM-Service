@@ -9,6 +9,7 @@ require (
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
 	github.com/mimis-s/golang_tools v0.0.0-20221201025952-b914d265bff2
+	github.com/yitter/idgenerator-go v1.3.2
 	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
 	gopkg.in/yaml.v3 v3.0.1
 	xorm.io/xorm v1.2.5

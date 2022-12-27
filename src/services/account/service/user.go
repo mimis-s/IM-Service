@@ -3,13 +3,13 @@ package service
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
+	"github.com/mimis-s/IM-Service/src/services/overrall/api_overrall"
 )
 
 func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api_account.LoginRes) error {
@@ -82,8 +82,19 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 		im_log.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
+
+	// 雪花算法生成唯一用户id
+	generateUniqueUserIDReq := &api_overrall.GenerateUniqueUserIDReq{}
+	generateUniqueUserIDRes, err := api_overrall.GenerateUniqueUserID(context.Background(), generateUniqueUserIDReq)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_common_unexpected_err
+		errStr := fmt.Sprintf("register generate unique user ID is err:%v", err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
 	userInfo := &dbmodel.AccountUser{
-		UserId:   time.Now().Unix(), // 先用时间戳代替id, 之后再用算法修正
+		UserId:   generateUniqueUserIDRes.UserID,
 		UserName: req.Data.UserName,
 		Password: req.Data.Password,
 		UserExtraInfo: dbmodel.TBJsonField_UserExtraInfo{

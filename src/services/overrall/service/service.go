@@ -2,25 +2,21 @@ package service
 
 import (
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
-	"github.com/mimis-s/IM-Service/src/services/account/api_account"
-	"github.com/mimis-s/IM-Service/src/services/account/dao"
+	"github.com/mimis-s/IM-Service/src/services/overrall/api_overrall"
+	"github.com/mimis-s/IM-Service/src/services/overrall/view"
 )
 
 var S *Service
 
 type Service struct {
-	Dao *dao.Dao
+	// Dao *dao.Dao
 }
 
 func Init(configOptions *boot_config.ConfigOptions) *Service {
-	d, err := dao.New(configOptions)
-	if err != nil {
-		panic(err)
-	}
+	S = &Service{}
 
-	S = &Service{
-		Dao: d,
-	}
+	// 生成雪花算法对象
+	GenerateUserIDIdgenObject = view.NewIdgenObject()
 
 	listenAddr := configOptions.CommandFlags.RpcListenPort
 	addr := configOptions.CommandFlags.RpcExposePort
@@ -28,7 +24,6 @@ func Init(configOptions *boot_config.ConfigOptions) *Service {
 	etcdBasePath := configOptions.BootConfigFile.Etcd.EtcdBasePath
 	isLocal := configOptions.BootConfigFile.IsLocal
 	// 启动rpcx服务
-	api_account.NewAccountServiceAndRun(listenAddr, addr, etcdAddrs, S, etcdBasePath, isLocal)
-
+	api_overrall.NewOverrallServiceAndRun(listenAddr, addr, etcdAddrs, S, etcdBasePath, isLocal)
 	return S
 }

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package api_overrall;
+
+import "errors.proto";
+
+// 全局
+service Overrall {
+    // 雪花算法生成唯一用户id
+    rpc GenerateUniqueUserID(GenerateUniqueUserIDReq) returns (GenerateUniqueUserIDRes) {};
+}
+
+// 获取好友列表
+message GenerateUniqueUserIDReq {
+    
+}
+
+message GenerateUniqueUserIDRes {
+    int64 UserID = 1;
+}

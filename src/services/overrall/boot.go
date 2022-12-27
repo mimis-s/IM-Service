@@ -5,7 +5,7 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
-	"github.com/mimis-s/IM-Service/src/services/chat/service"
+	"github.com/mimis-s/IM-Service/src/services/overrall/service"
 )
 
 func Boot(ctx context.Context, configOptions *boot_config.ConfigOptions) {

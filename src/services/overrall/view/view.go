@@ -22,6 +22,7 @@ func NewIdgenObject() *IdgenObject {
 	defer func() {
 		singletonMutex.Unlock()
 	}()
+
 	options := idgen.NewIdGeneratorOptions(workerId)
 	idGenerator := idgen.NewDefaultIdGenerator(options)
 	workerId++

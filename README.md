@@ -13,6 +13,8 @@ go.mod的名字必须是项目的远程路径
 
 4.服务器消息发送可以是客户端请求返回，也可以是主动调用
 
+5.protoc版本:3.20.1
+
 # 数据库反转工具xorm reverse
 https://github.com/laixyz/reverse, 使用xorm -f xxx(yaml配置文件路径)
 

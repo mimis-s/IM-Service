@@ -8,6 +8,7 @@ const (
 	DbSubTreasury_Chat    = "chat"
 	DbSubTreasury_Relay   = "relay"
 	DbSubTreasury_Friends = "friends"
+	DbSubTreasury_Message = "message"
 )
 
 // 分表

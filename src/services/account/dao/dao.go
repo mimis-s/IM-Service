@@ -3,7 +3,6 @@ package dao
 import (
 	"fmt"
 
-	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/common_client"
@@ -19,7 +18,7 @@ type TableSession struct {
 
 type Dao struct {
 	Session    *TableSession
-	Cache      *redis.Client
+	Cache      *common_client.RedisClient
 	DFSHandler dfs.DFSHandler
 }
 

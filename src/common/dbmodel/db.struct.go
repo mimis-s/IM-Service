@@ -28,3 +28,14 @@ type Friends struct {
 	UpdatedAt time.Time           `xorm:"updated"`
 	DeletedAt time.Time           `xorm:"deleted"`
 }
+
+type HistoryMessage struct {
+	Id           int64                      `xorm:"pk autoincr comment('主键') BIGINT"`
+	UserIdFrist  int64                      `xorm:"not null comment('用户ID 1') unique(frist_second_message_id) BIGINT"`
+	UserIdSecond int64                      `xorm:"not null comment('用户ID 2') unique(frist_second_message_id) BIGINT"`
+	MessageID    int64                      `xorm:"not null comment('消息ID') unique(frist_second_message_id) BIGINT"`
+	MessageData  TBJsonField_HistoryMessage `xorm:"not null comment('#TBJsonField_HistoryMessage# 历史消息') JSON"`
+	CreatedAt    time.Time                  `xorm:"created"`
+	UpdatedAt    time.Time                  `xorm:"updated"`
+	DeletedAt    time.Time                  `xorm:"deleted"`
+}

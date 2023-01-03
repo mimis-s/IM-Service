@@ -1,5 +1,7 @@
 package dbmodel
 
+import "github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
+
 type TBJsonField_UserExtraInfo struct {
 	NikeName          string `json:"nike_name"`          // 昵称
 	Nation            int    `json:"nation"`             // 国家
@@ -18,4 +20,9 @@ type TBJsonField_Friends struct {
 	IDs             []int64
 	ApplyFriendIDs  []int64 // 发送的好友申请
 	ReceiveApplyIDs []int64 // 收到的好友申请
+}
+
+// 历史消息
+type TBJsonField_HistoryMessage struct {
+	HistoryData *im_home_proto.ChatMessage `json:"history_data"`
 }

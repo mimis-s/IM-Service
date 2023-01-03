@@ -2,8 +2,11 @@
 // 同步表结构到数据库
 package dbmodel
 
-import "fmt"
-import "xorm.io/xorm"
+import (
+	"fmt"
+
+	"xorm.io/xorm"
+)
 
 // InitSync 更新表结构到单库，用于测试和开发环境
 // 快速同步表结构，以及dbdiff出表结构改动
@@ -20,6 +23,11 @@ func InitSync(orm *xorm.Engine) error {
 		fmt.Print(fmt.Errorf("sync &Friends error:%v", err))
 	}
 
+	err = sync(orm, &HistoryMessage{})
+	if err != nil {
+		fmt.Print(fmt.Errorf("sync &HistoryMessage error:%v", err))
+	}
+
 	return nil
 }
 
@@ -30,6 +38,8 @@ func GetShardInfo() map[string]DbTableInterface {
 	info["account_user"] = new(AccountUser)
 
 	info["friends"] = new(Friends)
+
+	info["history_message"] = new(HistoryMessage)
 
 	return info
 }

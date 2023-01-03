@@ -19,5 +19,14 @@ func (tb *Friends) SubTableNum() int {
 }
 
 func (tb *Friends) BindSubTreasury() DbSubTreasury {
-	return DbSubTreasury_Account
+	return DbSubTreasury_Friends
+}
+
+// 聊天记录表
+func (tb *HistoryMessage) SubTableNum() int {
+	return 10
+}
+
+func (tb *HistoryMessage) BindSubTreasury() DbSubTreasury {
+	return DbSubTreasury_Message
 }

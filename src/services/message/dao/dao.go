@@ -3,14 +3,13 @@ package dao
 import (
 	"fmt"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/common_client"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 )
 
 type Dao struct {
-	Cache *redis.Client
+	Cache *common_client.RedisClient
 }
 
 func New(configOptions *boot_config.ConfigOptions) (*Dao, error) {

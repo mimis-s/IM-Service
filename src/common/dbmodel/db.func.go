@@ -2,8 +2,9 @@
 // 表结构函数
 package dbmodel
 
-import "fmt"
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 func (tb *AccountUser) SubName() string {
 	return "account_user"
@@ -13,10 +14,14 @@ func (tb *Friends) SubName() string {
 	return "friends"
 }
 
+func (tb *HistoryMessage) SubName() string {
+	return "history_message"
+}
+
 func (tb *AccountUser) String() string {
 	data, err := json.Marshal(tb)
 	if err != nil {
-		return fmt.Sprintf("%+v", tb)
+		return err.Error()
 	}
 	return string(data)
 }
@@ -24,7 +29,15 @@ func (tb *AccountUser) String() string {
 func (tb *Friends) String() string {
 	data, err := json.Marshal(tb)
 	if err != nil {
-		return fmt.Sprintf("%+v", tb)
+		return err.Error()
+	}
+	return string(data)
+}
+
+func (tb *HistoryMessage) String() string {
+	data, err := json.Marshal(tb)
+	if err != nil {
+		return err.Error()
 	}
 	return string(data)
 }

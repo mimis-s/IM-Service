@@ -2,9 +2,7 @@
 // 表结构函数
 package dbmodel
 
-import (
-	"encoding/json"
-)
+import "encoding/json"
 
 func (tb *AccountUser) SubName() string {
 	return "account_user"

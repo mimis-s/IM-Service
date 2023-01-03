@@ -2,11 +2,8 @@
 // 同步表结构到数据库
 package dbmodel
 
-import (
-	"fmt"
-
-	"xorm.io/xorm"
-)
+import "fmt"
+import "xorm.io/xorm"
 
 // InitSync 更新表结构到单库，用于测试和开发环境
 // 快速同步表结构，以及dbdiff出表结构改动

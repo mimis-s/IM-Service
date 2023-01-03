@@ -49,3 +49,25 @@ var TFriends = &tFriends{
 	UpdatedAt: "updated_at",
 	DeletedAt: "deleted_at",
 }
+
+type tHistoryMessage struct {
+	Id           string
+	UserIdFrist  string
+	UserIdSecond string
+	MessageId    string
+	MessageData  string
+	CreatedAt    string
+	UpdatedAt    string
+	DeletedAt    string
+}
+
+var THistoryMessage = &tHistoryMessage{
+	Id:           "id",
+	UserIdFrist:  "user_id_frist",
+	UserIdSecond: "user_id_second",
+	MessageId:    "message_id",
+	MessageData:  "message_data",
+	CreatedAt:    "created_at",
+	UpdatedAt:    "updated_at",
+	DeletedAt:    "deleted_at",
+}

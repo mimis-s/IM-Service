@@ -2,7 +2,6 @@
 // 表结构函数
 package dbmodel
 
-import "fmt"
 import "encoding/json"
 
 {{range .Tables}}
@@ -17,7 +16,7 @@ return "{{$table.Name}}"
 func (tb *{{TableMapper .Name}}) String() string {
 data, err := json.Marshal(tb)
 if err != nil {
-return fmt.Sprintf("%+v", tb)
+return err.Error()
 }
 return string(data)
 }

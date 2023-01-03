@@ -11,6 +11,17 @@ const (
 	DbSubTreasury_Message = "message"
 )
 
+// 分库名字
+func ShardDatabaseName() map[string]bool {
+	return map[string]bool{
+		DbSubTreasury_Account: true,
+		DbSubTreasury_Chat:    true,
+		DbSubTreasury_Relay:   true,
+		DbSubTreasury_Friends: true,
+		DbSubTreasury_Message: true,
+	}
+}
+
 // 分表
 type DbTableInterface interface {
 	SubName() string  // 表名

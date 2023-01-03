@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package api_message;
+
+import "home_chat.proto";
+import "errors.proto";
+
+service Message {
+    // 存储离线消息
+    rpc SaveOffLineMessage(SaveOffLineMessageReq) returns (SaveOffLineMessageRes) {};
+}
+
+message SaveOffLineMessageReq {
+    im_home_proto.ChatMessage Data = 1;
+}
+
+message SaveOffLineMessageRes {
+    im_error_proto.ErrCode ErrCode = 1;
+}

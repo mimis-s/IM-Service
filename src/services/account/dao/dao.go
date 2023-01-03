@@ -2,7 +2,6 @@ package dao
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
@@ -22,22 +21,6 @@ type Dao struct {
 	Session    *TableSession
 	Cache      *redis.Client
 	DFSHandler dfs.DFSHandler
-}
-
-func newRedisClient() *redis.Client {
-	client := redis.NewClient(&redis.Options{
-		Addr:               "localhost:6379",
-		Password:           "",
-		DB:                 1,
-		MaxRetries:         2,
-		DialTimeout:        time.Second * 10,
-		ReadTimeout:        time.Second * 5,
-		WriteTimeout:       time.Second * 5,
-		PoolTimeout:        time.Second * 10,
-		IdleTimeout:        time.Minute * 10,
-		IdleCheckFrequency: time.Second * 30,
-	})
-	return client
 }
 
 func New(configOptions *boot_config.ConfigOptions) (*Dao, error) {
@@ -65,7 +48,7 @@ func New(configOptions *boot_config.ConfigOptions) (*Dao, error) {
 		Session: &TableSession{
 			Account: engine.Table((*dbmodel.AccountUser).SubName(nil)),
 		},
-		Cache:      newRedisClient(),
+		Cache:      common_client.NewRedisClient(configOptions),
 		DFSHandler: dfsHandler,
 	}
 

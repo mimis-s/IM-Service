@@ -8,6 +8,7 @@ import "errors.proto";
 
 service Account {
     rpc Login(LoginReq) returns (LoginRes) {};
+    rpc Logout(LogoutReq) returns (LogoutRes) {};
     rpc Register(RegisterReq) returns (RegisterRes) {};
     rpc GetUserInfo(GetUserInfoReq) returns (GetUserInfoRes) {};    // 客户端获取用户信息
     rpc GetUserInfoService(GetUserInfoServiceReq) returns (GetUserInfoServiceRes) {};    // 服务器获取用户信息  
@@ -24,6 +25,17 @@ message LoginReq {
 message LoginRes {
     im_error_proto.ErrCode ErrCode = 1;
     im_home_proto.LoginRes Data = 2;
+}
+
+// 登出
+message LogoutReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    im_home_proto.LogoutReq Data = 2;
+}
+
+message LogoutRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    im_home_proto.LogoutRes Data = 2;
 }
 
 // 注册

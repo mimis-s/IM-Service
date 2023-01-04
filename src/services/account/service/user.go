@@ -60,6 +60,27 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 		res.Data.Info.HeadImg = string(headImg)
 	}
 
+	// 设置登录状态
+	err = s.Dao.CacheUserLogin(userInfo.UserId)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_write_err
+		errStr := fmt.Sprintf("role id[%v] login but update redis is err:%v", req.Data.UserID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	return nil
+}
+
+func (s *Service) Logout(ctx context.Context, req *api_account.LogoutReq, res *api_account.LogoutRes) error {
+	// 设置登出状态
+	err := s.Dao.CacheUserLogOut(req.ClientInfo.UserID)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_write_err
+		errStr := fmt.Sprintf("user[%v] logout but update redis is err:%v", req.ClientInfo.UserID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
 	return nil
 }
 

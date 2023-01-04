@@ -69,6 +69,18 @@ func Login(ctx context.Context,
 	return out, err
 }
 
+func Logout(ctx context.Context,
+	in *LogoutReq) (*LogoutRes, error) {
+
+	if callSingleMethodFunc != nil {
+		AccountClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(LogoutRes)
+	out, err := AccountClientInstance.Logout(ctx, in)
+	return out, err
+}
+
 func Register(ctx context.Context,
 	in *RegisterReq) (*RegisterRes, error) {
 
@@ -131,6 +143,7 @@ func ModifyUserInfo(ctx context.Context,
 
 type AccountClientInterface interface {
 	Login(context.Context, *LoginReq) (*LoginRes, error)
+	Logout(context.Context, *LogoutReq) (*LogoutRes, error)
 	Register(context.Context, *RegisterReq) (*RegisterRes, error)
 	GetUserInfo(context.Context, *GetUserInfoReq) (*GetUserInfoRes, error)
 	GetUserInfoService(context.Context, *GetUserInfoServiceReq) (*GetUserInfoServiceRes, error)
@@ -147,6 +160,13 @@ func (c *AccountRpcxClient) Login(ctx context.Context,
 	in *LoginReq) (*LoginRes, error) {
 	out := new(LoginRes)
 	err := c.c.Call(ctx, "Login", in, out)
+	return out, err
+}
+
+func (c *AccountRpcxClient) Logout(ctx context.Context,
+	in *LogoutReq) (*LogoutRes, error) {
+	out := new(LogoutRes)
+	err := c.c.Call(ctx, "Logout", in, out)
 	return out, err
 }
 
@@ -196,6 +216,13 @@ func (c *AccountLocalClient) Login(ctx context.Context,
 	return out, err
 }
 
+func (c *AccountLocalClient) Logout(ctx context.Context,
+	in *LogoutReq) (*LogoutRes, error) {
+	out := new(LogoutRes)
+	err := AccountServiceLocal.Logout(ctx, in, out)
+	return out, err
+}
+
 func (c *AccountLocalClient) Register(ctx context.Context,
 	in *RegisterReq) (*RegisterRes, error) {
 	out := new(RegisterRes)
@@ -233,6 +260,7 @@ func (c *AccountLocalClient) ModifyUserInfo(ctx context.Context,
 
 type AccountServiceInterface interface {
 	Login(context.Context, *LoginReq, *LoginRes) error
+	Logout(context.Context, *LogoutReq, *LogoutRes) error
 	Register(context.Context, *RegisterReq, *RegisterRes) error
 	GetUserInfo(context.Context, *GetUserInfoReq, *GetUserInfoRes) error
 	GetUserInfoService(context.Context, *GetUserInfoServiceReq, *GetUserInfoServiceRes) error

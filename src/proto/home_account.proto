@@ -15,6 +15,14 @@ message LoginRes {
     UserInfo Info = 1;
 }
 
+// 登出
+message LogoutReq {
+}
+
+message LogoutRes {
+}
+
+
 // 注册
 message RegisterReq {
     string UserName = 1;

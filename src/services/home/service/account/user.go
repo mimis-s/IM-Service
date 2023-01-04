@@ -13,6 +13,7 @@ import (
 
 func init() {
 	seralize.RegisterHandler(im_home_proto.LoginReq{}, im_home_proto.LoginRes{}, Login)
+	seralize.RegisterHandler(im_home_proto.LogoutReq{}, im_home_proto.LogoutRes{}, Logout)
 	seralize.RegisterHandler(im_home_proto.RegisterReq{}, im_home_proto.RegisterRes{}, Register)
 	seralize.RegisterHandler(im_home_proto.GetUserInfoReq{}, im_home_proto.GetUserInfoRes{}, GetUserInfo)
 	seralize.RegisterHandler(im_home_proto.ModifyUserInfoReq{}, im_home_proto.ModifyUserInfoRes{}, ModifyUserInfo)
@@ -33,6 +34,21 @@ func Login(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req
 	}
 
 	resMsg.Info = resRpc.Data.Info
+	return 0
+}
+
+func Logout(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
+	reqMsg := req.(*im_home_proto.LogoutReq)
+
+	resRpc, err := api_account.Logout(ctx, &api_account.LogoutReq{
+		ClientInfo: clientInfo.Client,
+		Data:       reqMsg,
+	})
+	if err != nil {
+		im_log.Error("logout user[%v] is err:%v", clientInfo.Client.UserID, err)
+		return resRpc.ErrCode
+	}
+
 	return 0
 }
 

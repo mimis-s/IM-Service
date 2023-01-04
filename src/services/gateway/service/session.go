@@ -9,6 +9,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
+	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/golang_tools/net/clientConn"
@@ -106,6 +107,15 @@ func (s *Session) DisConnectCallBack() {
 		im_log.Info("IP[%v]断开连接", s.GetClientConn().GetIP())
 		return
 	}
-	im_log.Info("用户[%v] IP[%v]断开连接", s.clientInfo.UserID, s.GetClientConn().GetIP())
+	// 用户登出
+	logoutReq := &api_account.LogoutReq{
+		ClientInfo: s.clientInfo,
+		Data:       &im_home_proto.LogoutReq{},
+	}
+	_, err := api_account.Logout(context.Background(), logoutReq)
+	if err != nil {
+		im_log.Error("用户[%v] IP[%v]登出 err:%v", s.clientInfo.UserID, s.GetClientConn().GetIP(), err)
+	}
 	cacheClient.Delete(s.clientInfo.UserID)
+	im_log.Info("用户[%v] IP[%v]登出", s.clientInfo.UserID, s.GetClientConn().GetIP())
 }

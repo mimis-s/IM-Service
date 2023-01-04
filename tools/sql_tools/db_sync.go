@@ -10,7 +10,9 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
+	"github.com/mimis-s/IM-Service/tools/sql_tools/xorm_mysql"
 	"xorm.io/xorm"
+	"xorm.io/xorm/dialects"
 	"xorm.io/xorm/log"
 )
 
@@ -24,6 +26,8 @@ func main() {
 	addr := flag.String("a", "localhost", "mysql address")
 	database := flag.String("d", "im_zhangbin", "mysql database")
 	cmd := flag.String("cmd", "sync", "sync|clean|drop_db|drop_shard|shard")
+	// 修复json转换变成text问题
+	dialects.RegisterDialect("mysql", func() dialects.Dialect { return &xorm_mysql.XormMysql{} })
 
 	switch *cmd {
 	case "sync":

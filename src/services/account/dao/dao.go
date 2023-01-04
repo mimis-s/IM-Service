@@ -12,7 +12,7 @@ import (
 )
 
 type Dao struct {
-	db         *xorm.Engine
+	Db         *xorm.Engine
 	cache      *common_client.RedisClient
 	dfsHandler dfs.DFSHandler
 }
@@ -39,7 +39,7 @@ func New(configOptions *boot_config.ConfigOptions) (*Dao, error) {
 	}
 
 	dao := &Dao{
-		db:         engine,
+		Db:         engine,
 		cache:      common_client.NewRedisClient(configOptions),
 		dfsHandler: dfsHandler,
 	}

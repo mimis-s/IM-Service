@@ -3,6 +3,7 @@
 package dbmodel
 
 type tAccountUser struct {
+	Id               string
 	UserId           string
 	UserName         string
 	Password         string
@@ -18,6 +19,7 @@ type tAccountUser struct {
 }
 
 var TAccountUser = &tAccountUser{
+	Id:               "id",
 	UserId:           "user_id",
 	UserName:         "user_name",
 	Password:         "password",

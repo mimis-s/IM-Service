@@ -11,12 +11,12 @@ import (
 */
 
 func (d *Dao) upLoadDFS(path, fileName string, payload []byte) error {
-	err := d.DFSHandler.PutObject(path, fileName, payload)
+	err := d.dfsHandler.PutObject(path, fileName, payload)
 	return err
 }
 
 func (d *Dao) downLoadDFS(path, fileName string) ([]byte, error) {
-	return d.DFSHandler.GetObject(path, fileName)
+	return d.dfsHandler.GetObject(path, fileName)
 }
 
 // 用户头像上传和下载

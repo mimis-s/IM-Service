@@ -6,20 +6,15 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/common_client"
-	"github.com/mimis-s/IM-Service/src/common/dbmodel"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/golang_tools/dfs"
 	"xorm.io/xorm"
 )
 
-type TableSession struct {
-	Account *xorm.Session
-}
-
 type Dao struct {
-	Session    *TableSession
-	Cache      *common_client.RedisClient
-	DFSHandler dfs.DFSHandler
+	db         *xorm.Engine
+	cache      *common_client.RedisClient
+	dfsHandler dfs.DFSHandler
 }
 
 func New(configOptions *boot_config.ConfigOptions) (*Dao, error) {
@@ -44,11 +39,9 @@ func New(configOptions *boot_config.ConfigOptions) (*Dao, error) {
 	}
 
 	dao := &Dao{
-		Session: &TableSession{
-			Account: engine.Table((*dbmodel.AccountUser).SubName(nil)),
-		},
-		Cache:      common_client.NewRedisClient(configOptions),
-		DFSHandler: dfsHandler,
+		db:         engine,
+		cache:      common_client.NewRedisClient(configOptions),
+		dfsHandler: dfsHandler,
 	}
 
 	return dao, nil

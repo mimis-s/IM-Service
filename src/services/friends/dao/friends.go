@@ -8,7 +8,7 @@ import (
 
 func (d *Dao) GetFriends(userID int64) (*dbmodel.Friends, bool, error) {
 	info := &dbmodel.Friends{}
-	find, err := d.Session.Friends.Where("user_id = ?", userID).Get(info)
+	find, err := d.db.Table((*dbmodel.Friends).SubTable(nil, userID)).Where("user_id = ?", userID).Get(info)
 	if err != nil {
 		errStr := fmt.Sprintf("user ID[%v] get friends info is err:%v", userID, err)
 		fmt.Println(errStr)
@@ -18,7 +18,7 @@ func (d *Dao) GetFriends(userID int64) (*dbmodel.Friends, bool, error) {
 }
 
 func (d *Dao) InsertFriends(userID int64, info *dbmodel.Friends) error {
-	_, err := d.Session.Friends.InsertOne(info)
+	_, err := d.db.Table((*dbmodel.Friends).SubTable(nil, userID)).InsertOne(info)
 	if err != nil {
 		errStr := fmt.Sprintf("user id[%v] insert friends is err:%v", userID, err)
 		fmt.Println(errStr)
@@ -28,7 +28,8 @@ func (d *Dao) InsertFriends(userID int64, info *dbmodel.Friends) error {
 }
 
 func (d *Dao) UpdateFriends(userID int64, info *dbmodel.Friends) error {
-	_, err := d.Session.Friends.Where("user_id=?", userID).Cols(dbmodel.TFriends.Friends).Update(info)
+	_, err := d.db.Table((*dbmodel.Friends).SubTable(nil, userID)).Where("user_id=?",
+		userID).Cols(dbmodel.TFriends.Friends).Update(info)
 	if err != nil {
 		errStr := fmt.Sprintf("user id[%v] update friends is err:%v", userID, err)
 		fmt.Println(errStr)

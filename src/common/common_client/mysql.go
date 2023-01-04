@@ -15,6 +15,7 @@ const (
 	ENUM_MYSQL_DB_TAG_Gateway = "gateway"
 	ENUM_MYSQL_DB_TAG_Group   = "group"
 	ENUM_MYSQL_DB_TAG_Home    = "home"
+	ENUM_MYSQL_DB_TAG_Message = "message"
 	ENUM_MYSQL_DB_TAG_Relay   = "relay"
 )
 
@@ -25,6 +26,7 @@ var mapMysqlTag = map[string]bool{
 	ENUM_MYSQL_DB_TAG_Gateway: true,
 	ENUM_MYSQL_DB_TAG_Group:   true,
 	ENUM_MYSQL_DB_TAG_Home:    true,
+	ENUM_MYSQL_DB_TAG_Message: true,
 	ENUM_MYSQL_DB_TAG_Relay:   true,
 }
 

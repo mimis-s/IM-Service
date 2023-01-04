@@ -1,5 +1,11 @@
 package dbmodel
 
+import (
+	"strconv"
+
+	"github.com/mimis-s/IM-Service/src/common/boot_config"
+)
+
 // 分库
 type DbSubTreasury string
 
@@ -27,4 +33,12 @@ type DbTableInterface interface {
 	SubName() string  // 表名
 	SubTableNum() int // 分表数量
 	BindSubTreasury() DbSubTreasury
+}
+
+func subName(name string, value int64, tableNum int) string {
+	temp := value % int64(tableNum)
+	if temp == 0 || !boot_config.GetConfigOptions().BootConfigFile.DataBaseShard {
+		return name
+	}
+	return name + "_" + strconv.FormatInt(temp, 10)
 }

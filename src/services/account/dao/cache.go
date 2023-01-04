@@ -18,12 +18,12 @@ const (
 )
 
 func (d *Dao) CacheUserLogin(userID int64) error {
-	_, err := d.Cache.Client.HSet(context.Background(), userStatusRedis, strconv.FormatInt(userID, 10), "1").Result()
+	_, err := d.cache.Client.HSet(context.Background(), userStatusRedis, strconv.FormatInt(userID, 10), "1").Result()
 	return err
 }
 
 func (d *Dao) CacheUserLogOut(userID int64) error {
-	_, err := d.Cache.Client.HDel(context.Background(), userStatusRedis, strconv.FormatInt(userID, 10)).Result()
+	_, err := d.cache.Client.HDel(context.Background(), userStatusRedis, strconv.FormatInt(userID, 10)).Result()
 	return err
 }
 
@@ -68,7 +68,7 @@ func (d *Dao) CacheGetUserStatus(userIDs []int64) ([]im_home_proto.Enum_UserStat
 	}
 
 	var res interface{}
-	res, err := luaScript.Run(context.Background(), d.Cache.Client, []string{userStatusRedis}, str).Result()
+	res, err := luaScript.Run(context.Background(), d.cache.Client, []string{userStatusRedis}, str).Result()
 	if err != nil {
 		return nil, err
 	}

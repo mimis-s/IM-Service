@@ -59,7 +59,7 @@ const (
 func (d *Dao) GetUserAllOfflineMessage(userID int64) (map[int64][]*im_home_proto.ChatMessage, error) {
 	userOfflineMessage := userOfflineMessagePrefix + strconv.FormatInt(userID, 10)
 	// redis事务
-	data, err := d.Cache.Transaction(userOfflineMessage, func(pipe redis.Pipeliner) (interface{}, error) {
+	data, err := d.cache.Transaction(userOfflineMessage, func(pipe redis.Pipeliner) (interface{}, error) {
 
 		allMessageData, err := pipe.HGetAll(context.Background(), userOfflineMessage).Result()
 		if err != nil {
@@ -101,7 +101,7 @@ func (d *Dao) AddUserOneOfflineMessage(sender, receiver int64, chatMessage *im_h
 
 	userOfflineMessage := userOfflineMessagePrefix + strconv.FormatInt(receiver, 10)
 	// redis事务
-	_, err := d.Cache.Transaction(userOfflineMessage, func(pipe redis.Pipeliner) (interface{}, error) {
+	_, err := d.cache.Transaction(userOfflineMessage, func(pipe redis.Pipeliner) (interface{}, error) {
 
 		messageData, err := pipe.HGet(context.Background(), userOfflineMessage, strconv.FormatInt(sender, 10)).Result()
 		if err != nil {
@@ -146,7 +146,7 @@ func (d *Dao) AddUserOneOfflineMessage(sender, receiver int64, chatMessage *im_h
 func (d *Dao) DelUserOneOfflineMessage(senderID, receiverID int64) error {
 	userOfflineMessage := userOfflineMessagePrefix + strconv.FormatInt(receiverID, 10)
 	// redis事务
-	_, err := d.Cache.Transaction(userOfflineMessage, func(pipe redis.Pipeliner) (interface{}, error) {
+	_, err := d.cache.Transaction(userOfflineMessage, func(pipe redis.Pipeliner) (interface{}, error) {
 
 		messageData, err := pipe.HGet(context.Background(), userOfflineMessage, strconv.FormatInt(senderID, 10)).Result()
 		if err != nil {

@@ -28,7 +28,7 @@ func (d *Dao) AddHistoryMessage(senderID, receiverID int64, chatMessage *im_home
 		},
 	}
 
-	_, err := d.Session.HistoryMessage.InsertOne(historyMessage)
+	_, err := d.db.Table((*dbmodel.HistoryMessage).SubTable(nil, userFrist)).InsertOne(historyMessage)
 	if err != nil {
 		errStr := fmt.Sprintf("insert history message sender[%v] receiver[%v] messageID[%v] is err:%v",
 			senderID, receiverID, chatMessage.MessageID, err)
@@ -44,7 +44,7 @@ func (d *Dao) UpdateHistoryMessage(senderID, receiverID, messageID int64, histor
 	userFrist := lib.MinInt64(senderID, receiverID)
 	userSecond := lib.MaxInt64(senderID, receiverID)
 
-	_, err := d.Session.HistoryMessage.Where("user_id_frist=? and user_id_second=? and message_id=?",
+	_, err := d.db.Table((*dbmodel.HistoryMessage).SubTable(nil, userFrist)).Where("user_id_frist=? and user_id_second=? and message_id=?",
 		userFrist, userSecond, messageID).Cols(dbmodel.THistoryMessage.MessageData).Update(historyMessage)
 	if err != nil {
 		errStr := fmt.Sprintf("insert history message sender[%v] receiver[%v] messageID[%v] is err:%v",
@@ -53,4 +53,21 @@ func (d *Dao) UpdateHistoryMessage(senderID, receiverID, messageID int64, histor
 		return fmt.Errorf(errStr)
 	}
 	return nil
+}
+
+// 获取历史记录
+func (d *Dao) GetHistoryMessage(senderID, receiverID int64) ([]*dbmodel.HistoryMessage, error) {
+	historyMessages := make([]*dbmodel.HistoryMessage, 0)
+	userFrist := lib.MinInt64(senderID, receiverID)
+	userSecond := lib.MaxInt64(senderID, receiverID)
+
+	err := d.db.Table((*dbmodel.HistoryMessage).SubTable(nil, userFrist)).Where("user_id_frist=? and user_id_second=?",
+		userFrist, userSecond).Find(&historyMessages)
+	if err != nil {
+		errStr := fmt.Sprintf("get history message sender[%v] receiver[%v] is err:%v",
+			senderID, receiverID, err)
+		im_log.Warn(errStr)
+		return nil, fmt.Errorf(errStr)
+	}
+	return historyMessages, nil
 }

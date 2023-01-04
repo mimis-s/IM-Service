@@ -42,6 +42,9 @@ func initRpcxClient(configOptions *boot_config.ConfigOptions) {
 func main() {
 
 	configOptions := boot_config.ParseBootConfigOptions()
+
+	boot_config.SetConfigOptions(configOptions)
+
 	initRpcxClient(configOptions)
 
 	ctx, cancel := context.WithCancel(context.Background())

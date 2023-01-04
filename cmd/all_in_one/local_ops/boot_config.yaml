@@ -24,6 +24,7 @@ dfs:  # 分布式文件服务
   bucket: im-zhangbin
   key_id: "admin"
   key: "admin123456"
+database_shard: false # 数据库是否分表
 
 db:
   - tag: "account"
@@ -57,6 +58,12 @@ db:
       user: "root"
       password: "dev123"
   - tag: "home"
+    master:
+      addr: "localhost:3306"
+      db_name: "im_zhangbin"
+      user: "root"
+      password: "dev123"
+  - tag: "message"
     master:
       addr: "localhost:3306"
       db_name: "im_zhangbin"

@@ -8,22 +8,18 @@ import (
 	"xorm.io/xorm"
 )
 
-type TableSession struct {
-	Gateway *xorm.Session
-}
-
 type Dao struct {
-	Session *TableSession
+	db *xorm.Engine
 }
 
 func New() (*Dao, error) {
 
-	_, err := common_client.NewEngine(common_client.ENUM_MYSQL_DB_TAG_Chat)
+	engine, err := common_client.NewEngine(common_client.ENUM_MYSQL_DB_TAG_Gateway)
 	if err != nil {
 		im_log.Warn("gateway dao new engine is err:%v", err)
 		return nil, fmt.Errorf("gateway dao new engine is err:%v", err)
 	}
-	dao := &Dao{}
+	dao := &Dao{db: engine}
 
 	return dao, nil
 }

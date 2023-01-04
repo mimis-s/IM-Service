@@ -34,10 +34,9 @@ func (d *Dao) GetUserInfoFromName(userName string) (*dbmodel.AccountUser, bool, 
 	if err != nil {
 		errStr := fmt.Sprintf("role name[%v] get info is err:%v", userName, err)
 		fmt.Println(errStr)
-		return nil, true, fmt.Errorf(errStr)
+		return nil, find, fmt.Errorf(errStr)
 	}
-	fmt.Println(find)
-	return info, true, err
+	return info, find, err
 }
 
 func (d *Dao) InsertUserInfo(info *dbmodel.AccountUser) error {

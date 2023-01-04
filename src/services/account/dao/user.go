@@ -30,7 +30,7 @@ func (d *Dao) GetUserInfoFromIDs(userID []int64) ([]*dbmodel.AccountUser, error)
 
 func (d *Dao) GetUserInfoFromName(userName string) (*dbmodel.AccountUser, bool, error) {
 	info := new(dbmodel.AccountUser)
-	find, err := d.Db.Table((*dbmodel.AccountUser).SubTable(nil, 0)).Where("user_id=?", 1).Get(info)
+	find, err := d.Db.Table((*dbmodel.AccountUser).SubTable(nil, 0)).Where("user_name=?", userName).Get(info)
 	if err != nil {
 		errStr := fmt.Sprintf("role name[%v] get info is err:%v", userName, err)
 		fmt.Println(errStr)

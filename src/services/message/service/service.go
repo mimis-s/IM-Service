@@ -2,8 +2,8 @@ package service
 
 import (
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
-	"github.com/mimis-s/IM-Service/src/services/chat/dao"
 	"github.com/mimis-s/IM-Service/src/services/message/api_message"
+	"github.com/mimis-s/IM-Service/src/services/message/dao"
 )
 
 var S *Service

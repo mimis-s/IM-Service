@@ -21,6 +21,8 @@ import (
 	"github.com/mimis-s/IM-Service/src/services/gateway"
 	"github.com/mimis-s/IM-Service/src/services/home"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
+	"github.com/mimis-s/IM-Service/src/services/message"
+	"github.com/mimis-s/IM-Service/src/services/message/api_message"
 	"github.com/mimis-s/IM-Service/src/services/overrall"
 	"github.com/mimis-s/IM-Service/src/services/overrall/api_overrall"
 	"github.com/mimis-s/IM-Service/src/services/relay"
@@ -37,6 +39,7 @@ func initRpcxClient(configOptions *boot_config.ConfigOptions) {
 	api_account.SingleNewAccountClient(etcdAddrs, timeout, etcdBasePath, isLocal)
 	api_friends.SingleNewFriendsClient(etcdAddrs, timeout, etcdBasePath, isLocal)
 	api_overrall.SingleNewOverrallClient(etcdAddrs, timeout, etcdBasePath, isLocal)
+	api_message.SingleNewMessageClient(etcdAddrs, timeout, etcdBasePath, isLocal)
 }
 
 func main() {
@@ -68,6 +71,7 @@ func main() {
 	go relay.Boot(ctx, configOptions)
 	go friends.Boot(ctx, configOptions)
 	go overrall.Boot(ctx, configOptions)
+	go message.Boot(ctx, configOptions)
 
 	// 运行网页客户端
 	go web_client.Boot(ctx, configOptions)

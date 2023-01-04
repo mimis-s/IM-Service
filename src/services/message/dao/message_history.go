@@ -11,6 +11,7 @@ import (
 
 /*
 	历史记录表userfrist是选择发送者和接受者id最小的来查询
+	历史记录查询主要应用是一次查询两个人的部分聊天记录,应该限制一次查询的历史记录数量
 */
 
 // 存储历史记录
@@ -55,14 +56,14 @@ func (d *Dao) UpdateHistoryMessage(senderID, receiverID, messageID int64, histor
 	return nil
 }
 
-// 获取历史记录
-func (d *Dao) GetHistoryMessage(senderID, receiverID int64) ([]*dbmodel.HistoryMessage, error) {
+// 获取历史记录(根据messageid范围查询)
+func (d *Dao) GetHistoryMessage(senderID, receiverID, minMessageID, maxMessageID int64) ([]*dbmodel.HistoryMessage, error) {
 	historyMessages := make([]*dbmodel.HistoryMessage, 0)
 	userFrist := lib.MinInt64(senderID, receiverID)
 	userSecond := lib.MaxInt64(senderID, receiverID)
 
-	err := d.db.Table((*dbmodel.HistoryMessage).SubTable(nil, userFrist)).Where("user_id_frist=? and user_id_second=?",
-		userFrist, userSecond).Find(&historyMessages)
+	err := d.db.Table((*dbmodel.HistoryMessage).SubTable(nil, userFrist)).Where("user_id_frist=? and user_id_second=? and message_id >= ? and message_id <= ?",
+		userFrist, userSecond, minMessageID, maxMessageID).Find(&historyMessages)
 	if err != nil {
 		errStr := fmt.Sprintf("get history message sender[%v] receiver[%v] is err:%v",
 			senderID, receiverID, err)

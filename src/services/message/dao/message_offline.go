@@ -16,6 +16,10 @@ import (
 	存储数据的层级关系:前缀key + 用户ID -> 好友ID -> 消息(转化为base64编码存储)；消息
 */
 
+const (
+	userOfflineMessagePrefix = "user.message.off.line."
+)
+
 type cacheMessageInfo struct {
 	Messages []*im_home_proto.ChatMessage
 }
@@ -50,10 +54,6 @@ func decodeCacheMessage(data string) (*cacheMessageInfo, error) {
 	}
 	return messageInfo, nil
 }
-
-const (
-	userOfflineMessagePrefix = "user.message.off.line."
-)
 
 // 获取用户离线消息
 func (d *Dao) GetUserAllOfflineMessage(userID int64) (map[int64][]*im_home_proto.ChatMessage, error) {

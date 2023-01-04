@@ -7,6 +7,7 @@ import (
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
+	"github.com/mimis-s/IM-Service/src/common/event"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/overrall/api_overrall"
@@ -67,6 +68,24 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 		errStr := fmt.Sprintf("role id[%v] login but update redis is err:%v", req.Data.UserID, err)
 		im_log.Error(errStr)
 		return fmt.Errorf(errStr)
+	}
+
+	userLoginEvent := &event.UserLogin{
+		UserInfo: &im_home_proto.UserInfo{
+			UserID:      userInfo.UserId,
+			UserName:    userInfo.UserName,
+			Region:      int32(userInfo.UserExtraInfo.Nation),
+			Autograph:   userInfo.UserExtraInfo.PersonalSignature,
+			Status:      im_home_proto.Enum_UserStatus_Enum_UserStatus_Online,
+			PhoneNumber: userInfo.UserExtraInfo.PhoneNumber,
+		},
+	}
+	// 推送成功登录事件
+	err = event.Publish(event.Event_UserLogin, userLoginEvent)
+	if err != nil {
+		im_log.Error("err:%v", err)
+		res.ErrCode = im_error_proto.ErrCode_common_unexpected_err
+		return err
 	}
 
 	return nil

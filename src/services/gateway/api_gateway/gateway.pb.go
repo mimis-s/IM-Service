@@ -6,6 +6,7 @@ package api_gateway
 import (
 	fmt "fmt"
 	proto "github.com/gogo/protobuf/proto"
+	im_error_proto "github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -22,16 +23,113 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type GetClientConnTypeReq struct {
+	UserID int64 `protobuf:"varint,1,opt,name=UserID,proto3" json:"UserID,omitempty"`
+}
+
+func (m *GetClientConnTypeReq) Reset()         { *m = GetClientConnTypeReq{} }
+func (m *GetClientConnTypeReq) String() string { return proto.CompactTextString(m) }
+func (*GetClientConnTypeReq) ProtoMessage()    {}
+func (*GetClientConnTypeReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1a937782ebbded5, []int{0}
+}
+func (m *GetClientConnTypeReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetClientConnTypeReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetClientConnTypeReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetClientConnTypeReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetClientConnTypeReq.Merge(m, src)
+}
+func (m *GetClientConnTypeReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetClientConnTypeReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetClientConnTypeReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetClientConnTypeReq proto.InternalMessageInfo
+
+func (m *GetClientConnTypeReq) GetUserID() int64 {
+	if m != nil {
+		return m.UserID
+	}
+	return 0
+}
+
+type GetClientConnTypeRes struct {
+	ErrCode  im_error_proto.ErrCode `protobuf:"varint,1,opt,name=ErrCode,proto3,enum=im_error_proto.ErrCode" json:"ErrCode,omitempty"`
+	ConnType int32                  `protobuf:"varint,2,opt,name=ConnType,proto3" json:"ConnType,omitempty"`
+}
+
+func (m *GetClientConnTypeRes) Reset()         { *m = GetClientConnTypeRes{} }
+func (m *GetClientConnTypeRes) String() string { return proto.CompactTextString(m) }
+func (*GetClientConnTypeRes) ProtoMessage()    {}
+func (*GetClientConnTypeRes) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1a937782ebbded5, []int{1}
+}
+func (m *GetClientConnTypeRes) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetClientConnTypeRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetClientConnTypeRes.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetClientConnTypeRes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetClientConnTypeRes.Merge(m, src)
+}
+func (m *GetClientConnTypeRes) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetClientConnTypeRes) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetClientConnTypeRes.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetClientConnTypeRes proto.InternalMessageInfo
+
+func (m *GetClientConnTypeRes) GetErrCode() im_error_proto.ErrCode {
+	if m != nil {
+		return m.ErrCode
+	}
+	return im_error_proto.ErrCode_success
+}
+
+func (m *GetClientConnTypeRes) GetConnType() int32 {
+	if m != nil {
+		return m.ConnType
+	}
+	return 0
+}
+
 type NotifyClientReq struct {
-	MsgTag  string `protobuf:"bytes,1,opt,name=MsgTag,proto3" json:"MsgTag,omitempty"`
-	Payload []byte `protobuf:"bytes,2,opt,name=Payload,proto3" json:"Payload,omitempty"`
+	UserID  int64  `protobuf:"varint,1,opt,name=UserID,proto3" json:"UserID,omitempty"`
+	MsgTag  uint32 `protobuf:"varint,2,opt,name=MsgTag,proto3" json:"MsgTag,omitempty"`
+	Payload []byte `protobuf:"bytes,3,opt,name=Payload,proto3" json:"Payload,omitempty"`
 }
 
 func (m *NotifyClientReq) Reset()         { *m = NotifyClientReq{} }
 func (m *NotifyClientReq) String() string { return proto.CompactTextString(m) }
 func (*NotifyClientReq) ProtoMessage()    {}
 func (*NotifyClientReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1a937782ebbded5, []int{0}
+	return fileDescriptor_f1a937782ebbded5, []int{2}
 }
 func (m *NotifyClientReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -60,11 +158,18 @@ func (m *NotifyClientReq) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NotifyClientReq proto.InternalMessageInfo
 
-func (m *NotifyClientReq) GetMsgTag() string {
+func (m *NotifyClientReq) GetUserID() int64 {
+	if m != nil {
+		return m.UserID
+	}
+	return 0
+}
+
+func (m *NotifyClientReq) GetMsgTag() uint32 {
 	if m != nil {
 		return m.MsgTag
 	}
-	return ""
+	return 0
 }
 
 func (m *NotifyClientReq) GetPayload() []byte {
@@ -75,14 +180,13 @@ func (m *NotifyClientReq) GetPayload() []byte {
 }
 
 type NotifyClientRes struct {
-	Msg string `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
 func (m *NotifyClientRes) Reset()         { *m = NotifyClientRes{} }
 func (m *NotifyClientRes) String() string { return proto.CompactTextString(m) }
 func (*NotifyClientRes) ProtoMessage()    {}
 func (*NotifyClientRes) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f1a937782ebbded5, []int{1}
+	return fileDescriptor_f1a937782ebbded5, []int{3}
 }
 func (m *NotifyClientRes) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -111,34 +215,206 @@ func (m *NotifyClientRes) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NotifyClientRes proto.InternalMessageInfo
 
-func (m *NotifyClientRes) GetMsg() string {
-	if m != nil {
-		return m.Msg
-	}
-	return ""
+type SendToClientReq struct {
+	SenderID   int64  `protobuf:"varint,1,opt,name=SenderID,proto3" json:"SenderID,omitempty"`
+	ReceiverID int64  `protobuf:"varint,2,opt,name=ReceiverID,proto3" json:"ReceiverID,omitempty"`
+	MsgTag     uint32 `protobuf:"varint,3,opt,name=MsgTag,proto3" json:"MsgTag,omitempty"`
+	Payload    []byte `protobuf:"bytes,4,opt,name=Payload,proto3" json:"Payload,omitempty"`
 }
 
+func (m *SendToClientReq) Reset()         { *m = SendToClientReq{} }
+func (m *SendToClientReq) String() string { return proto.CompactTextString(m) }
+func (*SendToClientReq) ProtoMessage()    {}
+func (*SendToClientReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1a937782ebbded5, []int{4}
+}
+func (m *SendToClientReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SendToClientReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SendToClientReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SendToClientReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendToClientReq.Merge(m, src)
+}
+func (m *SendToClientReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *SendToClientReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendToClientReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SendToClientReq proto.InternalMessageInfo
+
+func (m *SendToClientReq) GetSenderID() int64 {
+	if m != nil {
+		return m.SenderID
+	}
+	return 0
+}
+
+func (m *SendToClientReq) GetReceiverID() int64 {
+	if m != nil {
+		return m.ReceiverID
+	}
+	return 0
+}
+
+func (m *SendToClientReq) GetMsgTag() uint32 {
+	if m != nil {
+		return m.MsgTag
+	}
+	return 0
+}
+
+func (m *SendToClientReq) GetPayload() []byte {
+	if m != nil {
+		return m.Payload
+	}
+	return nil
+}
+
+type SendToClientRes struct {
+}
+
+func (m *SendToClientRes) Reset()         { *m = SendToClientRes{} }
+func (m *SendToClientRes) String() string { return proto.CompactTextString(m) }
+func (*SendToClientRes) ProtoMessage()    {}
+func (*SendToClientRes) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1a937782ebbded5, []int{5}
+}
+func (m *SendToClientRes) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SendToClientRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SendToClientRes.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SendToClientRes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendToClientRes.Merge(m, src)
+}
+func (m *SendToClientRes) XXX_Size() int {
+	return m.Size()
+}
+func (m *SendToClientRes) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendToClientRes.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SendToClientRes proto.InternalMessageInfo
+
 func init() {
+	proto.RegisterType((*GetClientConnTypeReq)(nil), "api_gateway.GetClientConnTypeReq")
+	proto.RegisterType((*GetClientConnTypeRes)(nil), "api_gateway.GetClientConnTypeRes")
 	proto.RegisterType((*NotifyClientReq)(nil), "api_gateway.NotifyClientReq")
 	proto.RegisterType((*NotifyClientRes)(nil), "api_gateway.NotifyClientRes")
+	proto.RegisterType((*SendToClientReq)(nil), "api_gateway.SendToClientReq")
+	proto.RegisterType((*SendToClientRes)(nil), "api_gateway.SendToClientRes")
 }
 
 func init() { proto.RegisterFile("gateway.proto", fileDescriptor_f1a937782ebbded5) }
 
 var fileDescriptor_f1a937782ebbded5 = []byte{
-	// 180 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4d, 0x4f, 0x2c, 0x49,
-	0x2d, 0x4f, 0xac, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x4e, 0x2c, 0xc8, 0x8c, 0x87,
-	0x0a, 0x29, 0x39, 0x73, 0xf1, 0xfb, 0xe5, 0x97, 0x64, 0xa6, 0x55, 0x3a, 0xe7, 0x64, 0xa6, 0xe6,
-	0x95, 0x04, 0xa5, 0x16, 0x0a, 0x89, 0x71, 0xb1, 0xf9, 0x16, 0xa7, 0x87, 0x24, 0xa6, 0x4b, 0x30,
-	0x2a, 0x30, 0x6a, 0x70, 0x06, 0x41, 0x79, 0x42, 0x12, 0x5c, 0xec, 0x01, 0x89, 0x95, 0x39, 0xf9,
-	0x89, 0x29, 0x12, 0x4c, 0x0a, 0x8c, 0x1a, 0x3c, 0x41, 0x30, 0xae, 0x92, 0x32, 0xba, 0x21, 0xc5,
-	0x42, 0x02, 0x5c, 0xcc, 0xb9, 0xc5, 0x30, 0x13, 0x40, 0x4c, 0xa3, 0x70, 0x2e, 0x76, 0x77, 0x88,
-	0xa5, 0x42, 0x3e, 0x5c, 0x3c, 0xc8, 0xea, 0x85, 0x64, 0xf4, 0x90, 0x9c, 0xa4, 0x87, 0xe6, 0x1e,
-	0x29, 0x7c, 0xb2, 0xc5, 0x4a, 0x0c, 0x4e, 0x12, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7,
-	0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c,
-	0xc7, 0x90, 0xc4, 0x06, 0xf6, 0xb0, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0xb7, 0x41, 0xd3, 0x49,
-	0x01, 0x01, 0x00, 0x00,
+	// 345 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0xc1, 0x4e, 0xc2, 0x40,
+	0x14, 0xec, 0x82, 0x02, 0x79, 0x82, 0x84, 0x8d, 0xd1, 0xa6, 0x31, 0x1b, 0xdc, 0x13, 0xa7, 0x26,
+	0xe2, 0x1f, 0x88, 0x86, 0x98, 0xa8, 0x31, 0x2b, 0x9e, 0x38, 0x90, 0x2a, 0x4f, 0xd2, 0x04, 0xbb,
+	0xb8, 0xdb, 0x68, 0x7a, 0x32, 0xf1, 0x0b, 0xfc, 0x2c, 0x8f, 0x1c, 0x3d, 0x1a, 0xf8, 0x11, 0xc3,
+	0x52, 0xb0, 0x14, 0xac, 0xc7, 0x79, 0xf3, 0x76, 0x66, 0xfa, 0xa6, 0x50, 0x19, 0x78, 0x21, 0xbe,
+	0x7a, 0x91, 0x3b, 0x52, 0x32, 0x94, 0x74, 0xc7, 0x1b, 0xf9, 0xbd, 0x78, 0xe4, 0x94, 0x51, 0x29,
+	0xa9, 0xf4, 0x9c, 0xe2, 0x2e, 0xec, 0xb5, 0x31, 0x6c, 0x0d, 0x7d, 0x0c, 0xc2, 0x96, 0x0c, 0x82,
+	0x4e, 0x34, 0x42, 0x81, 0xcf, 0x74, 0x1f, 0x0a, 0x77, 0x1a, 0xd5, 0xc5, 0x99, 0x4d, 0xea, 0xa4,
+	0x91, 0x17, 0x31, 0xe2, 0xb8, 0x71, 0x5f, 0xd3, 0x63, 0x28, 0x9e, 0x2b, 0xd5, 0x92, 0x7d, 0x34,
+	0x0f, 0x76, 0x9b, 0x07, 0xae, 0xff, 0xd4, 0x33, 0x56, 0x3d, 0xe3, 0xe4, 0xc6, 0xb4, 0x58, 0xec,
+	0x51, 0x07, 0x4a, 0x0b, 0x05, 0x3b, 0x57, 0x27, 0x8d, 0x6d, 0xb1, 0xc4, 0xbc, 0x0b, 0xd5, 0x6b,
+	0x19, 0xfa, 0x8f, 0xd1, 0xdc, 0x29, 0x23, 0xd1, 0x6c, 0x7e, 0xa5, 0x07, 0x1d, 0x6f, 0x60, 0x44,
+	0x2a, 0x22, 0x46, 0xd4, 0x86, 0xe2, 0x8d, 0x17, 0x0d, 0xa5, 0xd7, 0xb7, 0xf3, 0x75, 0xd2, 0x28,
+	0x8b, 0x05, 0xe4, 0xb5, 0xb4, 0xb8, 0xe6, 0x6f, 0x50, 0xbd, 0xc5, 0xa0, 0xdf, 0x91, 0xbf, 0x7e,
+	0x0e, 0x94, 0x66, 0xa3, 0x84, 0xe3, 0x12, 0x53, 0x06, 0x20, 0xf0, 0x01, 0xfd, 0x17, 0xc3, 0xe6,
+	0x0c, 0x9b, 0x98, 0x24, 0x32, 0xe5, 0xff, 0xca, 0xb4, 0xb5, 0x96, 0x69, 0x35, 0x80, 0x6e, 0xbe,
+	0xe7, 0xa0, 0xd8, 0x9e, 0x97, 0x46, 0xbb, 0x50, 0x5b, 0x3b, 0x3b, 0x3d, 0x72, 0x13, 0xbd, 0xba,
+	0x9b, 0x6a, 0x74, 0xfe, 0x5d, 0xd1, 0xdc, 0xa2, 0x97, 0x50, 0x4e, 0xde, 0x83, 0x1e, 0xae, 0x3c,
+	0x4a, 0xf5, 0xe0, 0x64, 0xb1, 0xb1, 0x5a, 0xf2, 0x4b, 0x52, 0x6a, 0xa9, 0x2b, 0x3b, 0x59, 0xac,
+	0xe6, 0xd6, 0xa9, 0xfd, 0x39, 0x61, 0x64, 0x3c, 0x61, 0xe4, 0x7b, 0xc2, 0xc8, 0xc7, 0x94, 0x59,
+	0xe3, 0x29, 0xb3, 0xbe, 0xa6, 0xcc, 0xba, 0x2f, 0x98, 0xdf, 0xea, 0xe4, 0x27, 0x00, 0x00, 0xff,
+	0xff, 0x23, 0x55, 0x27, 0xc3, 0xec, 0x02, 0x00, 0x00,
+}
+
+func (m *GetClientConnTypeReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetClientConnTypeReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetClientConnTypeReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.UserID != 0 {
+		i = encodeVarintGateway(dAtA, i, uint64(m.UserID))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetClientConnTypeRes) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetClientConnTypeRes) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetClientConnTypeRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.ConnType != 0 {
+		i = encodeVarintGateway(dAtA, i, uint64(m.ConnType))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.ErrCode != 0 {
+		i = encodeVarintGateway(dAtA, i, uint64(m.ErrCode))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *NotifyClientReq) Marshal() (dAtA []byte, err error) {
@@ -166,14 +442,17 @@ func (m *NotifyClientReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Payload)
 		i = encodeVarintGateway(dAtA, i, uint64(len(m.Payload)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
-	if len(m.MsgTag) > 0 {
-		i -= len(m.MsgTag)
-		copy(dAtA[i:], m.MsgTag)
-		i = encodeVarintGateway(dAtA, i, uint64(len(m.MsgTag)))
+	if m.MsgTag != 0 {
+		i = encodeVarintGateway(dAtA, i, uint64(m.MsgTag))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x10
+	}
+	if m.UserID != 0 {
+		i = encodeVarintGateway(dAtA, i, uint64(m.UserID))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -198,13 +477,74 @@ func (m *NotifyClientRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Msg) > 0 {
-		i -= len(m.Msg)
-		copy(dAtA[i:], m.Msg)
-		i = encodeVarintGateway(dAtA, i, uint64(len(m.Msg)))
-		i--
-		dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *SendToClientReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
 	}
+	return dAtA[:n], nil
+}
+
+func (m *SendToClientReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SendToClientReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintGateway(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.MsgTag != 0 {
+		i = encodeVarintGateway(dAtA, i, uint64(m.MsgTag))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.ReceiverID != 0 {
+		i = encodeVarintGateway(dAtA, i, uint64(m.ReceiverID))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.SenderID != 0 {
+		i = encodeVarintGateway(dAtA, i, uint64(m.SenderID))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SendToClientRes) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SendToClientRes) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SendToClientRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
 	return len(dAtA) - i, nil
 }
 
@@ -219,15 +559,44 @@ func encodeVarintGateway(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *GetClientConnTypeReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.UserID != 0 {
+		n += 1 + sovGateway(uint64(m.UserID))
+	}
+	return n
+}
+
+func (m *GetClientConnTypeRes) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ErrCode != 0 {
+		n += 1 + sovGateway(uint64(m.ErrCode))
+	}
+	if m.ConnType != 0 {
+		n += 1 + sovGateway(uint64(m.ConnType))
+	}
+	return n
+}
+
 func (m *NotifyClientReq) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.MsgTag)
-	if l > 0 {
-		n += 1 + l + sovGateway(uint64(l))
+	if m.UserID != 0 {
+		n += 1 + sovGateway(uint64(m.UserID))
+	}
+	if m.MsgTag != 0 {
+		n += 1 + sovGateway(uint64(m.MsgTag))
 	}
 	l = len(m.Payload)
 	if l > 0 {
@@ -242,10 +611,37 @@ func (m *NotifyClientRes) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Msg)
+	return n
+}
+
+func (m *SendToClientReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.SenderID != 0 {
+		n += 1 + sovGateway(uint64(m.SenderID))
+	}
+	if m.ReceiverID != 0 {
+		n += 1 + sovGateway(uint64(m.ReceiverID))
+	}
+	if m.MsgTag != 0 {
+		n += 1 + sovGateway(uint64(m.MsgTag))
+	}
+	l = len(m.Payload)
 	if l > 0 {
 		n += 1 + l + sovGateway(uint64(l))
 	}
+	return n
+}
+
+func (m *SendToClientRes) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -254,6 +650,163 @@ func sovGateway(x uint64) (n int) {
 }
 func sozGateway(x uint64) (n int) {
 	return sovGateway(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *GetClientConnTypeReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGateway
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetClientConnTypeReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetClientConnTypeReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UserID", wireType)
+			}
+			m.UserID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGateway
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.UserID |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGateway(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGateway
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetClientConnTypeRes) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGateway
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetClientConnTypeRes: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetClientConnTypeRes: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrCode", wireType)
+			}
+			m.ErrCode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGateway
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ErrCode |= im_error_proto.ErrCode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ConnType", wireType)
+			}
+			m.ConnType = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGateway
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ConnType |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGateway(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGateway
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *NotifyClientReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -285,10 +838,10 @@ func (m *NotifyClientReq) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MsgTag", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UserID", wireType)
 			}
-			var stringLen uint64
+			m.UserID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGateway
@@ -298,25 +851,31 @@ func (m *NotifyClientReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.UserID |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthGateway
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthGateway
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.MsgTag = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MsgTag", wireType)
+			}
+			m.MsgTag = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGateway
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MsgTag |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
 			}
@@ -400,11 +959,61 @@ func (m *NotifyClientRes) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: NotifyClientRes: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Msg", wireType)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGateway(dAtA[iNdEx:])
+			if err != nil {
+				return err
 			}
-			var stringLen uint64
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGateway
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SendToClientReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGateway
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SendToClientReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SendToClientReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SenderID", wireType)
+			}
+			m.SenderID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGateway
@@ -414,24 +1023,133 @@ func (m *NotifyClientRes) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.SenderID |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReceiverID", wireType)
+			}
+			m.ReceiverID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGateway
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ReceiverID |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MsgTag", wireType)
+			}
+			m.MsgTag = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGateway
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MsgTag |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGateway
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
 				return ErrInvalidLengthGateway
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + byteLen
 			if postIndex < 0 {
 				return ErrInvalidLengthGateway
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Msg = string(dAtA[iNdEx:postIndex])
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGateway(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGateway
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SendToClientRes) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGateway
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SendToClientRes: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SendToClientRes: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipGateway(dAtA[iNdEx:])

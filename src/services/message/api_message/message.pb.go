@@ -24,22 +24,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type SaveOffLineMessageReq struct {
-	Data *im_home_proto.ChatMessage `protobuf:"bytes,1,opt,name=Data,proto3" json:"Data,omitempty"`
+type SaveSingleChatMessageReq struct {
+	ClientInfo *im_home_proto.ClientOnlineInfo `protobuf:"bytes,1,opt,name=ClientInfo,proto3" json:"ClientInfo,omitempty"`
+	Data       *im_home_proto.ChatMessage      `protobuf:"bytes,2,opt,name=Data,proto3" json:"Data,omitempty"`
 }
 
-func (m *SaveOffLineMessageReq) Reset()         { *m = SaveOffLineMessageReq{} }
-func (m *SaveOffLineMessageReq) String() string { return proto.CompactTextString(m) }
-func (*SaveOffLineMessageReq) ProtoMessage()    {}
-func (*SaveOffLineMessageReq) Descriptor() ([]byte, []int) {
+func (m *SaveSingleChatMessageReq) Reset()         { *m = SaveSingleChatMessageReq{} }
+func (m *SaveSingleChatMessageReq) String() string { return proto.CompactTextString(m) }
+func (*SaveSingleChatMessageReq) ProtoMessage()    {}
+func (*SaveSingleChatMessageReq) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{0}
 }
-func (m *SaveOffLineMessageReq) XXX_Unmarshal(b []byte) error {
+func (m *SaveSingleChatMessageReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SaveOffLineMessageReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SaveSingleChatMessageReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SaveOffLineMessageReq.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SaveSingleChatMessageReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -49,41 +50,49 @@ func (m *SaveOffLineMessageReq) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *SaveOffLineMessageReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SaveOffLineMessageReq.Merge(m, src)
+func (m *SaveSingleChatMessageReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SaveSingleChatMessageReq.Merge(m, src)
 }
-func (m *SaveOffLineMessageReq) XXX_Size() int {
+func (m *SaveSingleChatMessageReq) XXX_Size() int {
 	return m.Size()
 }
-func (m *SaveOffLineMessageReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_SaveOffLineMessageReq.DiscardUnknown(m)
+func (m *SaveSingleChatMessageReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_SaveSingleChatMessageReq.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SaveOffLineMessageReq proto.InternalMessageInfo
+var xxx_messageInfo_SaveSingleChatMessageReq proto.InternalMessageInfo
 
-func (m *SaveOffLineMessageReq) GetData() *im_home_proto.ChatMessage {
+func (m *SaveSingleChatMessageReq) GetClientInfo() *im_home_proto.ClientOnlineInfo {
+	if m != nil {
+		return m.ClientInfo
+	}
+	return nil
+}
+
+func (m *SaveSingleChatMessageReq) GetData() *im_home_proto.ChatMessage {
 	if m != nil {
 		return m.Data
 	}
 	return nil
 }
 
-type SaveOffLineMessageRes struct {
-	ErrCode im_error_proto.ErrCode `protobuf:"varint,1,opt,name=ErrCode,proto3,enum=im_error_proto.ErrCode" json:"ErrCode,omitempty"`
+type SaveSingleChatMessageRes struct {
+	ErrCode  im_error_proto.ErrCode `protobuf:"varint,1,opt,name=ErrCode,proto3,enum=im_error_proto.ErrCode" json:"ErrCode,omitempty"`
+	IsOnline bool                   `protobuf:"varint,2,opt,name=IsOnline,proto3" json:"IsOnline,omitempty"`
 }
 
-func (m *SaveOffLineMessageRes) Reset()         { *m = SaveOffLineMessageRes{} }
-func (m *SaveOffLineMessageRes) String() string { return proto.CompactTextString(m) }
-func (*SaveOffLineMessageRes) ProtoMessage()    {}
-func (*SaveOffLineMessageRes) Descriptor() ([]byte, []int) {
+func (m *SaveSingleChatMessageRes) Reset()         { *m = SaveSingleChatMessageRes{} }
+func (m *SaveSingleChatMessageRes) String() string { return proto.CompactTextString(m) }
+func (*SaveSingleChatMessageRes) ProtoMessage()    {}
+func (*SaveSingleChatMessageRes) Descriptor() ([]byte, []int) {
 	return fileDescriptor_33c57e4bae7b9afd, []int{1}
 }
-func (m *SaveOffLineMessageRes) XXX_Unmarshal(b []byte) error {
+func (m *SaveSingleChatMessageRes) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SaveOffLineMessageRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SaveSingleChatMessageRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SaveOffLineMessageRes.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SaveSingleChatMessageRes.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -93,51 +102,62 @@ func (m *SaveOffLineMessageRes) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *SaveOffLineMessageRes) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SaveOffLineMessageRes.Merge(m, src)
+func (m *SaveSingleChatMessageRes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SaveSingleChatMessageRes.Merge(m, src)
 }
-func (m *SaveOffLineMessageRes) XXX_Size() int {
+func (m *SaveSingleChatMessageRes) XXX_Size() int {
 	return m.Size()
 }
-func (m *SaveOffLineMessageRes) XXX_DiscardUnknown() {
-	xxx_messageInfo_SaveOffLineMessageRes.DiscardUnknown(m)
+func (m *SaveSingleChatMessageRes) XXX_DiscardUnknown() {
+	xxx_messageInfo_SaveSingleChatMessageRes.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SaveOffLineMessageRes proto.InternalMessageInfo
+var xxx_messageInfo_SaveSingleChatMessageRes proto.InternalMessageInfo
 
-func (m *SaveOffLineMessageRes) GetErrCode() im_error_proto.ErrCode {
+func (m *SaveSingleChatMessageRes) GetErrCode() im_error_proto.ErrCode {
 	if m != nil {
 		return m.ErrCode
 	}
 	return im_error_proto.ErrCode_success
 }
 
+func (m *SaveSingleChatMessageRes) GetIsOnline() bool {
+	if m != nil {
+		return m.IsOnline
+	}
+	return false
+}
+
 func init() {
-	proto.RegisterType((*SaveOffLineMessageReq)(nil), "api_message.SaveOffLineMessageReq")
-	proto.RegisterType((*SaveOffLineMessageRes)(nil), "api_message.SaveOffLineMessageRes")
+	proto.RegisterType((*SaveSingleChatMessageReq)(nil), "api_message.SaveSingleChatMessageReq")
+	proto.RegisterType((*SaveSingleChatMessageRes)(nil), "api_message.SaveSingleChatMessageRes")
 }
 
 func init() { proto.RegisterFile("message.proto", fileDescriptor_33c57e4bae7b9afd) }
 
 var fileDescriptor_33c57e4bae7b9afd = []byte{
-	// 217 bytes of a gzipped FileDescriptorProto
+	// 277 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcd, 0x4d, 0x2d, 0x2e,
 	0x4e, 0x4c, 0x4f, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x4e, 0x2c, 0xc8, 0x8c, 0x87,
-	0x0a, 0x49, 0xf1, 0x67, 0xe4, 0xe7, 0xa6, 0xc6, 0x27, 0x67, 0x24, 0x96, 0x40, 0x64, 0xa5, 0x78,
-	0x52, 0x8b, 0x8a, 0xf2, 0x8b, 0x8a, 0x21, 0x3c, 0x25, 0x77, 0x2e, 0xd1, 0xe0, 0xc4, 0xb2, 0x54,
-	0xff, 0xb4, 0x34, 0x9f, 0xcc, 0xbc, 0x54, 0x5f, 0x88, 0xa6, 0xa0, 0xd4, 0x42, 0x21, 0x3d, 0x2e,
-	0x16, 0x97, 0xc4, 0x92, 0x44, 0x09, 0x46, 0x05, 0x46, 0x0d, 0x6e, 0x23, 0x29, 0xbd, 0xcc, 0xdc,
-	0x78, 0xb0, 0x49, 0x60, 0x6d, 0x7a, 0xce, 0x19, 0x89, 0x25, 0x30, 0xc5, 0x60, 0x75, 0x4a, 0x5e,
-	0xd8, 0x0d, 0x2a, 0x16, 0x32, 0xe4, 0x62, 0x77, 0x2d, 0x2a, 0x72, 0xce, 0x4f, 0x49, 0x05, 0x9b,
-	0xc5, 0x67, 0x24, 0x0e, 0x32, 0x0b, 0xec, 0x08, 0xa8, 0x61, 0x50, 0xe9, 0x20, 0x98, 0x3a, 0xa3,
-	0x4c, 0x2e, 0x76, 0xa8, 0x01, 0x42, 0x71, 0x5c, 0x42, 0x98, 0xc6, 0x0a, 0x29, 0xe9, 0x21, 0x79,
-	0x51, 0x0f, 0xab, 0x07, 0xa4, 0x08, 0xab, 0x29, 0x56, 0x62, 0x70, 0x92, 0x38, 0xf1, 0x48, 0x8e,
-	0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58,
-	0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x24, 0x36, 0xb0, 0xe3, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff,
-	0xff, 0xbd, 0x6d, 0x27, 0xca, 0x5d, 0x01, 0x00, 0x00,
+	0x0a, 0x49, 0xf1, 0x67, 0xe4, 0xe7, 0xa6, 0xc6, 0x27, 0x67, 0x24, 0x96, 0x40, 0x64, 0xa5, 0x84,
+	0xc0, 0x02, 0x89, 0xc9, 0xc9, 0xf9, 0xa5, 0x79, 0x30, 0x31, 0x9e, 0xd4, 0xa2, 0xa2, 0xfc, 0xa2,
+	0x62, 0x08, 0x4f, 0xa9, 0x9b, 0x91, 0x4b, 0x22, 0x38, 0xb1, 0x2c, 0x35, 0x38, 0x33, 0x2f, 0x3d,
+	0x27, 0xd5, 0x39, 0x23, 0xb1, 0xc4, 0x17, 0x62, 0x58, 0x50, 0x6a, 0xa1, 0x90, 0x3d, 0x17, 0x97,
+	0x73, 0x4e, 0x66, 0x6a, 0x5e, 0x89, 0x67, 0x5e, 0x5a, 0xbe, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0xb7,
+	0x91, 0xbc, 0x5e, 0x66, 0x6e, 0x3c, 0xd8, 0x58, 0xb0, 0x01, 0x7a, 0x10, 0x05, 0xfe, 0x79, 0x39,
+	0x99, 0x79, 0xa9, 0x20, 0x65, 0x41, 0x48, 0x5a, 0x84, 0xf4, 0xb8, 0x58, 0x5c, 0x12, 0x4b, 0x12,
+	0x25, 0x98, 0xc0, 0x5a, 0xa5, 0xd0, 0xb5, 0x22, 0xd9, 0x06, 0x56, 0xa7, 0x94, 0x89, 0xd3, 0x31,
+	0xc5, 0x42, 0x86, 0x5c, 0xec, 0xae, 0x45, 0x45, 0xce, 0xf9, 0x29, 0xa9, 0x60, 0x97, 0xf0, 0x19,
+	0x89, 0x83, 0x8c, 0x03, 0x7b, 0x06, 0x6a, 0x1e, 0x54, 0x3a, 0x08, 0xa6, 0x4e, 0x48, 0x8a, 0x8b,
+	0xc3, 0xb3, 0x18, 0xe2, 0x34, 0xb0, 0x13, 0x38, 0x82, 0xe0, 0x7c, 0xa3, 0x22, 0x2e, 0x76, 0xa8,
+	0xe1, 0x42, 0xe9, 0x5c, 0xa2, 0x58, 0x6d, 0x15, 0x52, 0xd5, 0x43, 0x0a, 0x5d, 0x3d, 0x5c, 0xc1,
+	0x24, 0x45, 0x94, 0xb2, 0x62, 0x25, 0x06, 0x27, 0x89, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92,
+	0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c,
+	0x96, 0x63, 0x48, 0x62, 0x03, 0xfb, 0xc0, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xf0, 0x11, 0xc0,
+	0x2b, 0xde, 0x01, 0x00, 0x00,
 }
 
-func (m *SaveOffLineMessageReq) Marshal() (dAtA []byte, err error) {
+func (m *SaveSingleChatMessageReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -147,12 +167,12 @@ func (m *SaveOffLineMessageReq) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SaveOffLineMessageReq) MarshalTo(dAtA []byte) (int, error) {
+func (m *SaveSingleChatMessageReq) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SaveOffLineMessageReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SaveSingleChatMessageReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -167,12 +187,24 @@ func (m *SaveOffLineMessageReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i = encodeVarintMessage(dAtA, i, uint64(size))
 		}
 		i--
+		dAtA[i] = 0x12
+	}
+	if m.ClientInfo != nil {
+		{
+			size, err := m.ClientInfo.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessage(dAtA, i, uint64(size))
+		}
+		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *SaveOffLineMessageRes) Marshal() (dAtA []byte, err error) {
+func (m *SaveSingleChatMessageRes) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -182,16 +214,26 @@ func (m *SaveOffLineMessageRes) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SaveOffLineMessageRes) MarshalTo(dAtA []byte) (int, error) {
+func (m *SaveSingleChatMessageRes) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SaveOffLineMessageRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SaveSingleChatMessageRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.IsOnline {
+		i--
+		if m.IsOnline {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
 	if m.ErrCode != 0 {
 		i = encodeVarintMessage(dAtA, i, uint64(m.ErrCode))
 		i--
@@ -211,12 +253,16 @@ func encodeVarintMessage(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *SaveOffLineMessageReq) Size() (n int) {
+func (m *SaveSingleChatMessageReq) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if m.ClientInfo != nil {
+		l = m.ClientInfo.Size()
+		n += 1 + l + sovMessage(uint64(l))
+	}
 	if m.Data != nil {
 		l = m.Data.Size()
 		n += 1 + l + sovMessage(uint64(l))
@@ -224,7 +270,7 @@ func (m *SaveOffLineMessageReq) Size() (n int) {
 	return n
 }
 
-func (m *SaveOffLineMessageRes) Size() (n int) {
+func (m *SaveSingleChatMessageRes) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -232,6 +278,9 @@ func (m *SaveOffLineMessageRes) Size() (n int) {
 	_ = l
 	if m.ErrCode != 0 {
 		n += 1 + sovMessage(uint64(m.ErrCode))
+	}
+	if m.IsOnline {
+		n += 2
 	}
 	return n
 }
@@ -242,7 +291,7 @@ func sovMessage(x uint64) (n int) {
 func sozMessage(x uint64) (n int) {
 	return sovMessage(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *SaveOffLineMessageReq) Unmarshal(dAtA []byte) error {
+func (m *SaveSingleChatMessageReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -265,13 +314,49 @@ func (m *SaveOffLineMessageReq) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SaveOffLineMessageReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: SaveSingleChatMessageReq: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SaveOffLineMessageReq: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SaveSingleChatMessageReq: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClientInfo", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ClientInfo == nil {
+				m.ClientInfo = &im_home_proto.ClientOnlineInfo{}
+			}
+			if err := m.ClientInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
 			}
@@ -328,7 +413,7 @@ func (m *SaveOffLineMessageReq) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SaveOffLineMessageRes) Unmarshal(dAtA []byte) error {
+func (m *SaveSingleChatMessageRes) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -351,10 +436,10 @@ func (m *SaveOffLineMessageRes) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SaveOffLineMessageRes: wiretype end group for non-group")
+			return fmt.Errorf("proto: SaveSingleChatMessageRes: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SaveOffLineMessageRes: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SaveSingleChatMessageRes: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -376,6 +461,26 @@ func (m *SaveOffLineMessageRes) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsOnline", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsOnline = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipMessage(dAtA[iNdEx:])

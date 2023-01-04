@@ -58,8 +58,8 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 			proto.Unmarshal(reqClient.Msg, loginReq)
 		}
 		s.clientInfo = &im_home_proto.ClientOnlineInfo{
-			UserID:   loginReq.UserID,
-			UserName: "张三",
+			UserID: loginReq.UserID,
+			IPAddr: s.clientInfo.IPAddr,
 		}
 		s.clientInfo.UserID = loginReq.UserID
 		im_log.Info("用户[%v] IP[%v]尝试登录\n", loginReq.UserID, s.GetClientConn().GetIP())

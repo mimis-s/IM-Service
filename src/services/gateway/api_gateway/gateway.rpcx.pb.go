@@ -6,6 +6,7 @@ package api_gateway
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	_ "github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	math "math"
 )
 
@@ -55,6 +56,18 @@ func SingleNewGatewayClient(etcdAddrs []string, timeout time.Duration, etcdBaseP
 
 // 外部调用函数
 
+func GetClientConnType(ctx context.Context,
+	in *GetClientConnTypeReq) (*GetClientConnTypeRes, error) {
+
+	if callSingleMethodFunc != nil {
+		GatewayClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(GetClientConnTypeRes)
+	out, err := GatewayClientInstance.GetClientConnType(ctx, in)
+	return out, err
+}
+
 func NotifyClient(ctx context.Context,
 	in *NotifyClientReq) (*NotifyClientRes, error) {
 
@@ -67,13 +80,34 @@ func NotifyClient(ctx context.Context,
 	return out, err
 }
 
+func SendToClient(ctx context.Context,
+	in *SendToClientReq) (*SendToClientRes, error) {
+
+	if callSingleMethodFunc != nil {
+		GatewayClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(SendToClientRes)
+	out, err := GatewayClientInstance.SendToClient(ctx, in)
+	return out, err
+}
+
 type GatewayClientInterface interface {
+	GetClientConnType(context.Context, *GetClientConnTypeReq) (*GetClientConnTypeRes, error)
 	NotifyClient(context.Context, *NotifyClientReq) (*NotifyClientRes, error)
+	SendToClient(context.Context, *SendToClientReq) (*SendToClientRes, error)
 }
 
 // rpcx客户端
 type GatewayRpcxClient struct {
 	c *client.ClientManager
+}
+
+func (c *GatewayRpcxClient) GetClientConnType(ctx context.Context,
+	in *GetClientConnTypeReq) (*GetClientConnTypeRes, error) {
+	out := new(GetClientConnTypeRes)
+	err := c.c.Call(ctx, "GetClientConnType", in, out)
+	return out, err
 }
 
 func (c *GatewayRpcxClient) NotifyClient(ctx context.Context,
@@ -83,8 +117,22 @@ func (c *GatewayRpcxClient) NotifyClient(ctx context.Context,
 	return out, err
 }
 
+func (c *GatewayRpcxClient) SendToClient(ctx context.Context,
+	in *SendToClientReq) (*SendToClientRes, error) {
+	out := new(SendToClientRes)
+	err := c.c.Call(ctx, "SendToClient", in, out)
+	return out, err
+}
+
 // 本地调用客户端
 type GatewayLocalClient struct {
+}
+
+func (c *GatewayLocalClient) GetClientConnType(ctx context.Context,
+	in *GetClientConnTypeReq) (*GetClientConnTypeRes, error) {
+	out := new(GetClientConnTypeRes)
+	err := GatewayServiceLocal.GetClientConnType(ctx, in, out)
+	return out, err
 }
 
 func (c *GatewayLocalClient) NotifyClient(ctx context.Context,
@@ -94,8 +142,17 @@ func (c *GatewayLocalClient) NotifyClient(ctx context.Context,
 	return out, err
 }
 
+func (c *GatewayLocalClient) SendToClient(ctx context.Context,
+	in *SendToClientReq) (*SendToClientRes, error) {
+	out := new(SendToClientRes)
+	err := GatewayServiceLocal.SendToClient(ctx, in, out)
+	return out, err
+}
+
 type GatewayServiceInterface interface {
+	GetClientConnType(context.Context, *GetClientConnTypeReq, *GetClientConnTypeRes) error
 	NotifyClient(context.Context, *NotifyClientReq, *NotifyClientRes) error
+	SendToClient(context.Context, *SendToClientReq, *SendToClientRes) error
 }
 
 var GatewayServiceLocal GatewayServiceInterface

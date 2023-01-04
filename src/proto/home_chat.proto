@@ -26,7 +26,7 @@ message ChatMessage {
     int64 SenderID = 1;         // 发送者userid
     int64 ReceiverID = 2;       // 接收者userid
 
-    int32 MessageID = 3;                    // 消息ID(递增)
+    int64 MessageID = 3;                    // 消息ID(递增)
     MessageType_Enum MessageType = 4;       // 消息类型
     int64 SendTimeStamp = 5;                // 发送消息的时间戳
     MessageStatus_Enum MessageStatus = 6;   // 消息状态

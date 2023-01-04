@@ -1,57 +1,72 @@
 package service
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
+	"github.com/mimis-s/IM-Service/src/services/gateway/api_gateway"
 	"github.com/mimis-s/golang_tools/net/clientConn"
 )
 
 /*
-	主要用于给对应userID的客户端发送消息, 现在不考虑历史消息延迟推送, 只考虑实时在线的消息推送
-	如果接收端不在线，则直接丢弃包, 这个过程要在返回发送端消息之前，确保接收端在线
+	主要用于给对应userID的客户端发送消息
 */
 
-func SendToUser(sendUserID, receiverUserID int64, msg_id uint32, msg interface{}) error {
-	c, ok := cacheClient.Load(receiverUserID)
+func (s *Service) SendToClient(ctx context.Context, req *api_gateway.SendToClientReq, res *api_gateway.SendToClientRes) error {
+	c, ok := cacheClient.Load(req.ReceiverID)
 	if !ok {
 		// 接收方未登录, 消息无法到达
 		errStr := fmt.Sprintf("user[%v] send msg[%v] to user[%v], but receiver not online",
-			sendUserID, msg_id, receiverUserID)
+			req.SenderID, req.MsgTag, req.ReceiverID)
 		fmt.Println(errStr)
 		return fmt.Errorf(errStr)
 	}
 
 	session := c.(*Session)
-	var err error
-	data := make([]byte, 0)
-	if session.GetClientConn().GetConnType() == clientConn.ClientConn_HTTP_Enum {
-		data, err = json.Marshal(msg)
-	} else if session.GetClientConn().GetConnType() == clientConn.ClientConn_TCP_Enum {
-		data, err = proto.Marshal(msg.(proto.Message))
-	}
-	if err != nil {
-		errStr := fmt.Sprintf("user[%v] send msg[%v] to user[%v], but is err:%v",
-			sendUserID, msg_id, receiverUserID, err)
-		fmt.Println(errStr)
-		return fmt.Errorf(errStr)
-	}
 
 	resClientMsg := &clientConn.ClientMsg{
-		Tag: int(msg_id),
-		Msg: data,
+		Tag: int(req.MsgTag),
+		Msg: []byte(req.Payload),
 	}
 
-	err = session.GetClientConn().SendMsg(resClientMsg)
+	err := session.GetClientConn().SendMsg(resClientMsg)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] send msg[%v] to user[%v], but is err:%v",
-			sendUserID, msg_id, receiverUserID, err)
+			req.SenderID, req.MsgTag, req.ReceiverID, err)
 		fmt.Println(errStr)
 		return fmt.Errorf(errStr)
 	}
 
-	im_log.Info("user[%v] send to user[%v] msg_id[%v] msg:%v", sendUserID, receiverUserID, msg_id, msg)
+	im_log.Info("user[%v] send to user[%v] msg_id[%v] msg:%v", req.SenderID, req.ReceiverID, req.MsgTag, req.Payload)
+	return nil
+}
+
+func (s *Service) NotifyClient(ctx context.Context, req *api_gateway.NotifyClientReq, res *api_gateway.NotifyClientRes) error {
+	c, ok := cacheClient.Load(req.UserID)
+	if !ok {
+		// 接收方未登录, 消息无法到达
+		errStr := fmt.Sprintf("notify send msg id[%v] to user[%v], but receiver not online",
+			req.MsgTag, req.UserID)
+		fmt.Println(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	session := c.(*Session)
+
+	resClientMsg := &clientConn.ClientMsg{
+		Tag: int(req.MsgTag),
+		Msg: []byte(req.Payload),
+	}
+
+	err := session.GetClientConn().SendMsg(resClientMsg)
+	if err != nil {
+		errStr := fmt.Sprintf("notify send msg id[%v] to user[%v], but send id err:%v",
+			req.MsgTag, req.UserID, err)
+		fmt.Println(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	im_log.Info("notify send to user[%v] msg_id[%v] msg:%v", req.UserID, req.MsgTag, req.Payload)
 	return nil
 }

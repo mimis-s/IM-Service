@@ -1,16 +1,43 @@
 syntax = "proto3";
 
 package api_gateway;
+import "errors.proto";
 
 service Gateway {
+
+    // 获取连接类型
+    rpc GetClientConnType(GetClientConnTypeReq) returns (GetClientConnTypeRes) {};
+
     rpc NotifyClient(NotifyClientReq) returns (NotifyClientRes) {};
+    rpc SendToClient(SendToClientReq) returns (SendToClientRes) {};
+}
+
+message GetClientConnTypeReq {
+    int64 UserID = 1;
+}
+
+message GetClientConnTypeRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    int32 ConnType = 2;
 }
 
 message NotifyClientReq {
-    string MsgTag = 1;
-    bytes Payload = 2;
+    int64 UserID = 1;
+    uint32 MsgTag = 2;
+    bytes Payload = 3;
 }
 
 message NotifyClientRes {
-    string msg = 1;
 }
+
+
+message SendToClientReq {
+    int64 SenderID = 1;
+    int64 ReceiverID = 2;
+    uint32 MsgTag = 3;
+    bytes Payload = 4;
+}
+
+message SendToClientRes {
+}
+

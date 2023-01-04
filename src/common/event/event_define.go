@@ -5,6 +5,7 @@ import (
 )
 
 var (
+	Event_UserLogin        = &rabbitmq.EventStruct{"user.login.ok", UserLogin{}}
 	Event_SingleMessage    = &rabbitmq.EventStruct{"user.message.single", SingleMessage{}}
 	Event_ApplyFriend      = &rabbitmq.EventStruct{"user.message.apply.friend", ApplyFriend{}}
 	Event_AgreeApplyFriend = &rabbitmq.EventStruct{"user.message.agree.apply.friend", AgreeApplyFriend{}}

@@ -1,11 +1,14 @@
 package job
 
 import (
+	"context"
+
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/event"
-	send_to "github.com/mimis-s/IM-Service/src/services/gateway/service"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
+	"github.com/mimis-s/IM-Service/src/services/message/api_message"
 	"github.com/mimis-s/IM-Service/src/services/relay/service"
 	"github.com/mimis-s/golang_tools/mq/rabbitmq"
 )
@@ -35,12 +38,25 @@ func InitMQ(s *service.Service, configOptions *boot_config.ConfigOptions) *Job {
 func (j *Job) singleMessage(payload interface{}) error {
 	singleMessage := payload.(*event.SingleMessage)
 
-	chatSingleToReceiver := &im_home_proto.ChatSingleToReceiver{
-		Data: singleMessage.Message,
+	// 存储消息
+	saveSingleChatMessageReq := &api_message.SaveSingleChatMessageReq{
+		ClientInfo: singleMessage.UserInfo,
+		Data:       singleMessage.Message,
 	}
-	msg_id := seralize.GetMsgIdByStruct(im_home_proto.ChatSingleToReceiver{})
+	saveSingleChatMessageRes, err := api_message.SaveSingleChatMessage(context.Background(), saveSingleChatMessageReq)
+	if err != nil {
+		im_log.Warn("user[%v] to [%v] chat save is err:%v", singleMessage.Message.SenderID,
+			singleMessage.Message.ReceiverID, err)
+		return err
+	}
+	if saveSingleChatMessageRes.IsOnline {
+		chatSingleToReceiver := &im_home_proto.ChatSingleToReceiver{
+			Data: singleMessage.Message,
+		}
+		msg_id := seralize.GetMsgIdByStruct(im_home_proto.ChatSingleToReceiver{})
 
-	send_to.SendToUser(singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, msg_id, chatSingleToReceiver)
+		return j.s.SendToClient(singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, msg_id, chatSingleToReceiver)
+	}
 
 	return nil
 }
@@ -49,9 +65,7 @@ func (j *Job) singleMessage(payload interface{}) error {
 func (j *Job) applyFriend(payload interface{}) error {
 	applyFriendData := payload.(*event.ApplyFriend)
 	msg_id := seralize.GetMsgIdByStruct(im_home_proto.ApplyFriendsToReceiver{})
-
-	send_to.SendToUser(applyFriendData.Message.SenderID, applyFriendData.Message.ReceiverID, msg_id, applyFriendData.Message)
-	return nil
+	return j.s.SendToClient(applyFriendData.Message.SenderID, applyFriendData.Message.ReceiverID, msg_id, applyFriendData.Message)
 }
 
 // 转发同意好友申请
@@ -59,6 +73,5 @@ func (j *Job) agreeApplyFriend(payload interface{}) error {
 	agreeApplyFriendData := payload.(*event.AgreeApplyFriend)
 	msg_id := seralize.GetMsgIdByStruct(im_home_proto.AgreeApplyFriendsToReceiver{})
 
-	send_to.SendToUser(agreeApplyFriendData.Message.SenderID, agreeApplyFriendData.Message.ReceiverID, msg_id, agreeApplyFriendData.Message)
-	return nil
+	return j.s.SendToClient(agreeApplyFriendData.Message.SenderID, agreeApplyFriendData.Message.ReceiverID, msg_id, agreeApplyFriendData.Message)
 }

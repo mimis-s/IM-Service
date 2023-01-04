@@ -57,20 +57,20 @@ func SingleNewMessageClient(etcdAddrs []string, timeout time.Duration, etcdBaseP
 
 // 外部调用函数
 
-func SaveOffLineMessage(ctx context.Context,
-	in *SaveOffLineMessageReq) (*SaveOffLineMessageRes, error) {
+func SaveSingleChatMessage(ctx context.Context,
+	in *SaveSingleChatMessageReq) (*SaveSingleChatMessageRes, error) {
 
 	if callSingleMethodFunc != nil {
 		MessageClientOnce.Do(callSingleMethodFunc)
 	}
 
-	out := new(SaveOffLineMessageRes)
-	out, err := MessageClientInstance.SaveOffLineMessage(ctx, in)
+	out := new(SaveSingleChatMessageRes)
+	out, err := MessageClientInstance.SaveSingleChatMessage(ctx, in)
 	return out, err
 }
 
 type MessageClientInterface interface {
-	SaveOffLineMessage(context.Context, *SaveOffLineMessageReq) (*SaveOffLineMessageRes, error)
+	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq) (*SaveSingleChatMessageRes, error)
 }
 
 // rpcx客户端
@@ -78,10 +78,10 @@ type MessageRpcxClient struct {
 	c *client.ClientManager
 }
 
-func (c *MessageRpcxClient) SaveOffLineMessage(ctx context.Context,
-	in *SaveOffLineMessageReq) (*SaveOffLineMessageRes, error) {
-	out := new(SaveOffLineMessageRes)
-	err := c.c.Call(ctx, "SaveOffLineMessage", in, out)
+func (c *MessageRpcxClient) SaveSingleChatMessage(ctx context.Context,
+	in *SaveSingleChatMessageReq) (*SaveSingleChatMessageRes, error) {
+	out := new(SaveSingleChatMessageRes)
+	err := c.c.Call(ctx, "SaveSingleChatMessage", in, out)
 	return out, err
 }
 
@@ -89,15 +89,15 @@ func (c *MessageRpcxClient) SaveOffLineMessage(ctx context.Context,
 type MessageLocalClient struct {
 }
 
-func (c *MessageLocalClient) SaveOffLineMessage(ctx context.Context,
-	in *SaveOffLineMessageReq) (*SaveOffLineMessageRes, error) {
-	out := new(SaveOffLineMessageRes)
-	err := MessageServiceLocal.SaveOffLineMessage(ctx, in, out)
+func (c *MessageLocalClient) SaveSingleChatMessage(ctx context.Context,
+	in *SaveSingleChatMessageReq) (*SaveSingleChatMessageRes, error) {
+	out := new(SaveSingleChatMessageRes)
+	err := MessageServiceLocal.SaveSingleChatMessage(ctx, in, out)
 	return out, err
 }
 
 type MessageServiceInterface interface {
-	SaveOffLineMessage(context.Context, *SaveOffLineMessageReq, *SaveOffLineMessageRes) error
+	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq, *SaveSingleChatMessageRes) error
 }
 
 var MessageServiceLocal MessageServiceInterface

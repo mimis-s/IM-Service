@@ -50,7 +50,7 @@ func init() {
 	configOptions = boot_config.ParseBootConfigOptions()
 	boot_config.SetConfigOptions(configOptions)
 	// 日志
-	im_log.NewLogger("./")
+	im_log.NewLogger(configOptions.BootConfigFile.Log.Path + "/" + "log.log")
 }
 
 func main() {

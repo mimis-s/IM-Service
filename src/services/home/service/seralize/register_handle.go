@@ -6,7 +6,6 @@ import (
 	"reflect"
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 )
 
@@ -28,7 +27,6 @@ func newMsgMetaData(s interface{}) *msgMetaData {
 		return nil
 	}
 	typeOf := reflect.TypeOf(s)
-	im_log.Info("name:%v crc32:%v\n", typeOf.Name(), GetMsgIDByName(typeOf.Name()))
 	return &msgMetaData{
 		OriginalStruct: s,
 		TypeOf:         typeOf,

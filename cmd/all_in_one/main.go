@@ -44,11 +44,16 @@ func initRpcxClient(configOptions *boot_config.ConfigOptions) {
 	api_gateway.SingleNewGatewayClient(etcdAddrs, timeout, etcdBasePath, isLocal)
 }
 
-func main() {
+var configOptions *boot_config.ConfigOptions
 
-	configOptions := boot_config.ParseBootConfigOptions()
-
+func init() {
+	configOptions = boot_config.ParseBootConfigOptions()
 	boot_config.SetConfigOptions(configOptions)
+	// 日志
+	im_log.NewLogger("./")
+}
+
+func main() {
 
 	initRpcxClient(configOptions)
 

@@ -26,7 +26,7 @@ func NewLogger(logPath string) {
 			EncodeLevel: zapcore.LowercaseLevelEncoder, // INFO
 
 			TimeKey:    "time",
-			EncodeTime: zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05"),
+			EncodeTime: zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05.000000"),
 
 			CallerKey: "caller",
 			EncodeCaller: func(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder) {

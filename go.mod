@@ -8,7 +8,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
-	github.com/mimis-s/golang_tools v0.0.0-20230103073616-19eb1a56bf93
+	github.com/mimis-s/golang_tools v0.0.0-20230105014707-a785930aeb55
 	github.com/yitter/idgenerator-go v1.3.2
 	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
 	gopkg.in/yaml.v3 v3.0.1

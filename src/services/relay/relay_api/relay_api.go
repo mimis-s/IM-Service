@@ -9,10 +9,9 @@ import (
 	"github.com/mimis-s/IM-Service/src/services/gateway/api_gateway"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/golang_tools/net/clientConn"
-	"google.golang.org/protobuf/proto"
 )
 
-func NotifyUser(userID int64, msgStruct interface{}) error {
+func NotifyUser(userID int64, msgStruct seralize.Message) error {
 	getClientConnTypeReq := &api_gateway.GetClientConnTypeReq{}
 	getClientConnTypeRes, err := api_gateway.GetClientConnType(context.Background(), getClientConnTypeReq)
 	if err != nil {
@@ -22,7 +21,7 @@ func NotifyUser(userID int64, msgStruct interface{}) error {
 	var payLoad []byte
 
 	if clientConn.ClientConn_Enum(getClientConnTypeRes.ConnType) == clientConn.ClientConn_TCP_Enum {
-		payLoad, err = proto.Marshal(msgStruct.(proto.Message))
+		payLoad, err = seralize.Marshal(msgStruct)
 		if err != nil {
 			im_log.Warn("proto marshal[%v] is err:%v", msgStruct, err)
 			return err

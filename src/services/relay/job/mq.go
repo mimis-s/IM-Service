@@ -2,11 +2,13 @@ package job
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/event"
 	"github.com/mimis-s/IM-Service/src/common/im_log"
+	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/IM-Service/src/services/message/api_message"
 	"github.com/mimis-s/IM-Service/src/services/relay/service"
@@ -65,7 +67,24 @@ func (j *Job) singleMessage(payload interface{}) error {
 func (j *Job) applyFriend(payload interface{}) error {
 	applyFriendData := payload.(*event.ApplyFriend)
 	msg_id := seralize.GetMsgIdByStruct(im_home_proto.ApplyFriendsToReceiver{})
-	return j.s.SendToClient(applyFriendData.Message.SenderID, applyFriendData.Message.ReceiverID, msg_id, applyFriendData.Message)
+
+	// 判断接收者是否在线
+	getUserInfoReq := &api_account.GetUserInfoServiceReq{
+		ClientInfo: applyFriendData.UserInfo,
+		UserID:     applyFriendData.Message.ReceiverID,
+	}
+	getUserInfoRes, err := api_account.GetUserInfoService(context.Background(), getUserInfoReq)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but is err:%v", applyFriendData.UserInfo.UserID,
+			applyFriendData.Message.ReceiverID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	if getUserInfoRes.Data.Status == im_home_proto.Enum_UserStatus_Enum_UserStatus_Online {
+		return j.s.SendToClient(applyFriendData.Message.SenderID, applyFriendData.Message.ReceiverID, msg_id, applyFriendData.Message)
+	}
+	return nil
 }
 
 // 转发同意好友申请
@@ -73,5 +92,21 @@ func (j *Job) agreeApplyFriend(payload interface{}) error {
 	agreeApplyFriendData := payload.(*event.AgreeApplyFriend)
 	msg_id := seralize.GetMsgIdByStruct(im_home_proto.AgreeApplyFriendsToReceiver{})
 
-	return j.s.SendToClient(agreeApplyFriendData.Message.SenderID, agreeApplyFriendData.Message.ReceiverID, msg_id, agreeApplyFriendData.Message)
+	// 判断接收者是否在线
+	getUserInfoReq := &api_account.GetUserInfoServiceReq{
+		ClientInfo: agreeApplyFriendData.UserInfo,
+		UserID:     agreeApplyFriendData.Message.ReceiverID,
+	}
+	getUserInfoRes, err := api_account.GetUserInfoService(context.Background(), getUserInfoReq)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] get user[%v] info, but is err:%v", agreeApplyFriendData.UserInfo.UserID,
+			agreeApplyFriendData.Message.ReceiverID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	if getUserInfoRes.Data.Status == im_home_proto.Enum_UserStatus_Enum_UserStatus_Online {
+		return j.s.SendToClient(agreeApplyFriendData.Message.SenderID, agreeApplyFriendData.Message.ReceiverID, msg_id, agreeApplyFriendData.Message)
+	}
+	return nil
 }

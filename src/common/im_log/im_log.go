@@ -49,16 +49,16 @@ func getCallerInfoForLog() (callerStr string) {
 }
 
 func Info(v ...interface{}) {
-	info := fmt.Sprintf(v[0].(string)+"\n", v[1:]...)
+	info := fmt.Sprintf(v[0].(string), v[1:]...)
 	logger.Info(info)
 }
 
 func Warn(v ...interface{}) {
-	info := fmt.Sprintf(v[0].(string)+"\n", v[1:]...)
+	info := fmt.Sprintf(v[0].(string), v[1:]...)
 	logger.Warn(info)
 }
 
 func Error(v ...interface{}) {
-	info := fmt.Sprintf(v[0].(string)+"\n", v[1:]...)
+	info := fmt.Sprintf(v[0].(string), v[1:]...)
 	logger.Error(info)
 }

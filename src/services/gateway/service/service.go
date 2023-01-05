@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
+	"github.com/mimis-s/IM-Service/src/services/gateway/api_gateway"
 	"github.com/mimis-s/IM-Service/src/services/gateway/dao"
 	"github.com/mimis-s/golang_tools/net"
 )
@@ -23,6 +24,14 @@ func Init(configOptions *boot_config.ConfigOptions) *Service {
 	S = &Service{
 		Dao: d,
 	}
+
+	listenAddr := configOptions.CommandFlags.RpcListenPort
+	addr := configOptions.CommandFlags.RpcExposePort
+	etcdAddrs := configOptions.BootConfigFile.Etcd.Addrs
+	etcdBasePath := configOptions.BootConfigFile.Etcd.EtcdBasePath
+	isLocal := configOptions.BootConfigFile.IsLocal
+	// 启动rpcx服务
+	api_gateway.NewGatewayServiceAndRun(listenAddr, addr, etcdAddrs, S, etcdBasePath, isLocal)
 
 	webAddr := configOptions.CommandFlags.IP + ":" + configOptions.CommandFlags.WebPort
 

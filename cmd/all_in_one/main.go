@@ -19,6 +19,7 @@ import (
 	"github.com/mimis-s/IM-Service/src/services/friends"
 	"github.com/mimis-s/IM-Service/src/services/friends/api_friends"
 	"github.com/mimis-s/IM-Service/src/services/gateway"
+	"github.com/mimis-s/IM-Service/src/services/gateway/api_gateway"
 	"github.com/mimis-s/IM-Service/src/services/home"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/message"
@@ -40,6 +41,7 @@ func initRpcxClient(configOptions *boot_config.ConfigOptions) {
 	api_friends.SingleNewFriendsClient(etcdAddrs, timeout, etcdBasePath, isLocal)
 	api_overrall.SingleNewOverrallClient(etcdAddrs, timeout, etcdBasePath, isLocal)
 	api_message.SingleNewMessageClient(etcdAddrs, timeout, etcdBasePath, isLocal)
+	api_gateway.SingleNewGatewayClient(etcdAddrs, timeout, etcdBasePath, isLocal)
 }
 
 func main() {

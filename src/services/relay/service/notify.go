@@ -7,16 +7,18 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/gateway/api_gateway"
+	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/golang_tools/net/clientConn"
-	"google.golang.org/protobuf/proto"
 )
 
 /*
 	现在有两种类型 1:服务器主动推送 2:服务器转发客户端数据
 */
 
-func (s *Service) SendToClient(senderID, receiverID int64, msgID uint32, msgStruct interface{}) error {
-	getClientConnTypeReq := &api_gateway.GetClientConnTypeReq{}
+func (s *Service) SendToClient(senderID, receiverID int64, msgID uint32, msgStruct seralize.Message) error {
+	getClientConnTypeReq := &api_gateway.GetClientConnTypeReq{
+		UserID: receiverID,
+	}
 	getClientConnTypeRes, err := api_gateway.GetClientConnType(context.Background(), getClientConnTypeReq)
 	if err != nil {
 		im_log.Warn("senderID[%v] get receiverID[%v] conn type is err:%v", senderID, receiverID, err)
@@ -25,7 +27,7 @@ func (s *Service) SendToClient(senderID, receiverID int64, msgID uint32, msgStru
 	var payLoad []byte
 
 	if clientConn.ClientConn_Enum(getClientConnTypeRes.ConnType) == clientConn.ClientConn_TCP_Enum {
-		payLoad, err = proto.Marshal(msgStruct.(proto.Message))
+		payLoad, err = seralize.Marshal(msgStruct)
 		if err != nil {
 			im_log.Warn("proto marshal[%v] is err:%v", msgStruct, err)
 			return err

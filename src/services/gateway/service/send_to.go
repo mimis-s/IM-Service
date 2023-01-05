@@ -38,7 +38,7 @@ func (s *Service) SendToClient(ctx context.Context, req *api_gateway.SendToClien
 		return fmt.Errorf(errStr)
 	}
 
-	im_log.Info("user[%v] send to user[%v] msg_id[%v] msg:%v", req.SenderID, req.ReceiverID, req.MsgTag, req.Payload)
+	im_log.Info("user[%v] send to user[%v] msg_id[%v]", req.SenderID, req.ReceiverID, req.MsgTag)
 	return nil
 }
 
@@ -67,6 +67,6 @@ func (s *Service) NotifyClient(ctx context.Context, req *api_gateway.NotifyClien
 		return fmt.Errorf(errStr)
 	}
 
-	im_log.Info("notify send to user[%v] msg_id[%v] msg:%v", req.UserID, req.MsgTag, req.Payload)
+	im_log.Info("notify send to user[%v] msg_id[%v]", req.UserID, req.MsgTag)
 	return nil
 }

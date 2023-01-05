@@ -41,7 +41,11 @@ func (j *Job) userLoginOk(payload interface{}) error {
 		return err
 	}
 
-	notifyUserMessage := im_home_proto.NotifyUserMessage{
+	if len(userChatMessage) == 0 {
+		return nil
+	}
+
+	notifyUserMessage := &im_home_proto.NotifyUserMessage{
 		OfflineSingleChat: make([]*im_home_proto.NotifyOfflineMessage, 0),
 	}
 	usersInfoReq := &api_account.GetUsersInfoServiceReq{
@@ -56,7 +60,7 @@ func (j *Job) userLoginOk(payload interface{}) error {
 
 	usersInfoRes, err := api_account.GetUsersInfoService(context.Background(), usersInfoReq)
 	if err != nil {
-		im_log.Warn("user[%v] login ok, but friends[%v] info is err:%v", userLogin.UserInfo.UserID, err)
+		im_log.Warn("user[%v] login ok, but friends[%v] info is err:%v", userLogin.UserInfo.UserID, usersInfoReq.UserIDs, err)
 		return err
 	}
 

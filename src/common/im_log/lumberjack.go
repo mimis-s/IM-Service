@@ -241,7 +241,7 @@ func (l *DivisionLogger) openNew() error {
 	// Copy the mode off the old logfile.
 	// mode = info.Mode()
 	// move the existing file
-	newName := backupName(name, l.LocalTime, l.BackupTimeFormat)
+	// newName := backupName(name, l.LocalTime, l.BackupTimeFormat)
 	// if err := os.Rename(name, newname); err != nil {
 	// 	return fmt.Errorf("can't rename log file: %s", err)
 	// }
@@ -250,7 +250,7 @@ func (l *DivisionLogger) openNew() error {
 	// if err := chown(newname, info); err != nil {
 	// 	return err
 	// }
-	f, err := os.OpenFile(newName, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, mode)
+	f, err := os.OpenFile(name, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, mode)
 	if err != nil {
 		return fmt.Errorf("can't open new logfile: %s", err)
 	}

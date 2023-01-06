@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mimis-s/IM-Service/src/common/im_log"
+	"github.com/go-redis/redis/v8"
 	"github.com/mimis-s/golang_tools/lib"
 )
 
@@ -21,30 +21,31 @@ func (d *Dao) GetMessageID(senderID, receiverID int64) (int64, error) {
 
 	keySecondary := strconv.FormatInt(userFrist, 10) + "-" + strconv.FormatInt(userSecond, 10)
 
-	strMessageID, err := d.cache.Client.HGet(context.Background(), userMessageIDPrefix, keySecondary).Result()
-	if err != nil {
-		errStr := fmt.Sprintf("user[%v][%v] redis get message id is err:%v", senderID, receiverID, err)
-		im_log.Warn(errStr)
-		return 0, fmt.Errorf(errStr)
-	}
-	var messageID int64
-	if strMessageID == "" {
-		messageID = 0
-	} else {
-		messageID, err = strconv.ParseInt(strMessageID, 10, 64)
-		if err != nil {
-			errStr := fmt.Sprintf("user[%v][%v] redis get message id is err:%v", senderID, receiverID, err)
-			im_log.Warn(errStr)
-			return 0, fmt.Errorf(errStr)
-		}
-	}
-	v := strconv.FormatInt(messageID+1, 10)
+	var luaScript = redis.NewScript(`
+		if redis.call("hexists", KEYS[1], ARGV[1]) == 0 then
+			redis.call("hset", KEYS[1], ARGV[1], 1)
+			return "0"
+		else
+			local value = redis.call("hget", KEYS[1], ARGV[1])
+			redis.call("hset", KEYS[1], ARGV[1], value + 1)
+			return value
+		end
+	`)
 
-	_, err = d.cache.Client.HSet(context.Background(), userMessageIDPrefix, keySecondary, v).Result()
+	var res interface{}
+	res, err := luaScript.Run(context.Background(), d.cache.Client, []string{userMessageIDPrefix}, keySecondary).Result()
 	if err != nil {
-		errStr := fmt.Sprintf(" redis set user[%v][%v] message id[%v] is err:%v", receiverID, senderID, messageID+1, err)
-		im_log.Warn(errStr)
-		return 0, fmt.Errorf(errStr)
+		return 0, err
+	}
+
+	res1, ok := res.(string)
+	if !ok {
+		return 0, fmt.Errorf("interface to string is fail")
+	}
+
+	messageID, err := strconv.ParseInt(res1, 10, 64)
+	if err != nil {
+		return 0, err
 	}
 
 	return messageID, nil

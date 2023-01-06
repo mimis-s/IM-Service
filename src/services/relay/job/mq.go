@@ -57,8 +57,13 @@ func (j *Job) singleMessage(payload interface{}) error {
 		}
 		msg_id := seralize.GetMsgIdByStruct(im_home_proto.ChatSingleToReceiver{})
 
+		im_log.Info("user[%v] to user[%v] on line chat message[%v]",
+			singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message.MessageID, singleMessage.Message)
+
 		return j.s.SendToClient(singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, msg_id, chatSingleToReceiver)
 	}
+	im_log.Info("user[%v] to off line user[%v] chat message[%v]",
+		singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message)
 
 	return nil
 }
@@ -82,8 +87,15 @@ func (j *Job) applyFriend(payload interface{}) error {
 	}
 
 	if getUserInfoRes.Data.Status == im_home_proto.Enum_UserStatus_Enum_UserStatus_Online {
+		im_log.Info("user[%v] to on line user[%v] apply friend",
+			applyFriendData.Message.SenderID, applyFriendData.Message.ReceiverID)
+
 		return j.s.SendToClient(applyFriendData.Message.SenderID, applyFriendData.Message.ReceiverID, msg_id, applyFriendData.Message)
 	}
+
+	im_log.Info("user[%v] to off line user[%v] apply friend",
+		applyFriendData.Message.SenderID, applyFriendData.Message.ReceiverID)
+
 	return nil
 }
 
@@ -106,7 +118,14 @@ func (j *Job) agreeApplyFriend(payload interface{}) error {
 	}
 
 	if getUserInfoRes.Data.Status == im_home_proto.Enum_UserStatus_Enum_UserStatus_Online {
+		im_log.Info("user[%v] to off line user[%v] agree apply friend",
+			agreeApplyFriendData.Message.SenderID, agreeApplyFriendData.Message.ReceiverID)
+
 		return j.s.SendToClient(agreeApplyFriendData.Message.SenderID, agreeApplyFriendData.Message.ReceiverID, msg_id, agreeApplyFriendData.Message)
 	}
+
+	im_log.Info("user[%v] to off line user[%v] agree apply friend",
+		agreeApplyFriendData.Message.SenderID, agreeApplyFriendData.Message.ReceiverID)
+
 	return nil
 }

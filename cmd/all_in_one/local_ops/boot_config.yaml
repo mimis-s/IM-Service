@@ -10,7 +10,7 @@ etcd:
     - localhost:2379
 redis:
   addr: "localhost:6379"
-  db: 1 # 数据库,888,切换数据库select 888
+  db: 2 # 数据库,888,切换数据库select 888
   # password: "123"
 mq:   # 消息队列
   durable: false # 数据是否持久

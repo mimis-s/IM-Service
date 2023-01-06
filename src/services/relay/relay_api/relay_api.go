@@ -4,6 +4,7 @@ import (
 	context "context"
 	"encoding/json"
 	"fmt"
+	"reflect"
 
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/gateway/api_gateway"
@@ -12,7 +13,9 @@ import (
 )
 
 func NotifyUser(userID int64, msgStruct seralize.Message) error {
-	getClientConnTypeReq := &api_gateway.GetClientConnTypeReq{}
+	getClientConnTypeReq := &api_gateway.GetClientConnTypeReq{
+		UserID: userID,
+	}
 	getClientConnTypeRes, err := api_gateway.GetClientConnType(context.Background(), getClientConnTypeReq)
 	if err != nil {
 		im_log.Warn("notify user[%v] get conn type is err:%v", userID, err)
@@ -37,7 +40,8 @@ func NotifyUser(userID int64, msgStruct seralize.Message) error {
 		im_log.Warn(errStr)
 		return fmt.Errorf(errStr)
 	}
-	msgID := seralize.GetMsgIdByStruct(msgStruct)
+
+	msgID := seralize.GetMsgIDByName(reflect.TypeOf(msgStruct).Elem().Name())
 
 	notifyClientReq := &api_gateway.NotifyClientReq{
 		UserID:  userID,

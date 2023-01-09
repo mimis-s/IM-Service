@@ -69,8 +69,21 @@ func SaveSingleChatMessage(ctx context.Context,
 	return out, err
 }
 
+func GetSingleChatHistory(ctx context.Context,
+	in *GetSingleChatHistoryReq) (*GetSingleChatHistoryRes, error) {
+
+	if callSingleMethodFunc != nil {
+		MessageClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(GetSingleChatHistoryRes)
+	out, err := MessageClientInstance.GetSingleChatHistory(ctx, in)
+	return out, err
+}
+
 type MessageClientInterface interface {
 	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq) (*SaveSingleChatMessageRes, error)
+	GetSingleChatHistory(context.Context, *GetSingleChatHistoryReq) (*GetSingleChatHistoryRes, error)
 }
 
 // rpcx客户端
@@ -85,6 +98,13 @@ func (c *MessageRpcxClient) SaveSingleChatMessage(ctx context.Context,
 	return out, err
 }
 
+func (c *MessageRpcxClient) GetSingleChatHistory(ctx context.Context,
+	in *GetSingleChatHistoryReq) (*GetSingleChatHistoryRes, error) {
+	out := new(GetSingleChatHistoryRes)
+	err := c.c.Call(ctx, "GetSingleChatHistory", in, out)
+	return out, err
+}
+
 // 本地调用客户端
 type MessageLocalClient struct {
 }
@@ -96,8 +116,16 @@ func (c *MessageLocalClient) SaveSingleChatMessage(ctx context.Context,
 	return out, err
 }
 
+func (c *MessageLocalClient) GetSingleChatHistory(ctx context.Context,
+	in *GetSingleChatHistoryReq) (*GetSingleChatHistoryRes, error) {
+	out := new(GetSingleChatHistoryRes)
+	err := MessageServiceLocal.GetSingleChatHistory(ctx, in, out)
+	return out, err
+}
+
 type MessageServiceInterface interface {
 	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq, *SaveSingleChatMessageRes) error
+	GetSingleChatHistory(context.Context, *GetSingleChatHistoryReq, *GetSingleChatHistoryRes) error
 }
 
 var MessageServiceLocal MessageServiceInterface

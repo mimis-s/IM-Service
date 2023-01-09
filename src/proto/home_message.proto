@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package im_home_proto;
+import "home_chat.proto";
+
+// 生成golang文件的目录
+option go_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto";
+
+message GetSingleChatHistoryReq {
+    int64 MaxNotGainMessageID = 1;  // 最大未获取的消息id(当id==0的时候获取最新的n条记录)
+    int64 FriendID = 2;
+}
+
+message GetSingleChatHistoryRes {
+    int64 FriendID = 1;
+    repeated ChatMessage Data = 2;
+}

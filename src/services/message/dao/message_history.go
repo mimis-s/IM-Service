@@ -23,7 +23,7 @@ func (d *Dao) AddHistoryMessage(senderID, receiverID int64, chatMessage *im_home
 	historyMessage := &dbmodel.HistoryMessage{
 		UserIdFrist:  userFrist,
 		UserIdSecond: userSecond,
-		MessageId:    int64(chatMessage.MessageID),
+		MessageId:    chatMessage.MessageID,
 		MessageData: dbmodel.TBJsonField_HistoryMessage{
 			HistoryData: chatMessage,
 		},
@@ -32,6 +32,15 @@ func (d *Dao) AddHistoryMessage(senderID, receiverID int64, chatMessage *im_home
 	_, err := d.db.Table((*dbmodel.HistoryMessage).SubTable(nil, userFrist)).InsertOne(historyMessage)
 	if err != nil {
 		errStr := fmt.Sprintf("insert history message sender[%v] receiver[%v] messageID[%v] is err:%v",
+			senderID, receiverID, chatMessage.MessageID, err)
+		im_log.Warn(errStr)
+		return fmt.Errorf(errStr)
+	}
+
+	// 保存最新的message_history_id
+	err = d.UpdateHistoryMessageID(senderID, receiverID, chatMessage.MessageID)
+	if err != nil {
+		errStr := fmt.Sprintf("update redis history message sender[%v] receiver[%v] messageID[%v] is err:%v",
 			senderID, receiverID, chatMessage.MessageID, err)
 		im_log.Warn(errStr)
 		return fmt.Errorf(errStr)
@@ -56,7 +65,7 @@ func (d *Dao) UpdateHistoryMessage(senderID, receiverID, messageID int64, histor
 	return nil
 }
 
-// 获取历史记录(根据messageid范围查询)
+// 获取历史记录(根据messageid范围查询), 发送者和接受者顺序可以颠倒
 func (d *Dao) GetHistoryMessage(senderID, receiverID, minMessageID, maxMessageID int64) ([]*dbmodel.HistoryMessage, error) {
 	historyMessages := make([]*dbmodel.HistoryMessage, 0)
 	userFrist := lib.MinInt64(senderID, receiverID)

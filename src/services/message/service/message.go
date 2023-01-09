@@ -9,6 +9,11 @@ import (
 	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/message/api_message"
+	"github.com/mimis-s/golang_tools/lib"
+)
+
+const (
+	maxGetChatHistoryNum = 20 // 一次获取的最大历史记录条数
 )
 
 // 存储私聊消息
@@ -62,6 +67,48 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 		res.IsOnline = false
 	} else {
 		im_log.Warn("user[%v] online status[%v] is not define", req.Data.ReceiverID, getUserInfoRes.Data.Status)
+	}
+
+	return nil
+}
+
+// 获取私聊历史记录
+func (s *Service) GetSingleChatHistory(ctx context.Context, req *api_message.GetSingleChatHistoryReq, res *api_message.GetSingleChatHistoryRes) error {
+
+	res.Data = &im_home_proto.GetSingleChatHistoryRes{
+		FriendID: req.Data.FriendID,
+		Data:     make([]*im_home_proto.ChatMessage, 0),
+	}
+
+	var maxMessageID int64
+	var minMessageID int64
+	var err error
+	if req.Data.MaxNotGainMessageID == 0 {
+		maxMessageID, err = s.Dao.GetHistoryMessageID(req.ClientInfo.UserID, req.Data.FriendID)
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] get friend[%v] history, but get history message id is err:%v",
+				req.ClientInfo.UserID, req.Data.FriendID, err)
+			im_log.Warn(errStr)
+			res.ErrCode = im_error_proto.ErrCode_db_read_err
+			return fmt.Errorf(errStr)
+		}
+		if maxMessageID == -1 {
+			im_log.Info("user[%v] get friend[%v] history, but not find", req.ClientInfo.UserID, req.Data.FriendID)
+			return nil
+		}
+		minMessageID = lib.MaxInt64(0, maxMessageID-maxGetChatHistoryNum+1)
+	}
+
+	historyMessages, err := s.Dao.GetHistoryMessage(req.ClientInfo.UserID, req.Data.FriendID, minMessageID, maxMessageID)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] get friend[%v] history [%v]-[%v], but get history message db is err:%v",
+			req.ClientInfo.UserID, req.Data.FriendID, minMessageID, maxMessageID, err)
+		im_log.Warn(errStr)
+		res.ErrCode = im_error_proto.ErrCode_db_read_err
+		return fmt.Errorf(errStr)
+	}
+	for _, m := range historyMessages {
+		res.Data.Data = append(res.Data.Data, m.MessageData.HistoryData)
 	}
 
 	return nil

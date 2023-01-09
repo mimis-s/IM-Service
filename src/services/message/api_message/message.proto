@@ -4,11 +4,14 @@ package api_message;
 
 import "home_chat.proto";
 import "home_account.proto";
+import "home_message.proto";
 import "errors.proto";
 
 service Message {
     // 存储私聊消息
     rpc SaveSingleChatMessage(SaveSingleChatMessageReq) returns (SaveSingleChatMessageRes) {};
+    // 获取私聊历史记录
+    rpc GetSingleChatHistory(GetSingleChatHistoryReq) returns (GetSingleChatHistoryRes) {};
 }
 
 message SaveSingleChatMessageReq {
@@ -19,4 +22,14 @@ message SaveSingleChatMessageReq {
 message SaveSingleChatMessageRes {
     im_error_proto.ErrCode ErrCode = 1;
     bool IsOnline = 2;  // 消息接收者是否在线
+}
+
+message GetSingleChatHistoryReq {
+    im_home_proto.ClientOnlineInfo ClientInfo = 1;
+    im_home_proto.GetSingleChatHistoryReq Data = 2;
+}
+
+message GetSingleChatHistoryRes {
+    im_error_proto.ErrCode ErrCode = 1;
+    im_home_proto.GetSingleChatHistoryRes Data = 2;
 }

@@ -57,13 +57,14 @@ func (j *Job) singleMessage(payload interface{}) error {
 		}
 		msg_id := seralize.GetMsgIdByStruct(im_home_proto.ChatSingleToReceiver{})
 
-		im_log.Info("user[%v] to user[%v] on line chat message[%v]",
+		im_log.Info("user[%v] to user[%v] on line chat message id[%v] data[%v]",
 			singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message.MessageID, singleMessage.Message)
 
 		return j.s.SendToClient(singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, msg_id, chatSingleToReceiver)
 	}
-	im_log.Info("user[%v] to off line user[%v] chat message[%v]",
-		singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message)
+
+	im_log.Info("user[%v] to user[%v] off line chat message id[%v] data[%v]",
+		singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message.MessageID, singleMessage.Message)
 
 	return nil
 }

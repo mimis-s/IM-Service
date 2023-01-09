@@ -7,6 +7,7 @@ import (
 	_ "github.com/mimis-s/IM-Service/src/services/home/service/account"
 	_ "github.com/mimis-s/IM-Service/src/services/home/service/chat"
 	_ "github.com/mimis-s/IM-Service/src/services/home/service/friends"
+	_ "github.com/mimis-s/IM-Service/src/services/home/service/message"
 )
 
 var S *Service

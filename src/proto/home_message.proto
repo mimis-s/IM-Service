@@ -15,3 +15,13 @@ message GetSingleChatHistoryRes {
     int64 FriendID = 1;
     repeated ChatMessage Data = 2;
 }
+
+// 读取离线消息
+message ReadOfflineMessageReq {
+    int64 FriendID = 1;
+}
+
+message ReadOfflineMessageRes {
+    int64 FriendID = 1;
+    repeated ChatMessage Data = 2;
+}

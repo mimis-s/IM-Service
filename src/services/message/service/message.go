@@ -113,3 +113,47 @@ func (s *Service) GetSingleChatHistory(ctx context.Context, req *api_message.Get
 
 	return nil
 }
+
+// 读取离线消息
+func (s *Service) ReadOfflineMessage(ctx context.Context, req *api_message.ReadOfflineMessageReq, res *api_message.ReadOfflineMessageRes) error {
+
+	// 读取离线消息并且把离线消息转换成历史消息
+	offlineMessage, err := s.Dao.GetUserOfflineMessage(req.ClientInfo.UserID, req.Data.FriendID)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] get friend[%v] off line message is err:%v",
+			req.ClientInfo.UserID, req.Data.FriendID, err)
+		im_log.Warn(errStr)
+		res.ErrCode = im_error_proto.ErrCode_db_read_err
+		return fmt.Errorf(errStr)
+	}
+
+	for _, offline := range offlineMessage {
+
+		// 插入历史数据
+		offline.MessageStatus = im_home_proto.MessageStatus_Enum_EnumRead
+		err = s.Dao.AddHistoryMessage(offline.SenderID, offline.ReceiverID, offline)
+		if err != nil {
+			res.ErrCode = im_error_proto.ErrCode_db_write_err
+			errStr := fmt.Sprintf("user[%v] add history message[%v] is err:%v",
+				req.ClientInfo.UserID, req.Data, err)
+			im_log.Error(errStr)
+			return fmt.Errorf(errStr)
+		}
+
+		// 删除离线数据
+		err = s.Dao.DelUserOneOfflineMessage(offline.SenderID, offline.ReceiverID)
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] del friend[%v] off line message is err:%v",
+				req.ClientInfo.UserID, req.Data.FriendID, err)
+			im_log.Warn(errStr)
+			res.ErrCode = im_error_proto.ErrCode_db_write_err
+			return fmt.Errorf(errStr)
+		}
+
+	}
+	res.Data = &im_home_proto.ReadOfflineMessageRes{
+		Data: offlineMessage,
+	}
+
+	return nil
+}

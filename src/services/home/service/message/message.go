@@ -13,6 +13,7 @@ import (
 
 func init() {
 	seralize.RegisterHandler(im_home_proto.GetSingleChatHistoryReq{}, im_home_proto.GetSingleChatHistoryRes{}, GetSingleChatHistory)
+	seralize.RegisterHandler(im_home_proto.ReadOfflineMessageReq{}, im_home_proto.ReadOfflineMessageRes{}, ReadOfflineMessage)
 }
 
 func GetSingleChatHistory(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
@@ -26,6 +27,24 @@ func GetSingleChatHistory(ctx context.Context, clientInfo *api_home.ClientReques
 	resRpc, err := api_message.GetSingleChatHistory(context.Background(), reqRpc)
 	if err != nil {
 		im_log.Error("user[%v] get friend[%v] Single Chat History is err:%v", clientInfo.Client.UserID,
+			reqMsg.FriendID, err)
+		return resRpc.ErrCode
+	}
+	resMsg.Data = resRpc.Data.Data
+	return 0
+}
+
+func ReadOfflineMessage(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
+	reqMsg := req.(*im_home_proto.ReadOfflineMessageReq)
+	resMsg := res.(*im_home_proto.ReadOfflineMessageRes)
+
+	reqRpc := &api_message.ReadOfflineMessageReq{
+		ClientInfo: clientInfo.Client,
+		Data:       reqMsg,
+	}
+	resRpc, err := api_message.ReadOfflineMessage(context.Background(), reqRpc)
+	if err != nil {
+		im_log.Error("user[%v] Read friend[%v] Off line Message Single Chat is err:%v", clientInfo.Client.UserID,
 			reqMsg.FriendID, err)
 		return resRpc.ErrCode
 	}

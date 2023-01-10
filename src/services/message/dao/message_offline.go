@@ -91,6 +91,31 @@ func (d *Dao) GetUserAllOfflineMessage(userID int64) (map[int64][]*im_home_proto
 	return mapChatMessage, nil
 }
 
+// 获取用户离线消息
+func (d *Dao) GetUserOfflineMessage(userID int64, friendID int64) ([]*im_home_proto.ChatMessage, error) {
+	userOfflineMessage := userOfflineMessagePrefix + strconv.FormatInt(userID, 10)
+
+	messageData, err := d.cache.Client.HGet(context.Background(), userOfflineMessage, strconv.FormatInt(friendID, 10)).Result()
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] redis get friend[%v] off line message is err:%v", userID, friendID, err)
+		im_log.Warn(errStr)
+		return nil, fmt.Errorf(errStr)
+	}
+
+	messageInfo, err := decodeCacheMessage(messageData)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] redis decode sender[%v] off line message is err:%v", userID, friendID, err)
+		im_log.Warn(errStr)
+		return nil, fmt.Errorf(errStr)
+	}
+
+	if messageInfo == nil || messageInfo.Messages == nil || len(messageInfo.Messages) == 0 {
+		return make([]*im_home_proto.ChatMessage, 0), nil
+	}
+
+	return messageInfo.Messages, nil
+}
+
 // 添加用户离线消息
 func (d *Dao) AddUserOneOfflineMessage(sender, receiver int64, chatMessage *im_home_proto.ChatMessage) error {
 

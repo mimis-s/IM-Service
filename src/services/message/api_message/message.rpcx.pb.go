@@ -81,9 +81,22 @@ func GetSingleChatHistory(ctx context.Context,
 	return out, err
 }
 
+func ReadOfflineMessage(ctx context.Context,
+	in *ReadOfflineMessageReq) (*ReadOfflineMessageRes, error) {
+
+	if callSingleMethodFunc != nil {
+		MessageClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(ReadOfflineMessageRes)
+	out, err := MessageClientInstance.ReadOfflineMessage(ctx, in)
+	return out, err
+}
+
 type MessageClientInterface interface {
 	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq) (*SaveSingleChatMessageRes, error)
 	GetSingleChatHistory(context.Context, *GetSingleChatHistoryReq) (*GetSingleChatHistoryRes, error)
+	ReadOfflineMessage(context.Context, *ReadOfflineMessageReq) (*ReadOfflineMessageRes, error)
 }
 
 // rpcx客户端
@@ -105,6 +118,13 @@ func (c *MessageRpcxClient) GetSingleChatHistory(ctx context.Context,
 	return out, err
 }
 
+func (c *MessageRpcxClient) ReadOfflineMessage(ctx context.Context,
+	in *ReadOfflineMessageReq) (*ReadOfflineMessageRes, error) {
+	out := new(ReadOfflineMessageRes)
+	err := c.c.Call(ctx, "ReadOfflineMessage", in, out)
+	return out, err
+}
+
 // 本地调用客户端
 type MessageLocalClient struct {
 }
@@ -123,9 +143,17 @@ func (c *MessageLocalClient) GetSingleChatHistory(ctx context.Context,
 	return out, err
 }
 
+func (c *MessageLocalClient) ReadOfflineMessage(ctx context.Context,
+	in *ReadOfflineMessageReq) (*ReadOfflineMessageRes, error) {
+	out := new(ReadOfflineMessageRes)
+	err := MessageServiceLocal.ReadOfflineMessage(ctx, in, out)
+	return out, err
+}
+
 type MessageServiceInterface interface {
 	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq, *SaveSingleChatMessageRes) error
 	GetSingleChatHistory(context.Context, *GetSingleChatHistoryReq, *GetSingleChatHistoryRes) error
+	ReadOfflineMessage(context.Context, *ReadOfflineMessageReq, *ReadOfflineMessageRes) error
 }
 
 var MessageServiceLocal MessageServiceInterface

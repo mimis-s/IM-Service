@@ -1,6 +1,6 @@
-syntax = "proto3";
+// syntax = "proto3";
 
-package api_relay;
+// package api_relay;
 
-service Relay {
-}
+// service Relay {
+// }

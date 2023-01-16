@@ -95,25 +95,33 @@ func (d *Dao) GetUserAllOfflineMessage(userID int64) (map[int64][]*im_home_proto
 func (d *Dao) GetUserOfflineMessage(userID int64, friendID int64) ([]*im_home_proto.ChatMessage, error) {
 	userOfflineMessage := userOfflineMessagePrefix + strconv.FormatInt(userID, 10)
 
-	messageData, err := d.cache.Client.HGet(context.Background(), userOfflineMessage, strconv.FormatInt(friendID, 10)).Result()
+	exists, err := d.cache.Client.HExists(context.Background(), userOfflineMessage, strconv.FormatInt(friendID, 10)).Result()
 	if err != nil {
-		errStr := fmt.Sprintf("user[%v] redis get friend[%v] off line message is err:%v", userID, friendID, err)
-		im_log.Warn(errStr)
-		return nil, fmt.Errorf(errStr)
+		im_log.Warn("user[%v] friend[%v] redis get off line message Exists is err:%v", userID, friendID, err)
+		return nil, err
 	}
 
-	messageInfo, err := decodeCacheMessage(messageData)
-	if err != nil {
-		errStr := fmt.Sprintf("user[%v] redis decode sender[%v] off line message is err:%v", userID, friendID, err)
-		im_log.Warn(errStr)
-		return nil, fmt.Errorf(errStr)
-	}
+	if exists {
 
-	if messageInfo == nil || messageInfo.Messages == nil || len(messageInfo.Messages) == 0 {
-		return make([]*im_home_proto.ChatMessage, 0), nil
-	}
+		messageData, err := d.cache.Client.HGet(context.Background(), userOfflineMessage, strconv.FormatInt(friendID, 10)).Result()
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] redis get friend[%v] off line message is err:%v", userID, friendID, err)
+			im_log.Warn(errStr)
+			return nil, fmt.Errorf(errStr)
+		}
 
-	return messageInfo.Messages, nil
+		messageInfo, err := decodeCacheMessage(messageData)
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] redis decode sender[%v] off line message is err:%v", userID, friendID, err)
+			im_log.Warn(errStr)
+			return nil, fmt.Errorf(errStr)
+		}
+		if messageInfo == nil || messageInfo.Messages == nil || len(messageInfo.Messages) == 0 {
+			return make([]*im_home_proto.ChatMessage, 0), nil
+		}
+		return messageInfo.Messages, nil
+	}
+	return make([]*im_home_proto.ChatMessage, 0), nil
 }
 
 // 添加用户离线消息
@@ -121,7 +129,7 @@ func (d *Dao) AddUserOneOfflineMessage(sender, receiver int64, chatMessage *im_h
 
 	userOfflineMessage := userOfflineMessagePrefix + strconv.FormatInt(receiver, 10)
 
-	exists, err := d.cache.Client.Exists(context.Background(), userOfflineMessage, strconv.FormatInt(sender, 10)).Result()
+	exists, err := d.cache.Client.HExists(context.Background(), userOfflineMessage, strconv.FormatInt(sender, 10)).Result()
 	if err != nil {
 		im_log.Warn("user[%v] sender[%v] redis get off line message Exists is err:%v", receiver, sender, err)
 		return err
@@ -131,7 +139,7 @@ func (d *Dao) AddUserOneOfflineMessage(sender, receiver int64, chatMessage *im_h
 		Messages: make([]*im_home_proto.ChatMessage, 0),
 	}
 
-	if exists != 0 {
+	if exists {
 		messageData, err := d.cache.Client.HGet(context.Background(), userOfflineMessage, strconv.FormatInt(sender, 10)).Result()
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] redis get off line message is err:%v", receiver, err)
@@ -173,13 +181,13 @@ func (d *Dao) AddUserOneOfflineMessage(sender, receiver int64, chatMessage *im_h
 func (d *Dao) DelUserOneOfflineMessage(senderID, receiverID int64) error {
 	userOfflineMessage := userOfflineMessagePrefix + strconv.FormatInt(receiverID, 10)
 
-	exists, err := d.cache.Client.Exists(context.Background(), userOfflineMessage, strconv.FormatInt(senderID, 10)).Result()
+	exists, err := d.cache.Client.HExists(context.Background(), userOfflineMessage, strconv.FormatInt(senderID, 10)).Result()
 	if err != nil {
 		im_log.Warn("user[%v] sender[%v] redis get off line message Exists is err:%v", receiverID, senderID, err)
 		return err
 	}
 
-	if exists == 0 {
+	if !exists {
 		im_log.Info("sender[%v] receiver[%v] not off line message need del", senderID, receiverID)
 		return nil
 	}

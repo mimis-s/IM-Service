@@ -7,22 +7,9 @@ import "home_account.proto";
 import "errors.proto";
 
 service Friends {
-    
-    rpc GetFriendsList(GetFriendsListReq) returns (GetFriendsListRes) {};       // 获取好友列表
     rpc ApplyFriends(ApplyFriendsReq) returns (ApplyFriendsRes) {};             // 添加好友
     rpc DelFriends(DelFriendsReq) returns (DelFriendsRes) {};                   // 删除好友
     rpc AgreeFriendApply(AgreeFriendApplyReq) returns (AgreeFriendApplyRes) {}; // 同意好友申请
-}
-
-// 获取好友列表
-message GetFriendsListReq {
-    im_home_proto.ClientOnlineInfo ClientInfo = 1;
-    im_home_proto.GetFriendsListReq Data = 2;
-}
-
-message GetFriendsListRes {
-    im_error_proto.ErrCode ErrCode = 1;
-    im_home_proto.GetFriendsListRes Data = 2;
 }
 
 // 添加好友

@@ -31,7 +31,9 @@ func (s *Service) InitFriendsList(userID int64) (*dbmodel.Friends, im_error_prot
 		dbFriends = &dbmodel.Friends{
 			UserId: userID,
 			Friends: dbmodel.TBJsonField_Friends{
-				IDs: make([]int64, 0),
+				IDs:             make([]int64, 0),
+				ApplyFriendIDs:  make([]int64, 0),
+				ReceiveApplyIDs: make([]int64, 0),
 			},
 		}
 		err = s.Dao.InsertFriends(userID, dbFriends)
@@ -44,43 +46,76 @@ func (s *Service) InitFriendsList(userID int64) (*dbmodel.Friends, im_error_prot
 	return dbFriends, 0, nil
 }
 
-func (s *Service) GetFriendsList(ctx context.Context, req *api_friends.GetFriendsListReq, res *api_friends.GetFriendsListRes) error {
+func (s *Service) GetFriendsStatusList(ctx context.Context, userInfo *im_home_proto.UserInfo) (*im_home_proto.FriendsStatusList, im_error_proto.ErrCode, error) {
 
-	dbFriends, errCode, err := s.InitFriendsList(req.ClientInfo.UserID)
+	friendsStatusList := &im_home_proto.FriendsStatusList{}
+
+	dbFriends, errCode, err := s.InitFriendsList(userInfo.UserID)
 	if err != nil {
-		errStr := fmt.Sprintf("user[%v] get friends list, but init list is err:%v", req.ClientInfo.UserID, err)
+		errStr := fmt.Sprintf("user[%v] get friends list, but init list is err:%v", userInfo.UserID, err)
 		im_log.Error(errStr)
-		res.ErrCode = errCode
-		return fmt.Errorf(errStr)
+		return friendsStatusList, errCode, fmt.Errorf(errStr)
 	}
 
-	// 获取好友的信息
+	friendsStatusList.FriendsStatusList = make([]*im_home_proto.FriendInfoStatus, 0, len(dbFriends.Friends.IDs))
+	friendsStatusList.SendFriendApplyList = make([]*im_home_proto.FriendInfoStatus, 0, len(dbFriends.Friends.ApplyFriendIDs))
+	friendsStatusList.ReceiveFriendApplyList = make([]*im_home_proto.FriendInfoStatus, 0, len(dbFriends.Friends.ReceiveApplyIDs))
 
-	if len(dbFriends.Friends.IDs) != 0 {
+	// 获取好友的信息
+	userIDs := append(dbFriends.Friends.IDs, dbFriends.Friends.ApplyFriendIDs...)
+	userIDs = append(userIDs, dbFriends.Friends.ReceiveApplyIDs...)
+
+	if len(userIDs) != 0 {
 		getUsersInfoServiceReq := &api_account.GetUsersInfoServiceReq{
-			ClientInfo: req.ClientInfo,
-			UserIDs:    dbFriends.Friends.IDs,
+			ClientInfo: &im_home_proto.ClientOnlineInfo{
+				UserID: userInfo.UserID,
+			},
+			UserIDs: userIDs,
 		}
 
 		getUsersInfoServiceRes, err := api_account.GetUsersInfoService(context.Background(), getUsersInfoServiceReq)
 		if err != nil {
-			errStr := fmt.Sprintf("user[%v] Get Users[%v] Info Service, but insert db is err:%v", req.ClientInfo.UserID, dbFriends.Friends.IDs, err)
+			errStr := fmt.Sprintf("user[%v] Get Users[%v] Info Service is err:%v", userInfo.UserID, userIDs, err)
 			im_log.Error(errStr)
-			res.ErrCode = getUsersInfoServiceRes.ErrCode
-			return fmt.Errorf(errStr)
+			return friendsStatusList, getUsersInfoServiceRes.ErrCode, fmt.Errorf(errStr)
 		}
-
-		res.Data = &im_home_proto.GetFriendsListRes{
-			List: getUsersInfoServiceRes.Datas,
+		findFriend := func(id int64, array []int64) bool {
+			for _, a := range array {
+				if id == a {
+					return true
+				}
+			}
+			return false
 		}
-	} else {
-		// 还没有好友
-		res.Data = &im_home_proto.GetFriendsListRes{
-			List: []*im_home_proto.UserInfo{},
+		for _, friend := range getUsersInfoServiceRes.Datas {
+			if findFriend(friend.UserID, dbFriends.Friends.IDs) {
+				friendsStatusList.FriendsStatusList = append(friendsStatusList.FriendsStatusList,
+					&im_home_proto.FriendInfoStatus{
+						Friend:       friend,
+						IsUpdateHead: true,
+					})
+				continue
+			}
+			if findFriend(friend.UserID, dbFriends.Friends.ApplyFriendIDs) {
+				friendsStatusList.SendFriendApplyList = append(friendsStatusList.SendFriendApplyList,
+					&im_home_proto.FriendInfoStatus{
+						Friend:       friend,
+						IsUpdateHead: true,
+					})
+				continue
+			}
+			if findFriend(friend.UserID, dbFriends.Friends.ReceiveApplyIDs) {
+				friendsStatusList.ReceiveFriendApplyList = append(friendsStatusList.ReceiveFriendApplyList,
+					&im_home_proto.FriendInfoStatus{
+						Friend:       friend,
+						IsUpdateHead: true,
+					})
+				continue
+			}
 		}
 	}
 
-	return nil
+	return friendsStatusList, 0, nil
 }
 
 func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriendsReq, res *api_friends.ApplyFriendsRes) error {

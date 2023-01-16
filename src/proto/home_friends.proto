@@ -6,13 +6,17 @@ import "home_account.proto";
 // 生成golang文件的目录
 option go_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto";
 
-// 获取好友列表
-message GetFriendsListReq {
-
+// 好友信息状态
+message FriendInfoStatus {
+    UserInfo Friend = 1;
+    bool IsUpdateHead = 2; // 是否更新过头像(客户端获取更新的时间在好友更新之前则为true)
 }
 
-message GetFriendsListRes {
-    repeated UserInfo List = 1;
+// 下发好友列表状态
+message FriendsStatusList {
+    repeated FriendInfoStatus FriendsStatusList = 1;        // 好友状态
+    repeated FriendInfoStatus SendFriendApplyList = 2;      // 发送好友申请列表
+    repeated FriendInfoStatus ReceiveFriendApplyList = 3;   // 接收好友申请列表
 }
 
 // 添加好友

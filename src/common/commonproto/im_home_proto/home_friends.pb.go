@@ -22,22 +22,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// 获取好友列表
-type GetFriendsListReq struct {
+// 好友信息状态
+type FriendInfoStatus struct {
+	Friend       *UserInfo `protobuf:"bytes,1,opt,name=Friend,proto3" json:"Friend,omitempty"`
+	IsUpdateHead bool      `protobuf:"varint,2,opt,name=IsUpdateHead,proto3" json:"IsUpdateHead,omitempty"`
 }
 
-func (m *GetFriendsListReq) Reset()         { *m = GetFriendsListReq{} }
-func (m *GetFriendsListReq) String() string { return proto.CompactTextString(m) }
-func (*GetFriendsListReq) ProtoMessage()    {}
-func (*GetFriendsListReq) Descriptor() ([]byte, []int) {
+func (m *FriendInfoStatus) Reset()         { *m = FriendInfoStatus{} }
+func (m *FriendInfoStatus) String() string { return proto.CompactTextString(m) }
+func (*FriendInfoStatus) ProtoMessage()    {}
+func (*FriendInfoStatus) Descriptor() ([]byte, []int) {
 	return fileDescriptor_59b581ecf1919eda, []int{0}
 }
-func (m *GetFriendsListReq) XXX_Unmarshal(b []byte) error {
+func (m *FriendInfoStatus) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetFriendsListReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *FriendInfoStatus) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetFriendsListReq.Marshal(b, m, deterministic)
+		return xxx_messageInfo_FriendInfoStatus.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -47,34 +49,51 @@ func (m *GetFriendsListReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *GetFriendsListReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetFriendsListReq.Merge(m, src)
+func (m *FriendInfoStatus) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FriendInfoStatus.Merge(m, src)
 }
-func (m *GetFriendsListReq) XXX_Size() int {
+func (m *FriendInfoStatus) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetFriendsListReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetFriendsListReq.DiscardUnknown(m)
+func (m *FriendInfoStatus) XXX_DiscardUnknown() {
+	xxx_messageInfo_FriendInfoStatus.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetFriendsListReq proto.InternalMessageInfo
+var xxx_messageInfo_FriendInfoStatus proto.InternalMessageInfo
 
-type GetFriendsListRes struct {
-	List []*UserInfo `protobuf:"bytes,1,rep,name=List,proto3" json:"List,omitempty"`
+func (m *FriendInfoStatus) GetFriend() *UserInfo {
+	if m != nil {
+		return m.Friend
+	}
+	return nil
 }
 
-func (m *GetFriendsListRes) Reset()         { *m = GetFriendsListRes{} }
-func (m *GetFriendsListRes) String() string { return proto.CompactTextString(m) }
-func (*GetFriendsListRes) ProtoMessage()    {}
-func (*GetFriendsListRes) Descriptor() ([]byte, []int) {
+func (m *FriendInfoStatus) GetIsUpdateHead() bool {
+	if m != nil {
+		return m.IsUpdateHead
+	}
+	return false
+}
+
+// 下发好友列表状态
+type FriendsStatusList struct {
+	FriendsStatusList      []*FriendInfoStatus `protobuf:"bytes,1,rep,name=FriendsStatusList,proto3" json:"FriendsStatusList,omitempty"`
+	SendFriendApplyList    []*FriendInfoStatus `protobuf:"bytes,2,rep,name=SendFriendApplyList,proto3" json:"SendFriendApplyList,omitempty"`
+	ReceiveFriendApplyList []*FriendInfoStatus `protobuf:"bytes,3,rep,name=ReceiveFriendApplyList,proto3" json:"ReceiveFriendApplyList,omitempty"`
+}
+
+func (m *FriendsStatusList) Reset()         { *m = FriendsStatusList{} }
+func (m *FriendsStatusList) String() string { return proto.CompactTextString(m) }
+func (*FriendsStatusList) ProtoMessage()    {}
+func (*FriendsStatusList) Descriptor() ([]byte, []int) {
 	return fileDescriptor_59b581ecf1919eda, []int{1}
 }
-func (m *GetFriendsListRes) XXX_Unmarshal(b []byte) error {
+func (m *FriendsStatusList) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetFriendsListRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *FriendsStatusList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetFriendsListRes.Marshal(b, m, deterministic)
+		return xxx_messageInfo_FriendsStatusList.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -84,21 +103,35 @@ func (m *GetFriendsListRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *GetFriendsListRes) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetFriendsListRes.Merge(m, src)
+func (m *FriendsStatusList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FriendsStatusList.Merge(m, src)
 }
-func (m *GetFriendsListRes) XXX_Size() int {
+func (m *FriendsStatusList) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetFriendsListRes) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetFriendsListRes.DiscardUnknown(m)
+func (m *FriendsStatusList) XXX_DiscardUnknown() {
+	xxx_messageInfo_FriendsStatusList.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetFriendsListRes proto.InternalMessageInfo
+var xxx_messageInfo_FriendsStatusList proto.InternalMessageInfo
 
-func (m *GetFriendsListRes) GetList() []*UserInfo {
+func (m *FriendsStatusList) GetFriendsStatusList() []*FriendInfoStatus {
 	if m != nil {
-		return m.List
+		return m.FriendsStatusList
+	}
+	return nil
+}
+
+func (m *FriendsStatusList) GetSendFriendApplyList() []*FriendInfoStatus {
+	if m != nil {
+		return m.SendFriendApplyList
+	}
+	return nil
+}
+
+func (m *FriendsStatusList) GetReceiveFriendApplyList() []*FriendInfoStatus {
+	if m != nil {
+		return m.ReceiveFriendApplyList
 	}
 	return nil
 }
@@ -371,8 +404,8 @@ func (m *DelFriendsRes) GetFriendsID() int64 {
 }
 
 func init() {
-	proto.RegisterType((*GetFriendsListReq)(nil), "im_home_proto.GetFriendsListReq")
-	proto.RegisterType((*GetFriendsListRes)(nil), "im_home_proto.GetFriendsListRes")
+	proto.RegisterType((*FriendInfoStatus)(nil), "im_home_proto.FriendInfoStatus")
+	proto.RegisterType((*FriendsStatusList)(nil), "im_home_proto.FriendsStatusList")
 	proto.RegisterType((*ApplyFriendsReq)(nil), "im_home_proto.ApplyFriendsReq")
 	proto.RegisterType((*ApplyFriendsRes)(nil), "im_home_proto.ApplyFriendsRes")
 	proto.RegisterType((*AgreeFriendApplyReq)(nil), "im_home_proto.AgreeFriendApplyReq")
@@ -384,29 +417,33 @@ func init() {
 func init() { proto.RegisterFile("home_friends.proto", fileDescriptor_59b581ecf1919eda) }
 
 var fileDescriptor_59b581ecf1919eda = []byte{
-	// 289 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xca, 0xc8, 0xcf, 0x4d,
-	0x8d, 0x4f, 0x2b, 0xca, 0x4c, 0xcd, 0x4b, 0x29, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2,
-	0xcd, 0xcc, 0x8d, 0x07, 0x0b, 0x83, 0xb9, 0x52, 0x10, 0x25, 0x89, 0xc9, 0xc9, 0xf9, 0xa5, 0x79,
-	0x25, 0x10, 0x25, 0x4a, 0xc2, 0x5c, 0x82, 0xee, 0xa9, 0x25, 0x6e, 0x10, 0x6d, 0x3e, 0x99, 0xc5,
-	0x25, 0x41, 0xa9, 0x85, 0x4a, 0x0e, 0x98, 0x82, 0xc5, 0x42, 0xda, 0x5c, 0x2c, 0x20, 0xa6, 0x04,
-	0xa3, 0x02, 0xb3, 0x06, 0xb7, 0x91, 0xb8, 0x1e, 0x8a, 0xd9, 0x7a, 0xa1, 0xc5, 0xa9, 0x45, 0x9e,
-	0x79, 0x69, 0xf9, 0x41, 0x60, 0x45, 0x4a, 0x96, 0x5c, 0xfc, 0x8e, 0x05, 0x05, 0x39, 0x95, 0x50,
-	0x33, 0x82, 0x52, 0x0b, 0x85, 0xd4, 0xb8, 0xf8, 0x90, 0x85, 0x3c, 0x5d, 0x24, 0x18, 0x15, 0x18,
-	0x35, 0x98, 0x83, 0xd0, 0x44, 0x95, 0xbc, 0xd0, 0xb5, 0x16, 0x0b, 0x99, 0x73, 0x71, 0x41, 0x78,
-	0x20, 0x1b, 0xc0, 0xda, 0xf0, 0x38, 0x00, 0x49, 0xa9, 0x92, 0x31, 0x97, 0xb0, 0x63, 0x7a, 0x51,
-	0x6a, 0x2a, 0x44, 0x08, 0x6c, 0x2c, 0xc8, 0x29, 0x32, 0x5c, 0x9c, 0xe8, 0xae, 0x40, 0x08, 0x60,
-	0xd7, 0x54, 0x4c, 0x40, 0x93, 0x2e, 0x17, 0xaf, 0x4b, 0x6a, 0x0e, 0x92, 0x77, 0x49, 0x52, 0x4e,
-	0xc0, 0x74, 0xa7, 0x98, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e,
-	0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0x72, 0x4a,
-	0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce, 0xcf, 0xd5, 0xcf, 0xcd, 0xcc, 0xcd, 0x2c, 0xd6,
-	0x2d, 0xd6, 0xf7, 0xf4, 0xd5, 0x0d, 0x4e, 0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0xd5, 0x2f, 0x2e, 0x4a,
-	0xd6, 0x4f, 0xce, 0xcf, 0xcd, 0xcd, 0xcf, 0x83, 0x52, 0xe0, 0xc0, 0xd2, 0x47, 0x09, 0xba, 0x24,
-	0x36, 0x30, 0x65, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x45, 0x79, 0xdf, 0xf6, 0x43, 0x02, 0x00,
-	0x00,
+	// 367 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x51, 0x4f, 0x6b, 0xfa, 0x40,
+	0x10, 0x35, 0x0a, 0xf2, 0xfb, 0x8d, 0xb5, 0x7f, 0x56, 0x68, 0xa5, 0x94, 0x54, 0x72, 0x28, 0x5e,
+	0x4c, 0x40, 0x0f, 0xa5, 0x47, 0x45, 0x4a, 0x53, 0xea, 0xa1, 0x11, 0x29, 0x94, 0x82, 0xc4, 0x64,
+	0xd4, 0x05, 0x93, 0x4d, 0xb3, 0xab, 0xd0, 0x2f, 0x51, 0xfa, 0xb1, 0x7a, 0xf4, 0xd8, 0x63, 0xd1,
+	0x2f, 0x52, 0xdc, 0x08, 0xc6, 0x90, 0xa2, 0x3d, 0x2d, 0xf3, 0xf6, 0xbd, 0x37, 0x6f, 0x66, 0x80,
+	0x8c, 0x99, 0x87, 0xfd, 0x61, 0x48, 0xd1, 0x77, 0xb9, 0x1e, 0x84, 0x4c, 0x30, 0x52, 0xa4, 0x5e,
+	0x5f, 0xc2, 0xb2, 0x3c, 0x8f, 0x28, 0xb6, 0xe3, 0xb0, 0xa9, 0x2f, 0x22, 0x8a, 0x36, 0x82, 0xe3,
+	0x5b, 0xa9, 0x31, 0xfd, 0x21, 0xeb, 0x0a, 0x5b, 0x4c, 0x39, 0x31, 0x20, 0x1f, 0x61, 0x65, 0xa5,
+	0xa2, 0x54, 0x0b, 0xf5, 0x33, 0x7d, 0xcb, 0x47, 0xef, 0x71, 0x0c, 0x57, 0x74, 0x6b, 0x4d, 0x23,
+	0x1a, 0x1c, 0x98, 0xbc, 0x17, 0xb8, 0xb6, 0xc0, 0x3b, 0xb4, 0xdd, 0x72, 0xb6, 0xa2, 0x54, 0xff,
+	0x59, 0x5b, 0x98, 0xf6, 0x9e, 0x85, 0x93, 0x88, 0xce, 0xa3, 0x36, 0x0f, 0x94, 0x0b, 0xd2, 0x49,
+	0x01, 0xcb, 0x4a, 0x25, 0x57, 0x2d, 0xd4, 0x2f, 0x13, 0x5d, 0x93, 0x31, 0xad, 0x14, 0xbb, 0x47,
+	0x28, 0x75, 0xd1, 0x77, 0xa3, 0x8f, 0x66, 0x10, 0x4c, 0xde, 0xa4, 0x61, 0x76, 0x3f, 0xc3, 0x34,
+	0x2d, 0x79, 0x82, 0x53, 0x0b, 0x1d, 0xa4, 0x33, 0x4c, 0xba, 0xe6, 0xf6, 0x73, 0xfd, 0x45, 0xae,
+	0xdd, 0xc0, 0x91, 0x2c, 0xd6, 0x53, 0x58, 0xf8, 0x4a, 0xae, 0xe0, 0x30, 0x0e, 0x99, 0x6d, 0x79,
+	0x80, 0x9c, 0x95, 0x40, 0xb5, 0xfb, 0xa4, 0x94, 0x93, 0x6b, 0x80, 0x4d, 0xe7, 0x5d, 0x77, 0x8b,
+	0x51, 0xb5, 0x06, 0x94, 0x9a, 0xa3, 0x10, 0xe3, 0xf1, 0x56, 0x51, 0x2e, 0xe0, 0x7f, 0x32, 0xc5,
+	0x06, 0x48, 0x17, 0xf1, 0x1d, 0xa2, 0x1a, 0x14, 0xdb, 0x38, 0x89, 0x8d, 0xfb, 0x27, 0xfa, 0x0e,
+	0xf7, 0xd6, 0xcb, 0xe7, 0x42, 0x55, 0xe6, 0x0b, 0x55, 0xf9, 0x5e, 0xa8, 0xca, 0xc7, 0x52, 0xcd,
+	0xcc, 0x97, 0x6a, 0xe6, 0x6b, 0xa9, 0x66, 0x9e, 0x5b, 0x23, 0x2a, 0xc6, 0xd3, 0x81, 0xee, 0x30,
+	0xcf, 0xf0, 0xa8, 0x47, 0x79, 0x8d, 0x1b, 0x66, 0xa7, 0xd6, 0xc5, 0x70, 0x46, 0x1d, 0x34, 0x78,
+	0xe8, 0x18, 0x0e, 0xf3, 0x3c, 0xe6, 0xaf, 0x1f, 0xb9, 0x2c, 0x63, 0x6b, 0x75, 0x83, 0xbc, 0x7c,
+	0x1a, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x38, 0x40, 0xd3, 0xcc, 0x66, 0x03, 0x00, 0x00,
 }
 
-func (m *GetFriendsListReq) Marshal() (dAtA []byte, err error) {
+func (m *FriendInfoStatus) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -416,20 +453,42 @@ func (m *GetFriendsListReq) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetFriendsListReq) MarshalTo(dAtA []byte) (int, error) {
+func (m *FriendInfoStatus) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetFriendsListReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *FriendInfoStatus) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.IsUpdateHead {
+		i--
+		if m.IsUpdateHead {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Friend != nil {
+		{
+			size, err := m.Friend.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintHomeFriends(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GetFriendsListRes) Marshal() (dAtA []byte, err error) {
+func (m *FriendsStatusList) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -439,20 +498,48 @@ func (m *GetFriendsListRes) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetFriendsListRes) MarshalTo(dAtA []byte) (int, error) {
+func (m *FriendsStatusList) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetFriendsListRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *FriendsStatusList) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.List) > 0 {
-		for iNdEx := len(m.List) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.ReceiveFriendApplyList) > 0 {
+		for iNdEx := len(m.ReceiveFriendApplyList) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.List[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.ReceiveFriendApplyList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintHomeFriends(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.SendFriendApplyList) > 0 {
+		for iNdEx := len(m.SendFriendApplyList) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.SendFriendApplyList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintHomeFriends(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.FriendsStatusList) > 0 {
+		for iNdEx := len(m.FriendsStatusList) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.FriendsStatusList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -652,23 +739,42 @@ func encodeVarintHomeFriends(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *GetFriendsListReq) Size() (n int) {
+func (m *FriendInfoStatus) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if m.Friend != nil {
+		l = m.Friend.Size()
+		n += 1 + l + sovHomeFriends(uint64(l))
+	}
+	if m.IsUpdateHead {
+		n += 2
+	}
 	return n
 }
 
-func (m *GetFriendsListRes) Size() (n int) {
+func (m *FriendsStatusList) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if len(m.List) > 0 {
-		for _, e := range m.List {
+	if len(m.FriendsStatusList) > 0 {
+		for _, e := range m.FriendsStatusList {
+			l = e.Size()
+			n += 1 + l + sovHomeFriends(uint64(l))
+		}
+	}
+	if len(m.SendFriendApplyList) > 0 {
+		for _, e := range m.SendFriendApplyList {
+			l = e.Size()
+			n += 1 + l + sovHomeFriends(uint64(l))
+		}
+	}
+	if len(m.ReceiveFriendApplyList) > 0 {
+		for _, e := range m.ReceiveFriendApplyList {
 			l = e.Size()
 			n += 1 + l + sovHomeFriends(uint64(l))
 		}
@@ -755,7 +861,7 @@ func sovHomeFriends(x uint64) (n int) {
 func sozHomeFriends(x uint64) (n int) {
 	return sovHomeFriends(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *GetFriendsListReq) Unmarshal(dAtA []byte) error {
+func (m *FriendInfoStatus) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -778,65 +884,15 @@ func (m *GetFriendsListReq) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetFriendsListReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: FriendInfoStatus: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetFriendsListReq: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipHomeFriends(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthHomeFriends
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GetFriendsListRes) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowHomeFriends
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GetFriendsListRes: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetFriendsListRes: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: FriendInfoStatus: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field List", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Friend", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -863,8 +919,182 @@ func (m *GetFriendsListRes) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.List = append(m.List, &UserInfo{})
-			if err := m.List[len(m.List)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if m.Friend == nil {
+				m.Friend = &UserInfo{}
+			}
+			if err := m.Friend.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsUpdateHead", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHomeFriends
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsUpdateHead = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipHomeFriends(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthHomeFriends
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *FriendsStatusList) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowHomeFriends
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: FriendsStatusList: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: FriendsStatusList: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FriendsStatusList", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHomeFriends
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHomeFriends
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthHomeFriends
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FriendsStatusList = append(m.FriendsStatusList, &FriendInfoStatus{})
+			if err := m.FriendsStatusList[len(m.FriendsStatusList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SendFriendApplyList", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHomeFriends
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHomeFriends
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthHomeFriends
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SendFriendApplyList = append(m.SendFriendApplyList, &FriendInfoStatus{})
+			if err := m.SendFriendApplyList[len(m.SendFriendApplyList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReceiveFriendApplyList", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowHomeFriends
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthHomeFriends
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthHomeFriends
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ReceiveFriendApplyList = append(m.ReceiveFriendApplyList, &FriendInfoStatus{})
+			if err := m.ReceiveFriendApplyList[len(m.ReceiveFriendApplyList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

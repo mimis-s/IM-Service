@@ -57,18 +57,6 @@ func SingleNewFriendsClient(etcdAddrs []string, timeout time.Duration, etcdBaseP
 
 // 外部调用函数
 
-func GetFriendsList(ctx context.Context,
-	in *GetFriendsListReq) (*GetFriendsListRes, error) {
-
-	if callSingleMethodFunc != nil {
-		FriendsClientOnce.Do(callSingleMethodFunc)
-	}
-
-	out := new(GetFriendsListRes)
-	out, err := FriendsClientInstance.GetFriendsList(ctx, in)
-	return out, err
-}
-
 func ApplyFriends(ctx context.Context,
 	in *ApplyFriendsReq) (*ApplyFriendsRes, error) {
 
@@ -106,7 +94,6 @@ func AgreeFriendApply(ctx context.Context,
 }
 
 type FriendsClientInterface interface {
-	GetFriendsList(context.Context, *GetFriendsListReq) (*GetFriendsListRes, error)
 	ApplyFriends(context.Context, *ApplyFriendsReq) (*ApplyFriendsRes, error)
 	DelFriends(context.Context, *DelFriendsReq) (*DelFriendsRes, error)
 	AgreeFriendApply(context.Context, *AgreeFriendApplyReq) (*AgreeFriendApplyRes, error)
@@ -115,13 +102,6 @@ type FriendsClientInterface interface {
 // rpcx客户端
 type FriendsRpcxClient struct {
 	c *client.ClientManager
-}
-
-func (c *FriendsRpcxClient) GetFriendsList(ctx context.Context,
-	in *GetFriendsListReq) (*GetFriendsListRes, error) {
-	out := new(GetFriendsListRes)
-	err := c.c.Call(ctx, "GetFriendsList", in, out)
-	return out, err
 }
 
 func (c *FriendsRpcxClient) ApplyFriends(ctx context.Context,
@@ -149,13 +129,6 @@ func (c *FriendsRpcxClient) AgreeFriendApply(ctx context.Context,
 type FriendsLocalClient struct {
 }
 
-func (c *FriendsLocalClient) GetFriendsList(ctx context.Context,
-	in *GetFriendsListReq) (*GetFriendsListRes, error) {
-	out := new(GetFriendsListRes)
-	err := FriendsServiceLocal.GetFriendsList(ctx, in, out)
-	return out, err
-}
-
 func (c *FriendsLocalClient) ApplyFriends(ctx context.Context,
 	in *ApplyFriendsReq) (*ApplyFriendsRes, error) {
 	out := new(ApplyFriendsRes)
@@ -178,7 +151,6 @@ func (c *FriendsLocalClient) AgreeFriendApply(ctx context.Context,
 }
 
 type FriendsServiceInterface interface {
-	GetFriendsList(context.Context, *GetFriendsListReq, *GetFriendsListRes) error
 	ApplyFriends(context.Context, *ApplyFriendsReq, *ApplyFriendsRes) error
 	DelFriends(context.Context, *DelFriendsReq, *DelFriendsRes) error
 	AgreeFriendApply(context.Context, *AgreeFriendApplyReq, *AgreeFriendApplyRes) error

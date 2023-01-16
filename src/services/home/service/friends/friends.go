@@ -12,26 +12,9 @@ import (
 )
 
 func init() {
-	seralize.RegisterHandler(im_home_proto.GetFriendsListReq{}, im_home_proto.GetFriendsListRes{}, GetFriendsList)
 	seralize.RegisterHandler(im_home_proto.ApplyFriendsReq{}, im_home_proto.ApplyFriendsRes{}, ApplyFriends)
 	seralize.RegisterHandler(im_home_proto.AgreeFriendApplyReq{}, im_home_proto.AgreeFriendApplyRes{}, AgreeFriendApply)
 	seralize.RegisterHandler(im_home_proto.DelFriendsReq{}, im_home_proto.DelFriendsRes{}, DelFriends)
-}
-
-func GetFriendsList(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
-	reqMsg := req.(*im_home_proto.GetFriendsListReq)
-	resMsg := res.(*im_home_proto.GetFriendsListRes)
-	reqRpc := &api_friends.GetFriendsListReq{
-		ClientInfo: clientInfo.Client,
-		Data:       reqMsg,
-	}
-	resRpc, err := api_friends.GetFriendsList(context.Background(), reqRpc)
-	if err != nil {
-		im_log.Error("get friends list rpc is err:%v", err)
-		return resRpc.ErrCode
-	}
-	resMsg.List = resRpc.Data.List
-	return 0
 }
 
 func ApplyFriends(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {

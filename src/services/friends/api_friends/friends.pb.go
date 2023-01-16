@@ -24,111 +24,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// 获取好友列表
-type GetFriendsListReq struct {
-	ClientInfo *im_home_proto.ClientOnlineInfo  `protobuf:"bytes,1,opt,name=ClientInfo,proto3" json:"ClientInfo,omitempty"`
-	Data       *im_home_proto.GetFriendsListReq `protobuf:"bytes,2,opt,name=Data,proto3" json:"Data,omitempty"`
-}
-
-func (m *GetFriendsListReq) Reset()         { *m = GetFriendsListReq{} }
-func (m *GetFriendsListReq) String() string { return proto.CompactTextString(m) }
-func (*GetFriendsListReq) ProtoMessage()    {}
-func (*GetFriendsListReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef2cbb5c12e56bfb, []int{0}
-}
-func (m *GetFriendsListReq) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GetFriendsListReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GetFriendsListReq.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GetFriendsListReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetFriendsListReq.Merge(m, src)
-}
-func (m *GetFriendsListReq) XXX_Size() int {
-	return m.Size()
-}
-func (m *GetFriendsListReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetFriendsListReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetFriendsListReq proto.InternalMessageInfo
-
-func (m *GetFriendsListReq) GetClientInfo() *im_home_proto.ClientOnlineInfo {
-	if m != nil {
-		return m.ClientInfo
-	}
-	return nil
-}
-
-func (m *GetFriendsListReq) GetData() *im_home_proto.GetFriendsListReq {
-	if m != nil {
-		return m.Data
-	}
-	return nil
-}
-
-type GetFriendsListRes struct {
-	ErrCode im_error_proto.ErrCode           `protobuf:"varint,1,opt,name=ErrCode,proto3,enum=im_error_proto.ErrCode" json:"ErrCode,omitempty"`
-	Data    *im_home_proto.GetFriendsListRes `protobuf:"bytes,2,opt,name=Data,proto3" json:"Data,omitempty"`
-}
-
-func (m *GetFriendsListRes) Reset()         { *m = GetFriendsListRes{} }
-func (m *GetFriendsListRes) String() string { return proto.CompactTextString(m) }
-func (*GetFriendsListRes) ProtoMessage()    {}
-func (*GetFriendsListRes) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef2cbb5c12e56bfb, []int{1}
-}
-func (m *GetFriendsListRes) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GetFriendsListRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GetFriendsListRes.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GetFriendsListRes) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetFriendsListRes.Merge(m, src)
-}
-func (m *GetFriendsListRes) XXX_Size() int {
-	return m.Size()
-}
-func (m *GetFriendsListRes) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetFriendsListRes.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetFriendsListRes proto.InternalMessageInfo
-
-func (m *GetFriendsListRes) GetErrCode() im_error_proto.ErrCode {
-	if m != nil {
-		return m.ErrCode
-	}
-	return im_error_proto.ErrCode_success
-}
-
-func (m *GetFriendsListRes) GetData() *im_home_proto.GetFriendsListRes {
-	if m != nil {
-		return m.Data
-	}
-	return nil
-}
-
 // 添加好友
 type ApplyFriendsReq struct {
 	ClientInfo *im_home_proto.ClientOnlineInfo `protobuf:"bytes,1,opt,name=ClientInfo,proto3" json:"ClientInfo,omitempty"`
@@ -139,7 +34,7 @@ func (m *ApplyFriendsReq) Reset()         { *m = ApplyFriendsReq{} }
 func (m *ApplyFriendsReq) String() string { return proto.CompactTextString(m) }
 func (*ApplyFriendsReq) ProtoMessage()    {}
 func (*ApplyFriendsReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef2cbb5c12e56bfb, []int{2}
+	return fileDescriptor_ef2cbb5c12e56bfb, []int{0}
 }
 func (m *ApplyFriendsReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -191,7 +86,7 @@ func (m *ApplyFriendsRes) Reset()         { *m = ApplyFriendsRes{} }
 func (m *ApplyFriendsRes) String() string { return proto.CompactTextString(m) }
 func (*ApplyFriendsRes) ProtoMessage()    {}
 func (*ApplyFriendsRes) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef2cbb5c12e56bfb, []int{3}
+	return fileDescriptor_ef2cbb5c12e56bfb, []int{1}
 }
 func (m *ApplyFriendsRes) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -244,7 +139,7 @@ func (m *AgreeFriendApplyReq) Reset()         { *m = AgreeFriendApplyReq{} }
 func (m *AgreeFriendApplyReq) String() string { return proto.CompactTextString(m) }
 func (*AgreeFriendApplyReq) ProtoMessage()    {}
 func (*AgreeFriendApplyReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef2cbb5c12e56bfb, []int{4}
+	return fileDescriptor_ef2cbb5c12e56bfb, []int{2}
 }
 func (m *AgreeFriendApplyReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -296,7 +191,7 @@ func (m *AgreeFriendApplyRes) Reset()         { *m = AgreeFriendApplyRes{} }
 func (m *AgreeFriendApplyRes) String() string { return proto.CompactTextString(m) }
 func (*AgreeFriendApplyRes) ProtoMessage()    {}
 func (*AgreeFriendApplyRes) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef2cbb5c12e56bfb, []int{5}
+	return fileDescriptor_ef2cbb5c12e56bfb, []int{3}
 }
 func (m *AgreeFriendApplyRes) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -349,7 +244,7 @@ func (m *DelFriendsReq) Reset()         { *m = DelFriendsReq{} }
 func (m *DelFriendsReq) String() string { return proto.CompactTextString(m) }
 func (*DelFriendsReq) ProtoMessage()    {}
 func (*DelFriendsReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef2cbb5c12e56bfb, []int{6}
+	return fileDescriptor_ef2cbb5c12e56bfb, []int{4}
 }
 func (m *DelFriendsReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -401,7 +296,7 @@ func (m *DelFriendsRes) Reset()         { *m = DelFriendsRes{} }
 func (m *DelFriendsRes) String() string { return proto.CompactTextString(m) }
 func (*DelFriendsRes) ProtoMessage()    {}
 func (*DelFriendsRes) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ef2cbb5c12e56bfb, []int{7}
+	return fileDescriptor_ef2cbb5c12e56bfb, []int{5}
 }
 func (m *DelFriendsRes) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -445,8 +340,6 @@ func (m *DelFriendsRes) GetData() *im_home_proto.DelFriendsRes {
 }
 
 func init() {
-	proto.RegisterType((*GetFriendsListReq)(nil), "api_friends.GetFriendsListReq")
-	proto.RegisterType((*GetFriendsListRes)(nil), "api_friends.GetFriendsListRes")
 	proto.RegisterType((*ApplyFriendsReq)(nil), "api_friends.ApplyFriendsReq")
 	proto.RegisterType((*ApplyFriendsRes)(nil), "api_friends.ApplyFriendsRes")
 	proto.RegisterType((*AgreeFriendApplyReq)(nil), "api_friends.AgreeFriendApplyReq")
@@ -458,120 +351,30 @@ func init() {
 func init() { proto.RegisterFile("friends.proto", fileDescriptor_ef2cbb5c12e56bfb) }
 
 var fileDescriptor_ef2cbb5c12e56bfb = []byte{
-	// 415 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0x4d, 0x4b, 0xeb, 0x40,
-	0x14, 0xcd, 0x94, 0xc7, 0x2b, 0xdc, 0x7e, 0xbc, 0xf7, 0xe6, 0x2d, 0x2c, 0xa1, 0x8c, 0x25, 0x2b,
-	0x57, 0x41, 0xa3, 0xb8, 0x95, 0xda, 0x5a, 0x11, 0x0a, 0x42, 0x56, 0xee, 0x4a, 0x6c, 0xa7, 0x1a,
-	0x48, 0x93, 0x38, 0x19, 0x41, 0xc1, 0x85, 0xb8, 0x70, 0xe1, 0x42, 0xfc, 0x59, 0x6e, 0x84, 0x2e,
-	0x5d, 0x4a, 0xfb, 0x47, 0x24, 0xd3, 0x29, 0x76, 0x26, 0x5a, 0x6d, 0xe9, 0xf6, 0xde, 0x73, 0xee,
-	0x39, 0x73, 0x72, 0x6f, 0xa0, 0xd4, 0x67, 0x3e, 0x0d, 0x7b, 0x89, 0x1d, 0xb3, 0x88, 0x47, 0xb8,
-	0xe0, 0xc5, 0x7e, 0x47, 0x96, 0x4c, 0x7c, 0x1e, 0x0d, 0x68, 0x47, 0x01, 0xc8, 0x9a, 0xd7, 0xed,
-	0x46, 0x97, 0x21, 0x97, 0xb5, 0x22, 0x65, 0x2c, 0x62, 0x12, 0x61, 0x3d, 0x20, 0xf8, 0x77, 0x48,
-	0x79, 0x6b, 0x42, 0x6b, 0xfb, 0x09, 0x77, 0xe9, 0x05, 0xde, 0x03, 0x68, 0x04, 0x3e, 0x0d, 0xf9,
-	0x51, 0xd8, 0x8f, 0x2a, 0xa8, 0x86, 0x36, 0x0a, 0xce, 0xba, 0xed, 0x0f, 0x3a, 0x62, 0x9e, 0x60,
-	0xda, 0x13, 0xc0, 0x71, 0x18, 0xf8, 0x21, 0x4d, 0x61, 0xee, 0x0c, 0x05, 0xef, 0xc0, 0xaf, 0xa6,
-	0xc7, 0xbd, 0x4a, 0x4e, 0x50, 0x6b, 0x1a, 0x35, 0x23, 0xe8, 0x0a, 0xb4, 0x75, 0x93, 0xf5, 0x92,
-	0xe0, 0x2d, 0xc8, 0x1f, 0x30, 0xd6, 0x88, 0x7a, 0x54, 0x18, 0x29, 0x3b, 0x6b, 0xe9, 0x34, 0xf1,
-	0x08, 0x39, 0x4e, 0xb6, 0xdd, 0x29, 0x6e, 0x41, 0xf5, 0x44, 0xaa, 0xdf, 0x23, 0xf8, 0x53, 0x8f,
-	0xe3, 0xe0, 0x5a, 0x76, 0x57, 0x12, 0x84, 0xa3, 0x58, 0x21, 0x1a, 0x55, 0x93, 0x93, 0x46, 0xae,
-	0x74, 0x1f, 0x4b, 0x85, 0xb0, 0x88, 0xf2, 0x34, 0x82, 0x47, 0x04, 0xff, 0xeb, 0x67, 0x8c, 0xd2,
-	0x49, 0x47, 0x80, 0x56, 0x12, 0xc3, 0xae, 0x62, 0xc6, 0xd2, 0xcd, 0x64, 0x25, 0xa5, 0xa1, 0xdb,
-	0x4f, 0x0d, 0x2d, 0x95, 0xc7, 0xa2, 0x16, 0xa6, 0x99, 0xdc, 0x21, 0x28, 0x35, 0x69, 0xb0, 0xca,
-	0xa5, 0xd8, 0x54, 0xac, 0x54, 0x35, 0xaa, 0x22, 0x26, 0x4d, 0x70, 0xd5, 0xc3, 0x52, 0x01, 0xfc,
-	0x5c, 0x55, 0x3e, 0xdd, 0x79, 0xc9, 0x41, 0x5e, 0x16, 0xb1, 0x0b, 0x65, 0xf5, 0x70, 0x30, 0xb1,
-	0x67, 0x7e, 0x3f, 0xd9, 0x9b, 0x36, 0xe7, 0xf7, 0x13, 0xcb, 0xc0, 0x6d, 0x28, 0xce, 0xee, 0x21,
-	0xae, 0x2a, 0x0c, 0xed, 0x38, 0xcc, 0x79, 0xdd, 0x74, 0x5a, 0x0b, 0xe0, 0xe3, 0x11, 0xd8, 0x54,
-	0xd0, 0x4a, 0xa6, 0xe6, 0xd7, 0xbd, 0x74, 0xce, 0x09, 0xfc, 0xd5, 0xb7, 0x01, 0xd7, 0x54, 0xed,
-	0xec, 0xbe, 0x9a, 0xdf, 0x21, 0x12, 0xcb, 0xd8, 0xaf, 0x3c, 0x8f, 0x08, 0x1a, 0x8e, 0x08, 0x7a,
-	0x1b, 0x11, 0xf4, 0x34, 0x26, 0xc6, 0x70, 0x4c, 0x8c, 0xd7, 0x31, 0x31, 0x4e, 0x7f, 0x8b, 0x8f,
-	0xb0, 0xfd, 0x1e, 0x00, 0x00, 0xff, 0xff, 0x3e, 0xa6, 0xae, 0x00, 0xe1, 0x05, 0x00, 0x00,
-}
-
-func (m *GetFriendsListReq) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GetFriendsListReq) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GetFriendsListReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Data != nil {
-		{
-			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintFriends(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.ClientInfo != nil {
-		{
-			size, err := m.ClientInfo.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintFriends(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GetFriendsListRes) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GetFriendsListRes) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GetFriendsListRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Data != nil {
-		{
-			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintFriends(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.ErrCode != 0 {
-		i = encodeVarintFriends(dAtA, i, uint64(m.ErrCode))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
+	// 362 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4d, 0x2b, 0xca, 0x4c,
+	0xcd, 0x4b, 0x29, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x4e, 0x2c, 0xc8, 0x8c, 0x87,
+	0x0a, 0x49, 0x09, 0x65, 0xe4, 0xe7, 0xa6, 0xc6, 0xa3, 0x28, 0x80, 0x8a, 0x25, 0x26, 0x27, 0xe7,
+	0x97, 0xe6, 0x95, 0x40, 0xc5, 0x78, 0x52, 0x8b, 0x8a, 0xf2, 0x8b, 0xa0, 0x2a, 0x94, 0xda, 0x18,
+	0xb9, 0xf8, 0x1d, 0x0b, 0x0a, 0x72, 0x2a, 0xdd, 0x20, 0x1a, 0x83, 0x52, 0x0b, 0x85, 0xec, 0xb9,
+	0xb8, 0x9c, 0x73, 0x32, 0x53, 0xf3, 0x4a, 0x3c, 0xf3, 0xd2, 0xf2, 0x25, 0x18, 0x15, 0x18, 0x35,
+	0xb8, 0x8d, 0xe4, 0xf5, 0x32, 0x73, 0xe3, 0xc1, 0xa6, 0x81, 0xf5, 0xe9, 0x41, 0x14, 0xf8, 0xe7,
+	0xe5, 0x64, 0xe6, 0xa5, 0x82, 0x94, 0x05, 0x21, 0x69, 0x11, 0x32, 0xe2, 0x62, 0x71, 0x49, 0x2c,
+	0x49, 0x94, 0x60, 0x02, 0x6b, 0x95, 0x43, 0xd3, 0x8a, 0x66, 0x5d, 0x10, 0x58, 0xad, 0x52, 0x05,
+	0xba, 0x3b, 0x8a, 0x85, 0x0c, 0xb9, 0xd8, 0x5d, 0x8b, 0x8a, 0x9c, 0xf3, 0x53, 0x52, 0xc1, 0x8e,
+	0xe0, 0x33, 0x12, 0x07, 0x99, 0x04, 0x76, 0x3e, 0xd4, 0x28, 0xa8, 0x74, 0x10, 0x4c, 0x1d, 0x49,
+	0x36, 0x17, 0x43, 0x6d, 0xee, 0x63, 0xe4, 0x12, 0x76, 0x4c, 0x2f, 0x4a, 0x4d, 0x85, 0xc8, 0x80,
+	0x15, 0x51, 0x25, 0x18, 0xcc, 0x50, 0x1c, 0xa3, 0x84, 0xee, 0x18, 0x4c, 0x2b, 0xa1, 0x0e, 0x6a,
+	0xc0, 0xea, 0x20, 0xb2, 0xc2, 0x83, 0x54, 0x27, 0xc0, 0xc2, 0xa4, 0x89, 0x91, 0x8b, 0xd7, 0x25,
+	0x35, 0x87, 0x9a, 0x89, 0xc2, 0x00, 0xc5, 0x29, 0x32, 0x68, 0x5a, 0x51, 0x2c, 0x83, 0x3a, 0xa2,
+	0x04, 0xd5, 0x0d, 0x64, 0x05, 0x00, 0xf1, 0xb6, 0x42, 0xbd, 0x6e, 0xf4, 0x93, 0x91, 0x8b, 0x1d,
+	0x2a, 0x28, 0xe4, 0xc3, 0xc5, 0x83, 0x9c, 0x66, 0x84, 0x64, 0xf4, 0x90, 0x72, 0x1c, 0x7a, 0x42,
+	0x96, 0xc2, 0x27, 0x5b, 0xac, 0xc4, 0x20, 0xe4, 0xc6, 0xc5, 0x85, 0xb0, 0x50, 0x48, 0x0a, 0x45,
+	0x35, 0x8a, 0xff, 0xa5, 0x70, 0xcb, 0x81, 0xcc, 0x89, 0xe0, 0x12, 0x40, 0x8f, 0x39, 0x21, 0x05,
+	0x54, 0xbb, 0x31, 0xd3, 0x96, 0x14, 0x21, 0x15, 0xc5, 0x4a, 0x0c, 0x4e, 0x12, 0x27, 0x1e, 0xc9,
+	0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e,
+	0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x90, 0xc4, 0x06, 0x0e, 0x30, 0x63, 0x40, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0x79, 0x46, 0xb0, 0x2b, 0x82, 0x04, 0x00, 0x00,
 }
 
 func (m *ApplyFriendsReq) Marshal() (dAtA []byte, err error) {
@@ -846,39 +649,6 @@ func encodeVarintFriends(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *GetFriendsListReq) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ClientInfo != nil {
-		l = m.ClientInfo.Size()
-		n += 1 + l + sovFriends(uint64(l))
-	}
-	if m.Data != nil {
-		l = m.Data.Size()
-		n += 1 + l + sovFriends(uint64(l))
-	}
-	return n
-}
-
-func (m *GetFriendsListRes) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ErrCode != 0 {
-		n += 1 + sovFriends(uint64(m.ErrCode))
-	}
-	if m.Data != nil {
-		l = m.Data.Size()
-		n += 1 + l + sovFriends(uint64(l))
-	}
-	return n
-}
-
 func (m *ApplyFriendsReq) Size() (n int) {
 	if m == nil {
 		return 0
@@ -983,233 +753,6 @@ func sovFriends(x uint64) (n int) {
 }
 func sozFriends(x uint64) (n int) {
 	return sovFriends(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *GetFriendsListReq) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowFriends
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GetFriendsListReq: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetFriendsListReq: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClientInfo", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowFriends
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthFriends
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthFriends
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.ClientInfo == nil {
-				m.ClientInfo = &im_home_proto.ClientOnlineInfo{}
-			}
-			if err := m.ClientInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowFriends
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthFriends
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthFriends
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Data == nil {
-				m.Data = &im_home_proto.GetFriendsListReq{}
-			}
-			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipFriends(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthFriends
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GetFriendsListRes) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowFriends
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GetFriendsListRes: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetFriendsListRes: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ErrCode", wireType)
-			}
-			m.ErrCode = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowFriends
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ErrCode |= im_error_proto.ErrCode(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowFriends
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthFriends
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthFriends
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Data == nil {
-				m.Data = &im_home_proto.GetFriendsListRes{}
-			}
-			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipFriends(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthFriends
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
 }
 func (m *ApplyFriendsReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

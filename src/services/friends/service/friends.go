@@ -141,6 +141,22 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 		return fmt.Errorf(errStr)
 	}
 
+	// 查询重复
+	findRepeat := func(id int64, friendIDs []int64) bool {
+		for _, i := range friendIDs {
+			if i == id {
+				return true
+			}
+		}
+		return false
+	}
+	if findRepeat(req.Data.ApplyFriendsID, dbSelfFriends.Friends.ApplyFriendIDs) {
+		errStr := fmt.Sprintf("user[%v] apply friend, but [%v] already apply friend", req.ClientInfo.UserID, req.Data.ApplyFriendsID)
+		res.ErrCode = im_error_proto.ErrCode_friends_user_already_apply_friend
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+
 	// 判断是不是好友
 	for _, fID := range dbSelfFriends.Friends.IDs {
 		if req.Data.ApplyFriendsID == fID {
@@ -163,7 +179,8 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 
 	// 修改数据库数据
 	dbSelfFriends.Friends.ApplyFriendIDs = append(dbSelfFriends.Friends.ApplyFriendIDs, req.Data.ApplyFriendsID)
-	dbOtherFriends.Friends.ReceiveApplyIDs = append(dbSelfFriends.Friends.ReceiveApplyIDs, req.ClientInfo.UserID)
+	dbOtherFriends.Friends.ReceiveApplyIDs = append(dbOtherFriends.Friends.ReceiveApplyIDs, req.ClientInfo.UserID)
+
 	err = s.Dao.UpdateFriends(req.ClientInfo.UserID, dbSelfFriends)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] Apply Friends, but update db is err:%v", req.ClientInfo.UserID, err)

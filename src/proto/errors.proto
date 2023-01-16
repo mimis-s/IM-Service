@@ -22,6 +22,7 @@ enum ErrCode {
 
     // friends服务
     friends_user_already_be_friend = 2001;  // 已经是好友了
+    friends_user_already_apply_friend = 2002;  // 已经发送过申请
 }
 
 // 返回客户端错误

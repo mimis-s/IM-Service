@@ -60,6 +60,18 @@ func (j *Job) singleMessage(payload interface{}) error {
 		im_log.Info("user[%v] to user[%v] on line chat message id[%v] data[%v]",
 			singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message.MessageID, singleMessage.Message)
 
+		getUserInfoServiceReq := &api_account.GetUserInfoServiceReq{
+			ClientInfo: singleMessage.UserInfo,
+			UserID:     singleMessage.UserInfo.UserID,
+		}
+		getUserInfoServiceRes, err := api_account.GetUserInfoService(context.Background(), getUserInfoServiceReq)
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] get self info is err:%v", singleMessage.UserInfo.UserID, err)
+			im_log.Error(errStr)
+			return fmt.Errorf(errStr)
+		}
+		chatSingleToReceiver.SenderInfo = getUserInfoServiceRes.Data
+
 		return j.s.SendToClient(singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, msg_id, chatSingleToReceiver)
 	}
 

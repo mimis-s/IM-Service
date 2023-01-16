@@ -11,6 +11,7 @@ option go_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_hom
 // 转发给对方的聊天消息
 message ChatSingleToReceiver {
     ChatMessage Data = 1;
+    UserInfo SenderInfo = 2; // 发送者的信息
 }
 
 // 好友申请转发

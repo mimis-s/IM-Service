@@ -21,6 +21,13 @@ enum MessageStatus_Enum {
     EnumRead    = 3;   // 已读
 }
 
+// 消息概要(当消息为文件或者图片的时候才需要)
+message MessageRecap {
+    string FileName = 1;
+    string FileExtension = 2; // 文件扩展名
+    int64 FileSize = 3;       // 文件大小
+}
+
 // 聊天消息
 message ChatMessage {
     int64 SenderID = 1;         // 发送者userid
@@ -30,7 +37,8 @@ message ChatMessage {
     MessageType_Enum MessageType = 4;       // 消息类型
     int64 SendTimeStamp = 5;                // 发送消息的时间戳
     MessageStatus_Enum MessageStatus = 6;   // 消息状态
-    string Data = 7;    // 消息
+    MessageRecap MessageRecapInfo = 7;      // 消息概要
+    string Data = 8;    // 消息
 }
 
 message ChatSingleReq {

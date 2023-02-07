@@ -19,6 +19,8 @@ const (
 // 存储私聊消息
 func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.SaveSingleChatMessageReq, res *api_message.SaveSingleChatMessageRes) error {
 
+	res.Data = req.Data
+
 	// 判断接收者是否在线
 	getUserInfoReq := &api_account.GetUserInfoServiceReq{
 		ClientInfo: req.ClientInfo,
@@ -43,9 +45,42 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 	req.Data.MessageID = messageID
 	req.Data.MessageStatus = im_home_proto.MessageStatus_Enum_EnumArrive // 送达
 
+	dbChatData := &im_home_proto.ChatMessage{
+		SenderID:         req.Data.SenderID,
+		ReceiverID:       req.Data.ReceiverID,
+		MessageID:        messageID,
+		MessageType:      req.Data.MessageType,
+		SendTimeStamp:    req.Data.SendTimeStamp,
+		MessageStatus:    req.Data.MessageStatus,
+		MessageRecapInfo: req.Data.MessageRecapInfo,
+	}
+
+	// 判断消息类型
+	switch req.Data.MessageType {
+	case im_home_proto.MessageType_Enum_EnumImgType:
+		err = s.Dao.UpLoadChatImage(req.Data.SenderID, req.Data.ReceiverID, messageID, []byte(req.Data.Data))
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
+				req.Data.ReceiverID, messageID, err)
+			im_log.Error(errStr)
+			return fmt.Errorf(errStr)
+		}
+	case im_home_proto.MessageType_Enum_EnumFileType:
+		err = s.Dao.UpLoadChatFile(req.Data.SenderID, req.Data.ReceiverID, messageID, []byte(req.Data.Data))
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
+				req.Data.ReceiverID, messageID, err)
+			im_log.Error(errStr)
+			return fmt.Errorf(errStr)
+		}
+		res.Data.Data = ""
+	default:
+		dbChatData.Data = req.Data.Data
+	}
+
 	if getUserInfoRes.Data.Status == im_home_proto.Enum_UserStatus_Enum_UserStatus_Online {
 		// 在线
-		err = s.Dao.AddHistoryMessage(req.Data.SenderID, req.Data.ReceiverID, req.Data)
+		err = s.Dao.AddHistoryMessage(req.Data.SenderID, req.Data.ReceiverID, dbChatData)
 		if err != nil {
 			res.ErrCode = im_error_proto.ErrCode_db_write_err
 			errStr := fmt.Sprintf("user[%v] add history message[%v] is err:%v",
@@ -56,7 +91,7 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 		res.IsOnline = true
 	} else if getUserInfoRes.Data.Status == im_home_proto.Enum_UserStatus_Enum_UserStatus_Outline {
 		// 离线
-		err = s.Dao.AddUserOneOfflineMessage(req.Data.SenderID, req.Data.ReceiverID, req.Data)
+		err = s.Dao.AddUserOneOfflineMessage(req.Data.SenderID, req.Data.ReceiverID, dbChatData)
 		if err != nil {
 			res.ErrCode = im_error_proto.ErrCode_db_write_err
 			errStr := fmt.Sprintf("user[%v] add off line message[%v] is err:%v",
@@ -108,6 +143,21 @@ func (s *Service) GetSingleChatHistory(ctx context.Context, req *api_message.Get
 		return fmt.Errorf(errStr)
 	}
 	for _, m := range historyMessages {
+
+		// 判断消息类型
+		switch m.MessageData.HistoryData.MessageType {
+		case im_home_proto.MessageType_Enum_EnumImgType:
+			data, err := s.Dao.DownLoadChatImage(m.MessageData.HistoryData.SenderID, m.MessageData.HistoryData.ReceiverID, m.MessageData.HistoryData.MessageID)
+			if err != nil {
+				errStr := fmt.Sprintf("user[%v] get user[%v][%v] down load message[%v] is err:%v", req.ClientInfo.UserID, m.MessageData.HistoryData.SenderID,
+					m.MessageData.HistoryData.ReceiverID, m.MessageData.HistoryData.MessageID, err)
+				im_log.Error(errStr)
+				return fmt.Errorf(errStr)
+			}
+			m.MessageData.HistoryData.Data = string(data)
+		default:
+		}
+
 		res.Data.Data = append(res.Data.Data, m.MessageData.HistoryData)
 	}
 
@@ -151,6 +201,23 @@ func (s *Service) ReadOfflineMessage(ctx context.Context, req *api_message.ReadO
 		}
 
 	}
+
+	for _, message := range offlineMessage {
+		// 判断消息类型
+		switch message.MessageType {
+		case im_home_proto.MessageType_Enum_EnumImgType:
+			data, err := s.Dao.DownLoadChatImage(message.SenderID, message.ReceiverID, message.MessageID)
+			if err != nil {
+				errStr := fmt.Sprintf("user[%v] get user[%v][%v] down load message[%v] is err:%v", req.ClientInfo.UserID, message.SenderID,
+					message.ReceiverID, message.MessageID, err)
+				im_log.Error(errStr)
+				return fmt.Errorf(errStr)
+			}
+			message.Data = string(data)
+		default:
+		}
+	}
+
 	res.Data = &im_home_proto.ReadOfflineMessageRes{
 		Data: offlineMessage,
 	}

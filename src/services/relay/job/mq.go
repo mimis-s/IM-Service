@@ -53,7 +53,7 @@ func (j *Job) singleMessage(payload interface{}) error {
 	}
 	if saveSingleChatMessageRes.IsOnline {
 		chatSingleToReceiver := &im_home_proto.ChatSingleToReceiver{
-			Data: singleMessage.Message,
+			Data: saveSingleChatMessageRes.Data,
 		}
 		msg_id := seralize.GetMsgIdByStruct(im_home_proto.ChatSingleToReceiver{})
 

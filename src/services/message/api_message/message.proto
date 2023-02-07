@@ -24,6 +24,7 @@ message SaveSingleChatMessageReq {
 message SaveSingleChatMessageRes {
     im_error_proto.ErrCode ErrCode = 1;
     bool IsOnline = 2;  // 消息接收者是否在线
+    im_home_proto.ChatMessage Data = 3;
 }
 
 message GetSingleChatHistoryReq {

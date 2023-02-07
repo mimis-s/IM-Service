@@ -6,8 +6,8 @@ package im_home_proto;
 option go_package = "github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto";
 
 // 消息类型
-enum MessageType_Enum {
-    MessageType_Enum_Default = 0;
+enum MessageFileType_Enum {
+    MessageFileType_Enum_Default = 0;
     EnumTextType = 1;   // 文本
     EnumImgType = 2;    // 图片
     EnumFileType = 3;   // 文件
@@ -22,10 +22,14 @@ enum MessageStatus_Enum {
 }
 
 // 消息概要(当消息为文件或者图片的时候才需要)
-message MessageRecap {
+message MessageFileRecap {
     string FileName = 1;
     string FileExtension = 2; // 文件扩展名
     int64 FileSize = 3;       // 文件大小
+
+    string FileData = 4;   // 图片或者文件内容
+    int32 FileIndex = 5;   // 文件在消息中的位置
+    MessageFileType_Enum MessageFileType = 6;       // 文件类型
 }
 
 // 聊天消息
@@ -34,11 +38,10 @@ message ChatMessage {
     int64 ReceiverID = 2;       // 接收者userid
 
     int64 MessageID = 3;                    // 消息ID(递增)
-    MessageType_Enum MessageType = 4;       // 消息类型
-    int64 SendTimeStamp = 5;                // 发送消息的时间戳
-    MessageStatus_Enum MessageStatus = 6;   // 消息状态
-    MessageRecap MessageRecapInfo = 7;      // 消息概要
-    string Data = 8;    // 消息
+    int64 SendTimeStamp = 4;                // 发送消息的时间戳
+    MessageStatus_Enum MessageStatus = 5;   // 消息状态
+    repeated MessageFileRecap MessageFileInfos = 6;      // 文件消息
+    string Data = 7;    // 单纯的文本消息
 }
 
 message ChatSingleReq {

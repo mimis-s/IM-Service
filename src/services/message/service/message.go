@@ -49,33 +49,42 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 		SenderID:         req.Data.SenderID,
 		ReceiverID:       req.Data.ReceiverID,
 		MessageID:        messageID,
-		MessageType:      req.Data.MessageType,
+		MessageFileInfos: make([]*im_home_proto.MessageFileRecap, 0, len(req.Data.MessageFileInfos)),
 		SendTimeStamp:    req.Data.SendTimeStamp,
 		MessageStatus:    req.Data.MessageStatus,
-		MessageRecapInfo: req.Data.MessageRecapInfo,
 	}
 
 	// 判断消息类型
-	switch req.Data.MessageType {
-	case im_home_proto.MessageType_Enum_EnumImgType:
-		err = s.Dao.UpLoadChatImage(req.Data.SenderID, req.Data.ReceiverID, messageID, []byte(req.Data.Data))
-		if err != nil {
-			errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
-				req.Data.ReceiverID, messageID, err)
-			im_log.Error(errStr)
-			return fmt.Errorf(errStr)
+	for _, fileMessage := range req.Data.MessageFileInfos {
+		dbChatData.MessageFileInfos = append(dbChatData.MessageFileInfos, &im_home_proto.MessageFileRecap{
+			FileName:        fileMessage.FileName,
+			FileExtension:   fileMessage.FileExtension,
+			FileSize:        fileMessage.FileSize,
+			FileIndex:       fileMessage.FileIndex,
+			MessageFileType: fileMessage.MessageFileType,
+		})
+
+		switch fileMessage.MessageFileType {
+		case im_home_proto.MessageFileType_Enum_EnumImgType:
+			err = s.Dao.UpLoadChatImage(req.Data.SenderID, req.Data.ReceiverID, messageID, int(fileMessage.FileIndex), []byte(req.Data.Data))
+			if err != nil {
+				errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
+					req.Data.ReceiverID, messageID, err)
+				im_log.Error(errStr)
+				return fmt.Errorf(errStr)
+			}
+		case im_home_proto.MessageFileType_Enum_EnumFileType:
+			err = s.Dao.UpLoadChatFile(req.Data.SenderID, req.Data.ReceiverID, messageID, int(fileMessage.FileIndex), []byte(req.Data.Data))
+			if err != nil {
+				errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
+					req.Data.ReceiverID, messageID, err)
+				im_log.Error(errStr)
+				return fmt.Errorf(errStr)
+			}
+			fileMessage.FileData = ""
+		default:
 		}
-	case im_home_proto.MessageType_Enum_EnumFileType:
-		err = s.Dao.UpLoadChatFile(req.Data.SenderID, req.Data.ReceiverID, messageID, []byte(req.Data.Data))
-		if err != nil {
-			errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
-				req.Data.ReceiverID, messageID, err)
-			im_log.Error(errStr)
-			return fmt.Errorf(errStr)
-		}
-		res.Data.Data = ""
-	default:
-		dbChatData.Data = req.Data.Data
+
 	}
 
 	if getUserInfoRes.Data.Status == im_home_proto.Enum_UserStatus_Enum_UserStatus_Online {
@@ -143,19 +152,21 @@ func (s *Service) GetSingleChatHistory(ctx context.Context, req *api_message.Get
 		return fmt.Errorf(errStr)
 	}
 	for _, m := range historyMessages {
+		for index, fileMessage := range m.MessageData.HistoryData.MessageFileInfos {
 
-		// 判断消息类型
-		switch m.MessageData.HistoryData.MessageType {
-		case im_home_proto.MessageType_Enum_EnumImgType:
-			data, err := s.Dao.DownLoadChatImage(m.MessageData.HistoryData.SenderID, m.MessageData.HistoryData.ReceiverID, m.MessageData.HistoryData.MessageID)
-			if err != nil {
-				errStr := fmt.Sprintf("user[%v] get user[%v][%v] down load message[%v] is err:%v", req.ClientInfo.UserID, m.MessageData.HistoryData.SenderID,
-					m.MessageData.HistoryData.ReceiverID, m.MessageData.HistoryData.MessageID, err)
-				im_log.Error(errStr)
-				return fmt.Errorf(errStr)
+			// 判断消息类型
+			switch fileMessage.MessageFileType {
+			case im_home_proto.MessageFileType_Enum_EnumImgType:
+				data, err := s.Dao.DownLoadChatImage(m.MessageData.HistoryData.SenderID, m.MessageData.HistoryData.ReceiverID, m.MessageData.HistoryData.MessageID, int(fileMessage.FileIndex))
+				if err != nil {
+					errStr := fmt.Sprintf("user[%v] get user[%v][%v] down load message[%v] is err:%v", req.ClientInfo.UserID, m.MessageData.HistoryData.SenderID,
+						m.MessageData.HistoryData.ReceiverID, m.MessageData.HistoryData.MessageID, err)
+					im_log.Error(errStr)
+					return fmt.Errorf(errStr)
+				}
+				m.MessageData.HistoryData.MessageFileInfos[index].FileData = string(data)
+			default:
 			}
-			m.MessageData.HistoryData.Data = string(data)
-		default:
 		}
 
 		res.Data.Data = append(res.Data.Data, m.MessageData.HistoryData)
@@ -204,17 +215,20 @@ func (s *Service) ReadOfflineMessage(ctx context.Context, req *api_message.ReadO
 
 	for _, message := range offlineMessage {
 		// 判断消息类型
-		switch message.MessageType {
-		case im_home_proto.MessageType_Enum_EnumImgType:
-			data, err := s.Dao.DownLoadChatImage(message.SenderID, message.ReceiverID, message.MessageID)
-			if err != nil {
-				errStr := fmt.Sprintf("user[%v] get user[%v][%v] down load message[%v] is err:%v", req.ClientInfo.UserID, message.SenderID,
-					message.ReceiverID, message.MessageID, err)
-				im_log.Error(errStr)
-				return fmt.Errorf(errStr)
+		for _, fileMessage := range message.MessageFileInfos {
+			switch fileMessage.MessageFileType {
+			case im_home_proto.MessageFileType_Enum_EnumImgType:
+				data, err := s.Dao.DownLoadChatImage(message.SenderID, message.ReceiverID, message.MessageID, int(fileMessage.FileIndex))
+				if err != nil {
+					errStr := fmt.Sprintf("user[%v] get user[%v][%v] down load message[%v] is err:%v", req.ClientInfo.UserID, message.SenderID,
+						message.ReceiverID, message.MessageID, err)
+					im_log.Error(errStr)
+					return fmt.Errorf(errStr)
+				}
+				fileMessage.FileData = string(data)
+			default:
 			}
-			message.Data = string(data)
-		default:
+
 		}
 	}
 

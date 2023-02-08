@@ -11,6 +11,7 @@ import (
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/IM-Service/src/services/message/api_message"
+	"github.com/mimis-s/IM-Service/src/services/relay/relay_api"
 	"github.com/mimis-s/IM-Service/src/services/relay/service"
 	"github.com/mimis-s/golang_tools/mq/rabbitmq"
 )
@@ -51,34 +52,36 @@ func (j *Job) singleMessage(payload interface{}) error {
 			singleMessage.Message.ReceiverID, err)
 		return err
 	}
+
+	chatSingleToReceiver := &im_home_proto.ChatSingleToReceiver{
+		Data: saveSingleChatMessageRes.Data,
+	}
+	msg_id := seralize.GetMsgIdByStruct(im_home_proto.ChatSingleToReceiver{})
+
+	getUserInfoServiceReq := &api_account.GetUserInfoServiceReq{
+		ClientInfo: singleMessage.UserInfo,
+		UserID:     singleMessage.UserInfo.UserID,
+	}
+	getUserInfoServiceRes, err := api_account.GetUserInfoService(context.Background(), getUserInfoServiceReq)
+	if err != nil {
+		errStr := fmt.Sprintf("user[%v] get self info is err:%v", singleMessage.UserInfo.UserID, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
+	}
+	chatSingleToReceiver.SenderInfo = getUserInfoServiceRes.Data
+
 	if saveSingleChatMessageRes.IsOnline {
-		chatSingleToReceiver := &im_home_proto.ChatSingleToReceiver{
-			Data: saveSingleChatMessageRes.Data,
-		}
-		msg_id := seralize.GetMsgIdByStruct(im_home_proto.ChatSingleToReceiver{})
 
-		im_log.Info("user[%v] to user[%v] on line chat message id[%v] data[%v]",
-			singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message.MessageID, singleMessage.Message)
+		im_log.Info("user[%v] to user[%v] on line chat message id[%v] data",
+			singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message.MessageID)
 
-		getUserInfoServiceReq := &api_account.GetUserInfoServiceReq{
-			ClientInfo: singleMessage.UserInfo,
-			UserID:     singleMessage.UserInfo.UserID,
-		}
-		getUserInfoServiceRes, err := api_account.GetUserInfoService(context.Background(), getUserInfoServiceReq)
-		if err != nil {
-			errStr := fmt.Sprintf("user[%v] get self info is err:%v", singleMessage.UserInfo.UserID, err)
-			im_log.Error(errStr)
-			return fmt.Errorf(errStr)
-		}
-		chatSingleToReceiver.SenderInfo = getUserInfoServiceRes.Data
-
-		return j.s.SendToClient(singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, msg_id, chatSingleToReceiver)
+		j.s.SendToClient(singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, msg_id, chatSingleToReceiver)
+	} else {
+		im_log.Info("user[%v] to user[%v] off line chat message id[%v] data",
+			singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message.MessageID)
 	}
 
-	im_log.Info("user[%v] to user[%v] off line chat message id[%v] data[%v]",
-		singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message.MessageID, singleMessage.Message)
-
-	return nil
+	return relay_api.NotifyUser(singleMessage.UserInfo.UserID, chatSingleToReceiver)
 }
 
 // 转发好友请求

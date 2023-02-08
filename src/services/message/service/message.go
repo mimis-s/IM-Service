@@ -66,7 +66,7 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 
 		switch fileMessage.MessageFileType {
 		case im_home_proto.MessageFileType_Enum_EnumImgType:
-			err = s.Dao.UpLoadChatImage(req.Data.SenderID, req.Data.ReceiverID, messageID, int(fileMessage.FileIndex), []byte(req.Data.Data))
+			err = s.Dao.UpLoadChatImage(req.Data.SenderID, req.Data.ReceiverID, messageID, int(fileMessage.FileIndex), []byte(fileMessage.FileData))
 			if err != nil {
 				errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
 					req.Data.ReceiverID, messageID, err)
@@ -74,7 +74,7 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 				return fmt.Errorf(errStr)
 			}
 		case im_home_proto.MessageFileType_Enum_EnumFileType:
-			err = s.Dao.UpLoadChatFile(req.Data.SenderID, req.Data.ReceiverID, messageID, int(fileMessage.FileIndex), []byte(req.Data.Data))
+			err = s.Dao.UpLoadChatFile(req.Data.SenderID, req.Data.ReceiverID, messageID, int(fileMessage.FileIndex), []byte(fileMessage.FileData))
 			if err != nil {
 				errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
 					req.Data.ReceiverID, messageID, err)

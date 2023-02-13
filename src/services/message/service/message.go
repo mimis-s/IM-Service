@@ -238,3 +238,42 @@ func (s *Service) ReadOfflineMessage(ctx context.Context, req *api_message.ReadO
 
 	return nil
 }
+
+// 下载文件消息(文件或者图片)
+func (s *Service) DownLoadFileMessage(ctx context.Context, req *api_message.DownLoadFileMessageReq, res *api_message.DownLoadFileMessageRes) error {
+
+	fileData := ""
+	switch req.Data.MessageFileType {
+	case im_home_proto.MessageFileType_Enum_EnumImgType:
+		data, err := s.Dao.DownLoadChatImage(req.ClientInfo.UserID, req.Data.FriendID,
+			req.Data.MessageID, int(req.Data.FileIndex))
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] get user[%v] down load img message[%v] is err:%v", req.ClientInfo.UserID,
+				req.Data.FriendID, req.Data.MessageID, err)
+			im_log.Error(errStr)
+			return fmt.Errorf(errStr)
+		}
+		fileData = string(data)
+	case im_home_proto.MessageFileType_Enum_EnumFileType:
+		data, err := s.Dao.DownLoadChatFile(req.ClientInfo.UserID, req.Data.FriendID,
+			req.Data.MessageID, int(req.Data.FileIndex))
+		if err != nil {
+			errStr := fmt.Sprintf("user[%v] get user[%v] down load file message[%v] is err:%v", req.ClientInfo.UserID,
+				req.Data.FriendID, req.Data.MessageID, err)
+			im_log.Error(errStr)
+			return fmt.Errorf(errStr)
+		}
+		fileData = string(data)
+	default:
+	}
+
+	res.Data = &im_home_proto.DownLoadFileMessageRes{
+		FriendID:        req.Data.FriendID,
+		MessageID:       req.Data.MessageID,
+		FileIndex:       req.Data.FileIndex,
+		MessageFileType: req.Data.MessageFileType,
+		FileData:        fileData,
+	}
+
+	return nil
+}

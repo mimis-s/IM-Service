@@ -93,10 +93,23 @@ func ReadOfflineMessage(ctx context.Context,
 	return out, err
 }
 
+func DownLoadFileMessage(ctx context.Context,
+	in *DownLoadFileMessageReq) (*DownLoadFileMessageRes, error) {
+
+	if callSingleMethodFunc != nil {
+		MessageClientOnce.Do(callSingleMethodFunc)
+	}
+
+	out := new(DownLoadFileMessageRes)
+	out, err := MessageClientInstance.DownLoadFileMessage(ctx, in)
+	return out, err
+}
+
 type MessageClientInterface interface {
 	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq) (*SaveSingleChatMessageRes, error)
 	GetSingleChatHistory(context.Context, *GetSingleChatHistoryReq) (*GetSingleChatHistoryRes, error)
 	ReadOfflineMessage(context.Context, *ReadOfflineMessageReq) (*ReadOfflineMessageRes, error)
+	DownLoadFileMessage(context.Context, *DownLoadFileMessageReq) (*DownLoadFileMessageRes, error)
 }
 
 // rpcx客户端
@@ -125,6 +138,13 @@ func (c *MessageRpcxClient) ReadOfflineMessage(ctx context.Context,
 	return out, err
 }
 
+func (c *MessageRpcxClient) DownLoadFileMessage(ctx context.Context,
+	in *DownLoadFileMessageReq) (*DownLoadFileMessageRes, error) {
+	out := new(DownLoadFileMessageRes)
+	err := c.c.Call(ctx, "DownLoadFileMessage", in, out)
+	return out, err
+}
+
 // 本地调用客户端
 type MessageLocalClient struct {
 }
@@ -150,10 +170,18 @@ func (c *MessageLocalClient) ReadOfflineMessage(ctx context.Context,
 	return out, err
 }
 
+func (c *MessageLocalClient) DownLoadFileMessage(ctx context.Context,
+	in *DownLoadFileMessageReq) (*DownLoadFileMessageRes, error) {
+	out := new(DownLoadFileMessageRes)
+	err := MessageServiceLocal.DownLoadFileMessage(ctx, in, out)
+	return out, err
+}
+
 type MessageServiceInterface interface {
 	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq, *SaveSingleChatMessageRes) error
 	GetSingleChatHistory(context.Context, *GetSingleChatHistoryReq, *GetSingleChatHistoryRes) error
 	ReadOfflineMessage(context.Context, *ReadOfflineMessageReq, *ReadOfflineMessageRes) error
+	DownLoadFileMessage(context.Context, *DownLoadFileMessageReq, *DownLoadFileMessageRes) error
 }
 
 var MessageServiceLocal MessageServiceInterface

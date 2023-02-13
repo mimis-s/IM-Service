@@ -25,3 +25,19 @@ message ReadOfflineMessageRes {
     int64 FriendID = 1;
     repeated ChatMessage Data = 2;
 }
+
+// 下载文件消息(文件或者图片)
+message DownLoadFileMessageReq {
+    int64 FriendID = 1;
+    int64 MessageID = 2;
+    int32 FileIndex = 3;   // 文件在消息中的位置
+    MessageFileType_Enum MessageFileType = 4;       // 文件类型
+}
+
+message DownLoadFileMessageRes {
+    int64 FriendID = 1;
+    int64 MessageID = 2;
+    int32 FileIndex = 3;   // 文件在消息中的位置
+    string FileData = 4;
+    MessageFileType_Enum MessageFileType = 5;       // 文件类型
+}

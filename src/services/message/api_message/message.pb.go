@@ -344,6 +344,111 @@ func (m *ReadOfflineMessageRes) GetData() *im_home_proto.ReadOfflineMessageRes {
 	return nil
 }
 
+// 下载文件消息(文件或者图片)
+type DownLoadFileMessageReq struct {
+	ClientInfo *im_home_proto.ClientOnlineInfo       `protobuf:"bytes,1,opt,name=ClientInfo,proto3" json:"ClientInfo,omitempty"`
+	Data       *im_home_proto.DownLoadFileMessageReq `protobuf:"bytes,2,opt,name=Data,proto3" json:"Data,omitempty"`
+}
+
+func (m *DownLoadFileMessageReq) Reset()         { *m = DownLoadFileMessageReq{} }
+func (m *DownLoadFileMessageReq) String() string { return proto.CompactTextString(m) }
+func (*DownLoadFileMessageReq) ProtoMessage()    {}
+func (*DownLoadFileMessageReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33c57e4bae7b9afd, []int{6}
+}
+func (m *DownLoadFileMessageReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DownLoadFileMessageReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DownLoadFileMessageReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DownLoadFileMessageReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DownLoadFileMessageReq.Merge(m, src)
+}
+func (m *DownLoadFileMessageReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *DownLoadFileMessageReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_DownLoadFileMessageReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DownLoadFileMessageReq proto.InternalMessageInfo
+
+func (m *DownLoadFileMessageReq) GetClientInfo() *im_home_proto.ClientOnlineInfo {
+	if m != nil {
+		return m.ClientInfo
+	}
+	return nil
+}
+
+func (m *DownLoadFileMessageReq) GetData() *im_home_proto.DownLoadFileMessageReq {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type DownLoadFileMessageRes struct {
+	ErrCode im_error_proto.ErrCode                `protobuf:"varint,1,opt,name=ErrCode,proto3,enum=im_error_proto.ErrCode" json:"ErrCode,omitempty"`
+	Data    *im_home_proto.DownLoadFileMessageRes `protobuf:"bytes,2,opt,name=Data,proto3" json:"Data,omitempty"`
+}
+
+func (m *DownLoadFileMessageRes) Reset()         { *m = DownLoadFileMessageRes{} }
+func (m *DownLoadFileMessageRes) String() string { return proto.CompactTextString(m) }
+func (*DownLoadFileMessageRes) ProtoMessage()    {}
+func (*DownLoadFileMessageRes) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33c57e4bae7b9afd, []int{7}
+}
+func (m *DownLoadFileMessageRes) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DownLoadFileMessageRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DownLoadFileMessageRes.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DownLoadFileMessageRes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DownLoadFileMessageRes.Merge(m, src)
+}
+func (m *DownLoadFileMessageRes) XXX_Size() int {
+	return m.Size()
+}
+func (m *DownLoadFileMessageRes) XXX_DiscardUnknown() {
+	xxx_messageInfo_DownLoadFileMessageRes.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DownLoadFileMessageRes proto.InternalMessageInfo
+
+func (m *DownLoadFileMessageRes) GetErrCode() im_error_proto.ErrCode {
+	if m != nil {
+		return m.ErrCode
+	}
+	return im_error_proto.ErrCode_success
+}
+
+func (m *DownLoadFileMessageRes) GetData() *im_home_proto.DownLoadFileMessageRes {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*SaveSingleChatMessageReq)(nil), "api_message.SaveSingleChatMessageReq")
 	proto.RegisterType((*SaveSingleChatMessageRes)(nil), "api_message.SaveSingleChatMessageRes")
@@ -351,38 +456,44 @@ func init() {
 	proto.RegisterType((*GetSingleChatHistoryRes)(nil), "api_message.GetSingleChatHistoryRes")
 	proto.RegisterType((*ReadOfflineMessageReq)(nil), "api_message.ReadOfflineMessageReq")
 	proto.RegisterType((*ReadOfflineMessageRes)(nil), "api_message.ReadOfflineMessageRes")
+	proto.RegisterType((*DownLoadFileMessageReq)(nil), "api_message.DownLoadFileMessageReq")
+	proto.RegisterType((*DownLoadFileMessageRes)(nil), "api_message.DownLoadFileMessageRes")
 }
 
 func init() { proto.RegisterFile("message.proto", fileDescriptor_33c57e4bae7b9afd) }
 
 var fileDescriptor_33c57e4bae7b9afd = []byte{
-	// 407 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcd, 0x4d, 0x2d, 0x2e,
-	0x4e, 0x4c, 0x4f, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x4e, 0x2c, 0xc8, 0x8c, 0x87,
-	0x0a, 0x49, 0xf1, 0x67, 0xe4, 0xe7, 0xa6, 0xc6, 0x27, 0x67, 0x24, 0x96, 0x40, 0x64, 0xa5, 0x84,
-	0xc0, 0x02, 0x89, 0xc9, 0xc9, 0xf9, 0xa5, 0x79, 0xa8, 0x62, 0x28, 0xa6, 0x48, 0xf1, 0xa4, 0x16,
-	0x15, 0xe5, 0x17, 0x15, 0x43, 0x78, 0x4a, 0xdd, 0x8c, 0x5c, 0x12, 0xc1, 0x89, 0x65, 0xa9, 0xc1,
-	0x99, 0x79, 0xe9, 0x39, 0xa9, 0xce, 0x19, 0x89, 0x25, 0xbe, 0x10, 0xd5, 0x41, 0xa9, 0x85, 0x42,
-	0xf6, 0x5c, 0x5c, 0xce, 0x39, 0x99, 0xa9, 0x79, 0x25, 0x9e, 0x79, 0x69, 0xf9, 0x12, 0x8c, 0x0a,
-	0x8c, 0x1a, 0xdc, 0x46, 0xf2, 0x7a, 0x99, 0xb9, 0xf1, 0x60, 0x63, 0xc1, 0x06, 0xe8, 0x41, 0x14,
-	0xf8, 0xe7, 0xe5, 0x64, 0xe6, 0xa5, 0x82, 0x94, 0x05, 0x21, 0x69, 0x11, 0xd2, 0xe3, 0x62, 0x71,
-	0x49, 0x2c, 0x49, 0x94, 0x60, 0x02, 0x6b, 0x95, 0x42, 0xd7, 0x8a, 0x64, 0x1b, 0x58, 0x9d, 0xd2,
-	0x4c, 0xdc, 0xae, 0x29, 0x16, 0x32, 0xe4, 0x62, 0x77, 0x2d, 0x2a, 0x72, 0xce, 0x4f, 0x49, 0x05,
-	0x3b, 0x85, 0xcf, 0x48, 0x1c, 0x64, 0x1e, 0xd8, 0x37, 0x50, 0x03, 0xa1, 0xd2, 0x41, 0x30, 0x75,
-	0x42, 0x52, 0x5c, 0x1c, 0x9e, 0xc5, 0x10, 0xb7, 0x81, 0xdd, 0xc0, 0x11, 0x04, 0xe7, 0xc3, 0xdd,
-	0xc6, 0x4c, 0xa4, 0xdb, 0xa6, 0x31, 0x72, 0x89, 0xbb, 0xa7, 0x96, 0x20, 0x9c, 0xe6, 0x91, 0x59,
-	0x5c, 0x92, 0x5f, 0x54, 0x49, 0x95, 0x80, 0xb2, 0x42, 0x09, 0x28, 0x35, 0x34, 0xad, 0x38, 0xac,
-	0x85, 0x3a, 0xac, 0x03, 0xa7, 0xc3, 0xc8, 0x0a, 0x33, 0x72, 0x9c, 0x52, 0x0c, 0x75, 0xca, 0x24,
-	0x46, 0x2e, 0xd1, 0xa0, 0xd4, 0xc4, 0x14, 0xff, 0xb4, 0x34, 0x90, 0x37, 0xa9, 0x99, 0x94, 0x2c,
-	0x50, 0x9c, 0xa5, 0x82, 0xa6, 0x15, 0xab, 0xa5, 0x50, 0x47, 0xb5, 0xe0, 0x70, 0x14, 0x59, 0xa1,
-	0x43, 0xba, 0x33, 0xa0, 0x61, 0x63, 0xb4, 0x83, 0x89, 0x8b, 0x1d, 0x2a, 0x28, 0x94, 0xce, 0x25,
-	0x8a, 0x35, 0x99, 0x0b, 0xa9, 0xea, 0x21, 0xe5, 0x71, 0x3d, 0x5c, 0x19, 0x53, 0x8a, 0x28, 0x65,
-	0xc5, 0x4a, 0x0c, 0x42, 0x29, 0x5c, 0x22, 0xd8, 0x62, 0x4c, 0x48, 0x05, 0xc5, 0x00, 0x1c, 0xe9,
-	0x4b, 0x8a, 0x18, 0x55, 0x20, 0x5b, 0xe2, 0xb8, 0x84, 0x30, 0x7d, 0x2e, 0xa4, 0x84, 0xa2, 0x1b,
-	0x6b, 0x0c, 0x49, 0x11, 0x56, 0x53, 0xac, 0xc4, 0xe0, 0x24, 0x71, 0xe2, 0x91, 0x1c, 0xe3, 0x85,
-	0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3,
-	0x8d, 0xc7, 0x72, 0x0c, 0x49, 0x6c, 0xe0, 0x70, 0x37, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0xa8,
-	0xf4, 0x9d, 0x4d, 0x2a, 0x05, 0x00, 0x00,
+	// 465 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0x4f, 0x6b, 0xdb, 0x30,
+	0x18, 0xc6, 0xad, 0x65, 0x2c, 0x41, 0xd9, 0x1f, 0xd0, 0x96, 0xc5, 0xe8, 0xe0, 0x0d, 0x2f, 0x19,
+	0x3b, 0x19, 0x96, 0x5d, 0xb6, 0x5d, 0x06, 0x4b, 0xf6, 0x27, 0xb0, 0x11, 0x70, 0xee, 0x0b, 0x5a,
+	0xac, 0x24, 0x06, 0xc7, 0xca, 0x2c, 0x6f, 0xa3, 0xf7, 0x52, 0x0a, 0xbd, 0x94, 0x52, 0x0a, 0xa5,
+	0x5f, 0xa8, 0xc7, 0x1c, 0x7b, 0x2c, 0xc9, 0x17, 0x29, 0x96, 0x95, 0x34, 0x72, 0x6d, 0xea, 0x9a,
+	0x1c, 0xfd, 0xea, 0x79, 0xde, 0xf7, 0xa7, 0x27, 0x6f, 0x04, 0x1f, 0x4d, 0x29, 0xe7, 0x64, 0x4c,
+	0xad, 0x59, 0xc0, 0x42, 0x86, 0xaa, 0x64, 0xe6, 0x0e, 0x64, 0x09, 0x3f, 0x99, 0xb0, 0x29, 0x1d,
+	0x0c, 0x27, 0x24, 0x8c, 0x4f, 0x31, 0x12, 0x05, 0x32, 0x1c, 0xb2, 0xbf, 0xbe, 0x5a, 0x53, 0xba,
+	0xe0, 0x87, 0x34, 0x08, 0x58, 0xc0, 0xe3, 0x2f, 0xf3, 0x00, 0x40, 0xbd, 0x4f, 0xfe, 0xd1, 0xbe,
+	0xeb, 0x8f, 0x3d, 0xda, 0x9e, 0x90, 0xf0, 0x67, 0xac, 0xb6, 0xe9, 0x1f, 0xf4, 0x09, 0xc2, 0xb6,
+	0xe7, 0x52, 0x3f, 0xec, 0xfa, 0x23, 0xa6, 0x83, 0x97, 0xe0, 0x4d, 0xb5, 0xf5, 0xc2, 0x72, 0xa7,
+	0x03, 0xd1, 0x56, 0x34, 0xb0, 0x62, 0x41, 0xcf, 0xf7, 0x5c, 0x9f, 0x46, 0x32, 0x7b, 0xc3, 0x82,
+	0x2c, 0x78, 0xbf, 0x43, 0x42, 0xa2, 0xdf, 0x13, 0x56, 0x9c, 0xb4, 0x6e, 0x4c, 0x13, 0x3a, 0xf3,
+	0x34, 0x9b, 0x86, 0xa3, 0xb7, 0xb0, 0xfc, 0x25, 0x08, 0xda, 0xcc, 0xa1, 0x02, 0xe5, 0x71, 0xab,
+	0x1e, 0xf5, 0x13, 0xb7, 0x91, 0x0d, 0xe5, 0xb1, 0xbd, 0xd2, 0x21, 0x0c, 0x2b, 0x5d, 0x1e, 0xb3,
+	0x09, 0x86, 0x8a, 0xbd, 0xfe, 0x5e, 0xb3, 0x95, 0x72, 0xb2, 0x9d, 0x00, 0x58, 0xff, 0x46, 0xc3,
+	0x6b, 0xb4, 0xef, 0x2e, 0x0f, 0x59, 0xb0, 0xb3, 0x95, 0xa0, 0x3e, 0x2a, 0x41, 0xbd, 0x4e, 0x58,
+	0x33, 0xc6, 0x4a, 0xb0, 0xfd, 0x4c, 0xb0, 0x42, 0x99, 0x15, 0x41, 0xe1, 0x12, 0xe5, 0x08, 0xc0,
+	0x9a, 0x4d, 0x89, 0xd3, 0x1b, 0x8d, 0xa2, 0x6b, 0x6e, 0x73, 0x95, 0xde, 0x2b, 0x58, 0x8d, 0x84,
+	0x35, 0x75, 0xa8, 0x84, 0xda, 0xcd, 0x80, 0x2a, 0x94, 0xce, 0xdd, 0x31, 0x56, 0xd9, 0x1c, 0x03,
+	0xf8, 0xbc, 0xc3, 0xfe, 0xfb, 0x3f, 0x18, 0x71, 0xbe, 0xba, 0xde, 0x56, 0xc3, 0xf9, 0xa0, 0x50,
+	0x35, 0x13, 0xd6, 0xf4, 0xa9, 0x12, 0x6b, 0x2f, 0x0b, 0xab, 0x50, 0x3c, 0x05, 0x40, 0x64, 0x3e,
+	0xad, 0xb3, 0x12, 0x2c, 0xcb, 0x22, 0x1a, 0xc3, 0x5a, 0xea, 0x33, 0x80, 0x9a, 0xd6, 0xc6, 0x1b,
+	0x68, 0x65, 0x3d, 0x5c, 0x38, 0x97, 0x8c, 0x9b, 0x1a, 0x72, 0xe0, 0xb3, 0xb4, 0x8d, 0x46, 0x0d,
+	0xa5, 0x41, 0xc6, 0xff, 0x0f, 0xe7, 0x51, 0x45, 0x53, 0x7e, 0x41, 0x74, 0x73, 0x33, 0x90, 0xa9,
+	0xb8, 0x53, 0x37, 0x18, 0xdf, 0xae, 0x89, 0xfa, 0x13, 0xf8, 0x34, 0x25, 0x5a, 0xf4, 0x4a, 0x31,
+	0xa7, 0x6f, 0x01, 0xce, 0x21, 0xe2, 0xa6, 0xf6, 0x59, 0x3f, 0x5f, 0x18, 0x60, 0xbe, 0x30, 0xc0,
+	0xe5, 0xc2, 0x00, 0x87, 0x4b, 0x43, 0x9b, 0x2f, 0x0d, 0xed, 0x62, 0x69, 0x68, 0xbf, 0x1f, 0x88,
+	0xdf, 0xf6, 0xdd, 0x55, 0x00, 0x00, 0x00, 0xff, 0xff, 0x72, 0x6d, 0xc3, 0xb8, 0xad, 0x06, 0x00,
+	0x00,
 }
 
 func (m *SaveSingleChatMessageReq) Marshal() (dAtA []byte, err error) {
@@ -656,6 +767,93 @@ func (m *ReadOfflineMessageRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *DownLoadFileMessageReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DownLoadFileMessageReq) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DownLoadFileMessageReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Data != nil {
+		{
+			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessage(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.ClientInfo != nil {
+		{
+			size, err := m.ClientInfo.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessage(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DownLoadFileMessageRes) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DownLoadFileMessageRes) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DownLoadFileMessageRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Data != nil {
+		{
+			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessage(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.ErrCode != 0 {
+		i = encodeVarintMessage(dAtA, i, uint64(m.ErrCode))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintMessage(dAtA []byte, offset int, v uint64) int {
 	offset -= sovMessage(v)
 	base := offset
@@ -754,6 +952,39 @@ func (m *ReadOfflineMessageReq) Size() (n int) {
 }
 
 func (m *ReadOfflineMessageRes) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ErrCode != 0 {
+		n += 1 + sovMessage(uint64(m.ErrCode))
+	}
+	if m.Data != nil {
+		l = m.Data.Size()
+		n += 1 + l + sovMessage(uint64(l))
+	}
+	return n
+}
+
+func (m *DownLoadFileMessageReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ClientInfo != nil {
+		l = m.ClientInfo.Size()
+		n += 1 + l + sovMessage(uint64(l))
+	}
+	if m.Data != nil {
+		l = m.Data.Size()
+		n += 1 + l + sovMessage(uint64(l))
+	}
+	return n
+}
+
+func (m *DownLoadFileMessageRes) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1450,6 +1681,233 @@ func (m *ReadOfflineMessageRes) Unmarshal(dAtA []byte) error {
 			}
 			if m.Data == nil {
 				m.Data = &im_home_proto.ReadOfflineMessageRes{}
+			}
+			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DownLoadFileMessageReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DownLoadFileMessageReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DownLoadFileMessageReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClientInfo", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ClientInfo == nil {
+				m.ClientInfo = &im_home_proto.ClientOnlineInfo{}
+			}
+			if err := m.ClientInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Data == nil {
+				m.Data = &im_home_proto.DownLoadFileMessageReq{}
+			}
+			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessage(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DownLoadFileMessageRes) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessage
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DownLoadFileMessageRes: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DownLoadFileMessageRes: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrCode", wireType)
+			}
+			m.ErrCode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ErrCode |= im_error_proto.ErrCode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessage
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessage
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessage
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Data == nil {
+				m.Data = &im_home_proto.DownLoadFileMessageRes{}
 			}
 			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

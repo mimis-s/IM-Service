@@ -44,5 +44,8 @@ func New(configOptions *boot_config.ConfigOptions) (*Dao, error) {
 		dfsHandler: dfsHandler,
 	}
 
+	// 清楚用户缓存
+	dao.ClearCacheUser()
+
 	return dao, nil
 }

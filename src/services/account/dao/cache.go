@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
+	"github.com/mimis-s/IM-Service/src/common/im_log"
 )
 
 /*
@@ -25,6 +26,11 @@ func (d *Dao) CacheUserLogin(userID int64) error {
 func (d *Dao) CacheUserLogOut(userID int64) error {
 	_, err := d.cache.Client.HDel(context.Background(), userStatusRedis, strconv.FormatInt(userID, 10)).Result()
 	return err
+}
+
+func (d *Dao) ClearCacheUser() {
+	cacheUser := d.cache.Client.Del(context.Background(), userStatusRedis).Val()
+	im_log.Info("clear client [%v]", cacheUser)
 }
 
 func (d *Dao) CacheGetUserStatus(userIDs []int64) ([]im_home_proto.Enum_UserStatus, error) {

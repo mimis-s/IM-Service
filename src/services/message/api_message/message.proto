@@ -12,8 +12,8 @@ service Message {
     rpc SaveSingleChatMessage(SaveSingleChatMessageReq) returns (SaveSingleChatMessageRes) {};
     // 获取私聊历史记录
     rpc GetSingleChatHistory(GetSingleChatHistoryReq) returns (GetSingleChatHistoryRes) {};
-    // 读取离线消息
-    rpc ReadOfflineMessage(ReadOfflineMessageReq) returns (ReadOfflineMessageRes) {};
+    // 读取未读消息
+    rpc UnReadMessage(UnReadMessageReq) returns (UnReadMessageRes) {};
     // 下载文件消息(文件或者图片)
     rpc DownLoadFileMessage(DownLoadFileMessageReq) returns (DownLoadFileMessageRes) {};
 }
@@ -39,14 +39,14 @@ message GetSingleChatHistoryRes {
     im_home_proto.GetSingleChatHistoryRes Data = 2;
 }
 
-message ReadOfflineMessageReq {
+message UnReadMessageReq {
     im_home_proto.ClientOnlineInfo ClientInfo = 1;
-    im_home_proto.ReadOfflineMessageReq Data = 2;
+    im_home_proto.UnReadMessageReq Data = 2;
 }
 
-message ReadOfflineMessageRes {
+message UnReadMessageRes {
     im_error_proto.ErrCode ErrCode = 1;
-    im_home_proto.ReadOfflineMessageRes Data = 2;
+    im_home_proto.UnReadMessageRes Data = 2;
 }
 
 // 下载文件消息(文件或者图片)

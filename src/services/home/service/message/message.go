@@ -13,7 +13,7 @@ import (
 
 func init() {
 	seralize.RegisterHandler(im_home_proto.GetSingleChatHistoryReq{}, im_home_proto.GetSingleChatHistoryRes{}, GetSingleChatHistory)
-	seralize.RegisterHandler(im_home_proto.ReadOfflineMessageReq{}, im_home_proto.ReadOfflineMessageRes{}, ReadOfflineMessage)
+	seralize.RegisterHandler(im_home_proto.UnReadMessageReq{}, im_home_proto.UnReadMessageRes{}, UnReadMessage)
 	seralize.RegisterHandler(im_home_proto.DownLoadFileMessageReq{}, im_home_proto.DownLoadFileMessageRes{}, DownLoadFileMessage)
 }
 
@@ -35,21 +35,21 @@ func GetSingleChatHistory(ctx context.Context, clientInfo *api_home.ClientReques
 	return 0
 }
 
-func ReadOfflineMessage(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
-	reqMsg := req.(*im_home_proto.ReadOfflineMessageReq)
-	resMsg := res.(*im_home_proto.ReadOfflineMessageRes)
+func UnReadMessage(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req, res seralize.Message) im_error_proto.ErrCode {
+	reqMsg := req.(*im_home_proto.UnReadMessageReq)
+	resMsg := res.(*im_home_proto.UnReadMessageRes)
 
-	reqRpc := &api_message.ReadOfflineMessageReq{
+	reqRpc := &api_message.UnReadMessageReq{
 		ClientInfo: clientInfo.Client,
 		Data:       reqMsg,
 	}
-	resRpc, err := api_message.ReadOfflineMessage(context.Background(), reqRpc)
+	resRpc, err := api_message.UnReadMessage(context.Background(), reqRpc)
 	if err != nil {
-		im_log.Error("user[%v] Read friend[%v] Off line Message Single Chat is err:%v", clientInfo.Client.UserID,
+		im_log.Error("user[%v] Read friend[%v] un read Message Single Chat is err:%v", clientInfo.Client.UserID,
 			reqMsg.FriendID, err)
 		return resRpc.ErrCode
 	}
-	resMsg.Data = resRpc.Data.Data
+	resMsg.FriendID = resRpc.Data.FriendID
 	return 0
 }
 

@@ -16,14 +16,13 @@ message GetSingleChatHistoryRes {
     repeated ChatMessage Data = 2;
 }
 
-// 读取离线消息
-message ReadOfflineMessageReq {
+// 读取未读消息
+message UnReadMessageReq {
     int64 FriendID = 1;
 }
 
-message ReadOfflineMessageRes {
+message UnReadMessageRes {
     int64 FriendID = 1;
-    repeated ChatMessage Data = 2;
 }
 
 // 下载文件消息(文件或者图片)

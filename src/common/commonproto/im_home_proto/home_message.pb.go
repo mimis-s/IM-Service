@@ -126,23 +126,23 @@ func (m *GetSingleChatHistoryRes) GetData() []*ChatMessage {
 	return nil
 }
 
-// 读取离线消息
-type ReadOfflineMessageReq struct {
+// 读取未读消息
+type UnReadMessageReq struct {
 	FriendID int64 `protobuf:"varint,1,opt,name=FriendID,proto3" json:"FriendID,omitempty"`
 }
 
-func (m *ReadOfflineMessageReq) Reset()         { *m = ReadOfflineMessageReq{} }
-func (m *ReadOfflineMessageReq) String() string { return proto.CompactTextString(m) }
-func (*ReadOfflineMessageReq) ProtoMessage()    {}
-func (*ReadOfflineMessageReq) Descriptor() ([]byte, []int) {
+func (m *UnReadMessageReq) Reset()         { *m = UnReadMessageReq{} }
+func (m *UnReadMessageReq) String() string { return proto.CompactTextString(m) }
+func (*UnReadMessageReq) ProtoMessage()    {}
+func (*UnReadMessageReq) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6e858025c0727086, []int{2}
 }
-func (m *ReadOfflineMessageReq) XXX_Unmarshal(b []byte) error {
+func (m *UnReadMessageReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ReadOfflineMessageReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *UnReadMessageReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ReadOfflineMessageReq.Marshal(b, m, deterministic)
+		return xxx_messageInfo_UnReadMessageReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -152,42 +152,41 @@ func (m *ReadOfflineMessageReq) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *ReadOfflineMessageReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ReadOfflineMessageReq.Merge(m, src)
+func (m *UnReadMessageReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnReadMessageReq.Merge(m, src)
 }
-func (m *ReadOfflineMessageReq) XXX_Size() int {
+func (m *UnReadMessageReq) XXX_Size() int {
 	return m.Size()
 }
-func (m *ReadOfflineMessageReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_ReadOfflineMessageReq.DiscardUnknown(m)
+func (m *UnReadMessageReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnReadMessageReq.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ReadOfflineMessageReq proto.InternalMessageInfo
+var xxx_messageInfo_UnReadMessageReq proto.InternalMessageInfo
 
-func (m *ReadOfflineMessageReq) GetFriendID() int64 {
+func (m *UnReadMessageReq) GetFriendID() int64 {
 	if m != nil {
 		return m.FriendID
 	}
 	return 0
 }
 
-type ReadOfflineMessageRes struct {
-	FriendID int64          `protobuf:"varint,1,opt,name=FriendID,proto3" json:"FriendID,omitempty"`
-	Data     []*ChatMessage `protobuf:"bytes,2,rep,name=Data,proto3" json:"Data,omitempty"`
+type UnReadMessageRes struct {
+	FriendID int64 `protobuf:"varint,1,opt,name=FriendID,proto3" json:"FriendID,omitempty"`
 }
 
-func (m *ReadOfflineMessageRes) Reset()         { *m = ReadOfflineMessageRes{} }
-func (m *ReadOfflineMessageRes) String() string { return proto.CompactTextString(m) }
-func (*ReadOfflineMessageRes) ProtoMessage()    {}
-func (*ReadOfflineMessageRes) Descriptor() ([]byte, []int) {
+func (m *UnReadMessageRes) Reset()         { *m = UnReadMessageRes{} }
+func (m *UnReadMessageRes) String() string { return proto.CompactTextString(m) }
+func (*UnReadMessageRes) ProtoMessage()    {}
+func (*UnReadMessageRes) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6e858025c0727086, []int{3}
 }
-func (m *ReadOfflineMessageRes) XXX_Unmarshal(b []byte) error {
+func (m *UnReadMessageRes) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ReadOfflineMessageRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *UnReadMessageRes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ReadOfflineMessageRes.Marshal(b, m, deterministic)
+		return xxx_messageInfo_UnReadMessageRes.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -197,30 +196,23 @@ func (m *ReadOfflineMessageRes) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *ReadOfflineMessageRes) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ReadOfflineMessageRes.Merge(m, src)
+func (m *UnReadMessageRes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnReadMessageRes.Merge(m, src)
 }
-func (m *ReadOfflineMessageRes) XXX_Size() int {
+func (m *UnReadMessageRes) XXX_Size() int {
 	return m.Size()
 }
-func (m *ReadOfflineMessageRes) XXX_DiscardUnknown() {
-	xxx_messageInfo_ReadOfflineMessageRes.DiscardUnknown(m)
+func (m *UnReadMessageRes) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnReadMessageRes.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ReadOfflineMessageRes proto.InternalMessageInfo
+var xxx_messageInfo_UnReadMessageRes proto.InternalMessageInfo
 
-func (m *ReadOfflineMessageRes) GetFriendID() int64 {
+func (m *UnReadMessageRes) GetFriendID() int64 {
 	if m != nil {
 		return m.FriendID
 	}
 	return 0
-}
-
-func (m *ReadOfflineMessageRes) GetData() []*ChatMessage {
-	if m != nil {
-		return m.Data
-	}
-	return nil
 }
 
 // 下载文件消息(文件或者图片)
@@ -371,8 +363,8 @@ func (m *DownLoadFileMessageRes) GetMessageFileType() MessageFileType_Enum {
 func init() {
 	proto.RegisterType((*GetSingleChatHistoryReq)(nil), "im_home_proto.GetSingleChatHistoryReq")
 	proto.RegisterType((*GetSingleChatHistoryRes)(nil), "im_home_proto.GetSingleChatHistoryRes")
-	proto.RegisterType((*ReadOfflineMessageReq)(nil), "im_home_proto.ReadOfflineMessageReq")
-	proto.RegisterType((*ReadOfflineMessageRes)(nil), "im_home_proto.ReadOfflineMessageRes")
+	proto.RegisterType((*UnReadMessageReq)(nil), "im_home_proto.UnReadMessageReq")
+	proto.RegisterType((*UnReadMessageRes)(nil), "im_home_proto.UnReadMessageRes")
 	proto.RegisterType((*DownLoadFileMessageReq)(nil), "im_home_proto.DownLoadFileMessageReq")
 	proto.RegisterType((*DownLoadFileMessageRes)(nil), "im_home_proto.DownLoadFileMessageRes")
 }
@@ -380,31 +372,31 @@ func init() {
 func init() { proto.RegisterFile("home_message.proto", fileDescriptor_6e858025c0727086) }
 
 var fileDescriptor_6e858025c0727086 = []byte{
-	// 384 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x50, 0xcd, 0xaa, 0xd3, 0x40,
-	0x14, 0xee, 0xdc, 0xde, 0x2b, 0xde, 0x11, 0x2d, 0x44, 0xd4, 0x50, 0x24, 0x84, 0xb8, 0xc9, 0xa6,
-	0x89, 0xb4, 0x6f, 0x50, 0x63, 0x6b, 0xc0, 0x28, 0xa4, 0xae, 0x44, 0x28, 0xd3, 0xe4, 0x34, 0x19,
-	0xc8, 0xcc, 0xb4, 0x99, 0xa9, 0xb6, 0x6f, 0xe1, 0x1b, 0xb9, 0x75, 0xd9, 0xa5, 0xe0, 0x46, 0xda,
-	0x17, 0x91, 0x4c, 0x6b, 0x4b, 0x4a, 0x2b, 0x22, 0xba, 0x9a, 0x39, 0x3f, 0xdf, 0xdf, 0xc1, 0x46,
-	0x2e, 0x18, 0x8c, 0x19, 0x48, 0x49, 0x32, 0xf0, 0x66, 0xa5, 0x50, 0xc2, 0xb8, 0x4f, 0xd9, 0x58,
-	0xb7, 0x75, 0xd9, 0x6e, 0xe9, 0x7f, 0x92, 0x13, 0xb5, 0x9b, 0x3b, 0x19, 0x7e, 0x32, 0x04, 0x35,
-	0xa2, 0x3c, 0x2b, 0xe0, 0x45, 0x4e, 0xd4, 0x2b, 0x2a, 0x95, 0x28, 0x57, 0x31, 0xcc, 0x8d, 0xe7,
-	0xf8, 0x61, 0x44, 0x96, 0x6f, 0x84, 0x1a, 0x12, 0xca, 0xa3, 0x1d, 0x6b, 0x18, 0x98, 0xc8, 0x46,
-	0x6e, 0x33, 0x3e, 0x37, 0x32, 0xda, 0xf8, 0xee, 0xa0, 0xa4, 0xc0, 0xd3, 0x30, 0x30, 0xaf, 0xf4,
-	0xda, 0xa1, 0x76, 0xe0, 0x92, 0x90, 0xac, 0xc1, 0x50, 0x1d, 0x66, 0x78, 0xf8, 0x3a, 0x20, 0x8a,
-	0x98, 0x57, 0x76, 0xd3, 0xbd, 0xd7, 0x6d, 0x7b, 0xb5, 0x38, 0x5e, 0x45, 0xb4, 0x97, 0x8f, 0xf5,
-	0x9e, 0xd3, 0xc3, 0x8f, 0x62, 0x20, 0xe9, 0xdb, 0xe9, 0xb4, 0xa0, 0x1c, 0x7e, 0xcd, 0x60, 0xfe,
-	0x3b, 0x11, 0x27, 0x39, 0x0f, 0xfa, 0xb7, 0xce, 0xbe, 0x20, 0xfc, 0x38, 0x10, 0x9f, 0xf8, 0x6b,
-	0x41, 0xd2, 0x01, 0x2d, 0xfe, 0xd0, 0x9b, 0xf1, 0x14, 0xdf, 0x1e, 0x6f, 0xbf, 0x3b, 0xea, 0xb1,
-	0x51, 0x4d, 0x2b, 0xae, 0x90, 0xa7, 0xb0, 0x34, 0x9b, 0x36, 0x72, 0x6f, 0xe2, 0x63, 0xc3, 0x88,
-	0x70, 0x6b, 0xbf, 0x5a, 0xf5, 0xde, 0xad, 0x66, 0x60, 0x5e, 0xdb, 0xc8, 0x7d, 0xd0, 0x7d, 0x76,
-	0xe2, 0xf6, 0x64, 0x6b, 0xfc, 0x92, 0x2f, 0x58, 0x7c, 0x8a, 0x75, 0xbe, 0x5f, 0x4a, 0x20, 0xff,
-	0x5b, 0x82, 0x8a, 0x97, 0x16, 0xa0, 0x0f, 0x5d, 0x59, 0xbf, 0x8d, 0x0f, 0xf5, 0xb9, 0x74, 0x37,
-	0x7f, 0x9f, 0xae, 0xff, 0xe1, 0xeb, 0xc6, 0x42, 0xeb, 0x8d, 0x85, 0x7e, 0x6c, 0x2c, 0xf4, 0x79,
-	0x6b, 0x35, 0xd6, 0x5b, 0xab, 0xf1, 0x6d, 0x6b, 0x35, 0xde, 0xf7, 0x33, 0xaa, 0xf2, 0xc5, 0xc4,
-	0x4b, 0x04, 0xf3, 0x19, 0x65, 0x54, 0x76, 0xa4, 0x1f, 0x46, 0x9d, 0x11, 0x94, 0x1f, 0x69, 0x02,
-	0xbe, 0x2c, 0x13, 0x3f, 0x11, 0x8c, 0x09, 0xbe, 0x7f, 0xb4, 0xaa, 0x5f, 0xf3, 0x30, 0xb9, 0xa3,
-	0x9f, 0xde, 0xcf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe7, 0x26, 0x4a, 0x76, 0xa4, 0x03, 0x00, 0x00,
+	// 381 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x51, 0x4f, 0xef, 0xd2, 0x40,
+	0x10, 0x65, 0xf9, 0x63, 0x64, 0x8d, 0x62, 0x6a, 0xa2, 0x0d, 0x31, 0x4d, 0x53, 0x2f, 0xbd, 0xd0,
+	0x1a, 0xfc, 0x06, 0x58, 0xc1, 0x26, 0xd6, 0x43, 0xd1, 0x8b, 0x31, 0x21, 0x4b, 0x3b, 0x69, 0x37,
+	0x61, 0x77, 0xa1, 0xbb, 0x28, 0x7c, 0x0b, 0xbf, 0x91, 0x57, 0x8f, 0x1c, 0x4d, 0xbc, 0x18, 0xf8,
+	0x22, 0xa6, 0x0b, 0x42, 0x4a, 0x80, 0x18, 0x93, 0xdf, 0x69, 0x3b, 0x6f, 0xde, 0xbc, 0x37, 0x6f,
+	0x8a, 0x8d, 0x5c, 0x30, 0x98, 0x30, 0x90, 0x92, 0x64, 0xe0, 0xcd, 0x0b, 0xa1, 0x84, 0xf1, 0x90,
+	0xb2, 0x89, 0x86, 0x75, 0xd9, 0xed, 0xe8, 0xef, 0x24, 0x27, 0x6a, 0xdf, 0x77, 0x32, 0xfc, 0x6c,
+	0x04, 0x6a, 0x4c, 0x79, 0x36, 0x83, 0xd7, 0x39, 0x51, 0x6f, 0xa9, 0x54, 0xa2, 0x58, 0xc7, 0xb0,
+	0x30, 0x5e, 0xe2, 0x27, 0x11, 0x59, 0xbd, 0x17, 0x6a, 0x44, 0x28, 0x8f, 0xf6, 0xaa, 0x61, 0x60,
+	0x22, 0x1b, 0xb9, 0x8d, 0xf8, 0x52, 0xcb, 0xe8, 0xe2, 0xfb, 0xc3, 0x82, 0x02, 0x4f, 0xc3, 0xc0,
+	0xac, 0x6b, 0xda, 0xb1, 0x76, 0xe0, 0x9a, 0x91, 0xac, 0x8c, 0xa1, 0xea, 0x98, 0xe1, 0xe1, 0x66,
+	0x40, 0x14, 0x31, 0xeb, 0x76, 0xc3, 0x7d, 0xd0, 0xef, 0x7a, 0x95, 0x38, 0x5e, 0x29, 0x74, 0xb0,
+	0x8f, 0x35, 0xcf, 0xf1, 0xf0, 0xe3, 0x8f, 0x3c, 0x06, 0x92, 0xfe, 0x85, 0x61, 0x71, 0x4b, 0xff,
+	0x02, 0xff, 0xe6, 0x3e, 0xce, 0x77, 0x84, 0x9f, 0x06, 0xe2, 0x2b, 0x7f, 0x27, 0x48, 0x3a, 0xa4,
+	0x33, 0xf8, 0x37, 0x1b, 0xe3, 0x39, 0x6e, 0x9f, 0x2e, 0xb8, 0x3f, 0xcd, 0x09, 0x28, 0xbb, 0xa5,
+	0x56, 0xc8, 0x53, 0x58, 0x99, 0x0d, 0x1b, 0xb9, 0xad, 0xf8, 0x04, 0x18, 0x11, 0xee, 0x1c, 0xa8,
+	0x25, 0xf6, 0x61, 0x3d, 0x07, 0xb3, 0x69, 0x23, 0xf7, 0x51, 0xff, 0xc5, 0xd9, 0x35, 0xce, 0x58,
+	0x93, 0x37, 0x7c, 0xc9, 0xe2, 0xf3, 0x59, 0xe7, 0xd7, 0xb5, 0x04, 0xf2, 0xce, 0x12, 0x94, 0xba,
+	0x74, 0x06, 0xfa, 0x47, 0x96, 0xab, 0xb7, 0xe3, 0x63, 0x7d, 0x29, 0x5d, 0xeb, 0xff, 0xd3, 0x0d,
+	0x3e, 0xff, 0xd8, 0x5a, 0x68, 0xb3, 0xb5, 0xd0, 0xef, 0xad, 0x85, 0xbe, 0xed, 0xac, 0xda, 0x66,
+	0x67, 0xd5, 0x7e, 0xee, 0xac, 0xda, 0xa7, 0x41, 0x46, 0x55, 0xbe, 0x9c, 0x7a, 0x89, 0x60, 0x3e,
+	0xa3, 0x8c, 0xca, 0x9e, 0xf4, 0xc3, 0xa8, 0x37, 0x86, 0xe2, 0x0b, 0x4d, 0xc0, 0x97, 0x45, 0xe2,
+	0x27, 0x82, 0x31, 0xc1, 0x0f, 0x8f, 0x76, 0xf5, 0x2b, 0x3b, 0x4c, 0xef, 0xe9, 0xe7, 0xd5, 0x9f,
+	0x00, 0x00, 0x00, 0xff, 0xff, 0xbc, 0x5c, 0x1a, 0xf7, 0x6a, 0x03, 0x00, 0x00,
 }
 
 func (m *GetSingleChatHistoryReq) Marshal() (dAtA []byte, err error) {
@@ -482,7 +474,7 @@ func (m *GetSingleChatHistoryRes) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *ReadOfflineMessageReq) Marshal() (dAtA []byte, err error) {
+func (m *UnReadMessageReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -492,12 +484,12 @@ func (m *ReadOfflineMessageReq) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ReadOfflineMessageReq) MarshalTo(dAtA []byte) (int, error) {
+func (m *UnReadMessageReq) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ReadOfflineMessageReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *UnReadMessageReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -510,7 +502,7 @@ func (m *ReadOfflineMessageReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *ReadOfflineMessageRes) Marshal() (dAtA []byte, err error) {
+func (m *UnReadMessageRes) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -520,30 +512,16 @@ func (m *ReadOfflineMessageRes) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ReadOfflineMessageRes) MarshalTo(dAtA []byte) (int, error) {
+func (m *UnReadMessageRes) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ReadOfflineMessageRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *UnReadMessageRes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Data) > 0 {
-		for iNdEx := len(m.Data) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Data[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintHomeMessage(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x12
-		}
-	}
 	if m.FriendID != 0 {
 		i = encodeVarintHomeMessage(dAtA, i, uint64(m.FriendID))
 		i--
@@ -689,7 +667,7 @@ func (m *GetSingleChatHistoryRes) Size() (n int) {
 	return n
 }
 
-func (m *ReadOfflineMessageReq) Size() (n int) {
+func (m *UnReadMessageReq) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -701,7 +679,7 @@ func (m *ReadOfflineMessageReq) Size() (n int) {
 	return n
 }
 
-func (m *ReadOfflineMessageRes) Size() (n int) {
+func (m *UnReadMessageRes) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -709,12 +687,6 @@ func (m *ReadOfflineMessageRes) Size() (n int) {
 	_ = l
 	if m.FriendID != 0 {
 		n += 1 + sovHomeMessage(uint64(m.FriendID))
-	}
-	if len(m.Data) > 0 {
-		for _, e := range m.Data {
-			l = e.Size()
-			n += 1 + l + sovHomeMessage(uint64(l))
-		}
 	}
 	return n
 }
@@ -962,7 +934,7 @@ func (m *GetSingleChatHistoryRes) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ReadOfflineMessageReq) Unmarshal(dAtA []byte) error {
+func (m *UnReadMessageReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -985,10 +957,10 @@ func (m *ReadOfflineMessageReq) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ReadOfflineMessageReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: UnReadMessageReq: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ReadOfflineMessageReq: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: UnReadMessageReq: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1031,7 +1003,7 @@ func (m *ReadOfflineMessageReq) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ReadOfflineMessageRes) Unmarshal(dAtA []byte) error {
+func (m *UnReadMessageRes) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1054,10 +1026,10 @@ func (m *ReadOfflineMessageRes) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ReadOfflineMessageRes: wiretype end group for non-group")
+			return fmt.Errorf("proto: UnReadMessageRes: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ReadOfflineMessageRes: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: UnReadMessageRes: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1079,40 +1051,6 @@ func (m *ReadOfflineMessageRes) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowHomeMessage
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthHomeMessage
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthHomeMessage
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Data = append(m.Data, &ChatMessage{})
-			if err := m.Data[len(m.Data)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipHomeMessage(dAtA[iNdEx:])

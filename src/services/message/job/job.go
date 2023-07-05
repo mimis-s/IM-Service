@@ -34,8 +34,8 @@ func InitMQ(s *service.Service, configOptions *boot_config.ConfigOptions) *Job {
 
 func (j *Job) userLoginOk(payload interface{}) error {
 	userLogin := payload.(*event.UserLogin)
-	// 登录成功下发离线消息
-	userChatMessage, err := j.s.Dao.GetUserAllOfflineMessage(userLogin.UserInfo.UserID)
+	// 登录成功下发未读消息
+	userChatMessage, err := j.s.Dao.GetUserAllUnReadMessage(userLogin.UserInfo.UserID)
 	if err != nil {
 		im_log.Warn("user[%v] login ok, but get off line message is err:%v", userLogin.UserInfo.UserID, err)
 		return err
@@ -46,7 +46,7 @@ func (j *Job) userLoginOk(payload interface{}) error {
 	}
 
 	notifyUserMessage := &im_home_proto.NotifyUserMessage{
-		OfflineSingleChat: make([]*im_home_proto.NotifyOfflineMessage, 0),
+		UnReadSingleChat: make([]*im_home_proto.NotifyUnReadMessage, 0),
 	}
 	usersInfoReq := &api_account.GetUsersInfoServiceReq{
 		ClientInfo: &im_home_proto.ClientOnlineInfo{
@@ -65,18 +65,12 @@ func (j *Job) userLoginOk(payload interface{}) error {
 	}
 
 	for _, friend := range usersInfoRes.Datas {
-		notifyOfflineMessage := &im_home_proto.NotifyOfflineMessage{
-			User: friend,
-			Data: make([]*im_home_proto.ChatMessage, 0),
-		}
-		for senderID, chatMessage := range userChatMessage {
-			if friend.UserID == senderID {
-				notifyOfflineMessage.Data = append(notifyOfflineMessage.Data, chatMessage...)
-				break
-			}
+		notifyUnReadMessage := &im_home_proto.NotifyUnReadMessage{
+			User:             friend,
+			UnReadMessageSum: int32(userChatMessage[friend.UserID]),
 		}
 
-		notifyUserMessage.OfflineSingleChat = append(notifyUserMessage.OfflineSingleChat, notifyOfflineMessage)
+		notifyUserMessage.UnReadSingleChat = append(notifyUserMessage.UnReadSingleChat, notifyUnReadMessage)
 	}
 
 	relay_api.NotifyUser(userLogin.UserInfo.UserID, notifyUserMessage)

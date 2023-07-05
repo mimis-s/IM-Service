@@ -52,6 +52,7 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 		MessageFileInfos: make([]*im_home_proto.MessageFileRecap, 0, len(req.Data.MessageFileInfos)),
 		SendTimeStamp:    req.Data.SendTimeStamp,
 		MessageStatus:    req.Data.MessageStatus,
+		Data:             req.Data.Data,
 	}
 
 	// 判断消息类型
@@ -89,18 +90,11 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 
 	if getUserInfoRes.Data.Status == im_home_proto.Enum_UserStatus_Enum_UserStatus_Online {
 		// 在线
-		err = s.Dao.AddHistoryMessage(req.Data.SenderID, req.Data.ReceiverID, dbChatData)
-		if err != nil {
-			res.ErrCode = im_error_proto.ErrCode_db_write_err
-			errStr := fmt.Sprintf("user[%v] add history message[%v] is err:%v",
-				req.ClientInfo.UserID, req.Data, err)
-			im_log.Error(errStr)
-			return fmt.Errorf(errStr)
-		}
+
 		res.IsOnline = true
 	} else if getUserInfoRes.Data.Status == im_home_proto.Enum_UserStatus_Enum_UserStatus_Outline {
 		// 离线
-		err = s.Dao.AddUserOneOfflineMessage(req.Data.SenderID, req.Data.ReceiverID, dbChatData)
+		err = s.Dao.AddUserOneUnReadMessage(req.Data.SenderID, req.Data.ReceiverID)
 		if err != nil {
 			res.ErrCode = im_error_proto.ErrCode_db_write_err
 			errStr := fmt.Sprintf("user[%v] add off line message[%v] is err:%v",
@@ -111,6 +105,16 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 		res.IsOnline = false
 	} else {
 		im_log.Warn("user[%v] online status[%v] is not define", req.Data.ReceiverID, getUserInfoRes.Data.Status)
+	}
+
+	// 写入数据库
+	err = s.Dao.AddHistoryMessage(req.Data.SenderID, req.Data.ReceiverID, dbChatData)
+	if err != nil {
+		res.ErrCode = im_error_proto.ErrCode_db_write_err
+		errStr := fmt.Sprintf("user[%v] add history message[%v] is err:%v",
+			req.ClientInfo.UserID, req.Data, err)
+		im_log.Error(errStr)
+		return fmt.Errorf(errStr)
 	}
 
 	return nil
@@ -175,65 +179,21 @@ func (s *Service) GetSingleChatHistory(ctx context.Context, req *api_message.Get
 	return nil
 }
 
-// 读取离线消息
-func (s *Service) ReadOfflineMessage(ctx context.Context, req *api_message.ReadOfflineMessageReq, res *api_message.ReadOfflineMessageRes) error {
+// 读取未读消息
+func (s *Service) UnReadMessage(ctx context.Context, req *api_message.UnReadMessageReq, res *api_message.UnReadMessageRes) error {
 
 	// 读取离线消息并且把离线消息转换成历史消息
-	offlineMessage, err := s.Dao.GetUserOfflineMessage(req.ClientInfo.UserID, req.Data.FriendID)
+	err := s.Dao.DelUserOneUnReadMessage(req.ClientInfo.UserID, req.Data.FriendID)
 	if err != nil {
-		errStr := fmt.Sprintf("user[%v] get friend[%v] off line message is err:%v",
+		errStr := fmt.Sprintf("user[%v] del friend[%v] un read message is err:%v",
 			req.ClientInfo.UserID, req.Data.FriendID, err)
 		im_log.Warn(errStr)
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		return fmt.Errorf(errStr)
 	}
 
-	for _, offline := range offlineMessage {
-
-		// 插入历史数据
-		offline.MessageStatus = im_home_proto.MessageStatus_Enum_EnumRead
-		err = s.Dao.AddHistoryMessage(offline.SenderID, offline.ReceiverID, offline)
-		if err != nil {
-			res.ErrCode = im_error_proto.ErrCode_db_write_err
-			errStr := fmt.Sprintf("user[%v] add history message[%v] is err:%v",
-				req.ClientInfo.UserID, req.Data, err)
-			im_log.Error(errStr)
-			return fmt.Errorf(errStr)
-		}
-
-		// 删除离线数据
-		err = s.Dao.DelUserOneOfflineMessage(offline.SenderID, offline.ReceiverID)
-		if err != nil {
-			errStr := fmt.Sprintf("user[%v] del friend[%v] off line message is err:%v",
-				req.ClientInfo.UserID, req.Data.FriendID, err)
-			im_log.Warn(errStr)
-			res.ErrCode = im_error_proto.ErrCode_db_write_err
-			return fmt.Errorf(errStr)
-		}
-
-	}
-
-	for _, message := range offlineMessage {
-		// 判断消息类型
-		for _, fileMessage := range message.MessageFileInfos {
-			switch fileMessage.MessageFileType {
-			case im_home_proto.MessageFileType_Enum_EnumImgType:
-				data, err := s.Dao.DownLoadChatImage(message.SenderID, message.ReceiverID, message.MessageID, int(fileMessage.FileIndex))
-				if err != nil {
-					errStr := fmt.Sprintf("user[%v] get user[%v][%v] down load message[%v] is err:%v", req.ClientInfo.UserID, message.SenderID,
-						message.ReceiverID, message.MessageID, err)
-					im_log.Error(errStr)
-					return fmt.Errorf(errStr)
-				}
-				fileMessage.FileData = string(data)
-			default:
-			}
-
-		}
-	}
-
-	res.Data = &im_home_proto.ReadOfflineMessageRes{
-		Data: offlineMessage,
+	res.Data = &im_home_proto.UnReadMessageRes{
+		FriendID: req.Data.FriendID,
 	}
 
 	return nil

@@ -29,10 +29,10 @@ message AgreeApplyFriendsToReceiver {
 
 // 服务器推送的数据
 message NotifyUserMessage {
-    repeated NotifyOfflineMessage OfflineSingleChat = 1; // 私聊信息
+    repeated NotifyUnReadMessage UnReadSingleChat = 1; // 未读私聊信息
 }
 
-message NotifyOfflineMessage {
+message NotifyUnReadMessage {
     UserInfo User = 1;  // 好友信息
-    repeated ChatMessage Data = 2; // 离线消息
+    int32 UnReadMessageSum = 2;
 }

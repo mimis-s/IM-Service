@@ -78,7 +78,7 @@ func (j *Job) singleMessage(payload interface{}) error {
 		j.s.SendToClient(singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, msg_id, chatSingleToReceiver)
 	} else {
 		im_log.Info("user[%v] to user[%v] off line chat message id[%v] data",
-			singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, singleMessage.Message.MessageID)
+			singleMessage.Message.SenderID, singleMessage.Message.ReceiverID, chatSingleToReceiver.Data.MessageID)
 	}
 
 	return relay_api.NotifyUser(singleMessage.UserInfo.UserID, chatSingleToReceiver)

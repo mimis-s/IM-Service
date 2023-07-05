@@ -81,15 +81,15 @@ func GetSingleChatHistory(ctx context.Context,
 	return out, err
 }
 
-func ReadOfflineMessage(ctx context.Context,
-	in *ReadOfflineMessageReq) (*ReadOfflineMessageRes, error) {
+func UnReadMessage(ctx context.Context,
+	in *UnReadMessageReq) (*UnReadMessageRes, error) {
 
 	if callSingleMethodFunc != nil {
 		MessageClientOnce.Do(callSingleMethodFunc)
 	}
 
-	out := new(ReadOfflineMessageRes)
-	out, err := MessageClientInstance.ReadOfflineMessage(ctx, in)
+	out := new(UnReadMessageRes)
+	out, err := MessageClientInstance.UnReadMessage(ctx, in)
 	return out, err
 }
 
@@ -108,7 +108,7 @@ func DownLoadFileMessage(ctx context.Context,
 type MessageClientInterface interface {
 	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq) (*SaveSingleChatMessageRes, error)
 	GetSingleChatHistory(context.Context, *GetSingleChatHistoryReq) (*GetSingleChatHistoryRes, error)
-	ReadOfflineMessage(context.Context, *ReadOfflineMessageReq) (*ReadOfflineMessageRes, error)
+	UnReadMessage(context.Context, *UnReadMessageReq) (*UnReadMessageRes, error)
 	DownLoadFileMessage(context.Context, *DownLoadFileMessageReq) (*DownLoadFileMessageRes, error)
 }
 
@@ -131,10 +131,10 @@ func (c *MessageRpcxClient) GetSingleChatHistory(ctx context.Context,
 	return out, err
 }
 
-func (c *MessageRpcxClient) ReadOfflineMessage(ctx context.Context,
-	in *ReadOfflineMessageReq) (*ReadOfflineMessageRes, error) {
-	out := new(ReadOfflineMessageRes)
-	err := c.c.Call(ctx, "ReadOfflineMessage", in, out)
+func (c *MessageRpcxClient) UnReadMessage(ctx context.Context,
+	in *UnReadMessageReq) (*UnReadMessageRes, error) {
+	out := new(UnReadMessageRes)
+	err := c.c.Call(ctx, "UnReadMessage", in, out)
 	return out, err
 }
 
@@ -163,10 +163,10 @@ func (c *MessageLocalClient) GetSingleChatHistory(ctx context.Context,
 	return out, err
 }
 
-func (c *MessageLocalClient) ReadOfflineMessage(ctx context.Context,
-	in *ReadOfflineMessageReq) (*ReadOfflineMessageRes, error) {
-	out := new(ReadOfflineMessageRes)
-	err := MessageServiceLocal.ReadOfflineMessage(ctx, in, out)
+func (c *MessageLocalClient) UnReadMessage(ctx context.Context,
+	in *UnReadMessageReq) (*UnReadMessageRes, error) {
+	out := new(UnReadMessageRes)
+	err := MessageServiceLocal.UnReadMessage(ctx, in, out)
 	return out, err
 }
 
@@ -180,7 +180,7 @@ func (c *MessageLocalClient) DownLoadFileMessage(ctx context.Context,
 type MessageServiceInterface interface {
 	SaveSingleChatMessage(context.Context, *SaveSingleChatMessageReq, *SaveSingleChatMessageRes) error
 	GetSingleChatHistory(context.Context, *GetSingleChatHistoryReq, *GetSingleChatHistoryRes) error
-	ReadOfflineMessage(context.Context, *ReadOfflineMessageReq, *ReadOfflineMessageRes) error
+	UnReadMessage(context.Context, *UnReadMessageReq, *UnReadMessageRes) error
 	DownLoadFileMessage(context.Context, *DownLoadFileMessageReq, *DownLoadFileMessageRes) error
 }
 

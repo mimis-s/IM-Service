@@ -13,7 +13,7 @@ import (
 */
 
 const (
-	userUnReadMessagePrefix = "user.message.unRead.line.sum"
+	userUnReadMessagePrefix = "user.message.unRead.line.sum."
 )
 
 // 获取用户所有离线消息个数(返回好友对应消息数量)

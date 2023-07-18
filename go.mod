@@ -8,7 +8,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
-	github.com/mimis-s/golang_tools v0.0.0-20230110095359-94a606a983fb
+	github.com/mimis-s/golang_tools v0.0.0-20230718083955-8d9c107c1780
 	github.com/yitter/idgenerator-go v1.3.2
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
@@ -80,7 +80,6 @@ require (
 	github.com/minio/sha256-simd v1.0.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/natefinch/lumberjack v2.0.0+incompatible // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect

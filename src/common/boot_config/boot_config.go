@@ -17,12 +17,14 @@ import (
 */
 
 type BootFlags struct {
-	BootConfigPath string `flag:"boot_config_path|.|yaml文件路径"`
-	IP             string `flag:"ip|192.168.1.1|服务器地址"`
-	Port           string `flag:"port|8888|服务器tcp端口"`
-	WebPort        string `flag:"web_port|8889|服务器http端口"`
-	RpcExposePort  string `flag:"rpc_expose_port|8890|集群使用的服务之间的rpc监听端口"`
-	RpcListenPort  string `flag:"rpc_listen_port|9999|本地服务之间的rpc监听端口, 非集群情况下等于exposer_port"`
+	BootConfigPath  string `flag:"boot_config_path|.|yaml文件路径"`
+	IP              string `flag:"ip|192.168.1.1|服务器地址"`
+	Port            string `flag:"port|8888|服务器tcp端口"`
+	WebPort         string `flag:"web_port|8889|服务器http端口"`
+	RpcExposePort   string `flag:"rpc_expose_port|8890|集群使用的服务之间的rpc监听端口"`
+	RpcListenPort   string `flag:"rpc_listen_port|9999|本地服务之间的rpc监听端口, 非集群情况下等于exposer_port"`
+	FileServiceIP   string `flag:"file_service_ip|localhost|文件服务ip"`
+	FileServicePort string `flag:"file_service_port|8999|文件服务端口"`
 }
 
 type DBConfig struct {

@@ -38,7 +38,7 @@ func Init(configOptions *boot_config.ConfigOptions) *Service {
 	httpServer := net.InitServer(webAddr, "http", NewSession)
 
 	go func() {
-		err := httpServer.Listen()
+		err := httpServer.Run()
 		if err != nil {
 			panic(err)
 		}
@@ -48,9 +48,9 @@ func Init(configOptions *boot_config.ConfigOptions) *Service {
 
 	// 客户端连接的TCP连接
 	tcpServer := net.InitServer(tcpAddr, "tcp", NewSession)
-	tcpServer.Listen()
+
 	go func() {
-		err := tcpServer.Listen()
+		err := tcpServer.Run()
 		if err != nil {
 			panic(err)
 		}

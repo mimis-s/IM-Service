@@ -164,7 +164,7 @@ func RegisterFriendsService(s *service.ServerManage, hdlr FriendsServiceInterfac
 
 func NewFriendsServiceAndRun(listenAddr, exposeAddr string, etcdAddrs []string, handler FriendsServiceInterface, etcdBasePath string, isLocal bool) (*service.ServerManage, error) {
 	if !isLocal {
-		s, err := service.New(exposeAddr, etcdAddrs, etcdBasePath)
+		s, err := service.New(exposeAddr, etcdAddrs, etcdBasePath, listenAddr)
 		if err != nil {
 			return nil, err
 		}
@@ -174,12 +174,6 @@ func NewFriendsServiceAndRun(listenAddr, exposeAddr string, etcdAddrs []string, 
 			return nil, err
 		}
 
-		go func() {
-			err = s.Run(listenAddr)
-			if err != nil {
-				panic(fmt.Errorf("listen(%v) error(%v)", listenAddr, err))
-			}
-		}()
 		return s, nil
 	}
 

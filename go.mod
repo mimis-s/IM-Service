@@ -8,11 +8,10 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
-	github.com/mimis-s/golang_tools v0.0.0-20230718083955-8d9c107c1780
+	github.com/google/wire v0.5.0
+	github.com/mimis-s/golang_tools v0.0.0-20230720054936-f6e4167ee58e
 	github.com/yitter/idgenerator-go v1.3.2
-	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
-	gopkg.in/yaml.v3 v3.0.1
 	xorm.io/core v0.7.3
 	xorm.io/xorm v1.2.5
 )
@@ -114,6 +113,7 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
+	go.uber.org/zap v1.24.0 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1 // indirect
@@ -130,5 +130,6 @@ require (
 	gopkg.in/ini.v1 v1.66.6 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	xorm.io/builder v0.3.9 // indirect
 )

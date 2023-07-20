@@ -5,10 +5,10 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 func init() {
@@ -29,7 +29,7 @@ func Login(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, req
 		Data:       reqMsg,
 	})
 	if err != nil {
-		im_log.Error("login user[%v] is err:%v", reqMsg.UserID, err)
+		zlog.Error("login user[%v] is err:%v", reqMsg.UserID, err)
 		return resRpc.ErrCode
 	}
 
@@ -45,7 +45,7 @@ func Logout(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, re
 		Data:       reqMsg,
 	})
 	if err != nil {
-		im_log.Error("logout user[%v] is err:%v", clientInfo.Client.UserID, err)
+		zlog.Error("logout user[%v] is err:%v", clientInfo.Client.UserID, err)
 		return resRpc.ErrCode
 	}
 
@@ -62,7 +62,7 @@ func Register(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq, 
 	})
 
 	if err != nil {
-		im_log.Error("register user[%v] is err:%v", reqMsg.UserName, err)
+		zlog.Error("register user[%v] is err:%v", reqMsg.UserName, err)
 		return resRpc.ErrCode
 	}
 
@@ -81,7 +81,7 @@ func GetUserInfo(ctx context.Context, clientInfo *api_home.ClientRequestHandleRe
 	})
 
 	if err != nil {
-		im_log.Error("user[%v] get user[%v] info is err:%v", clientInfo.Client.UserID, reqMsg.UserID, err)
+		zlog.Error("user[%v] get user[%v] info is err:%v", clientInfo.Client.UserID, reqMsg.UserID, err)
 		return resRpc.ErrCode
 	}
 
@@ -100,7 +100,7 @@ func ModifyUserInfo(ctx context.Context, clientInfo *api_home.ClientRequestHandl
 	})
 
 	if err != nil {
-		im_log.Error("user[%v] modify user[%v] info is err:%v", clientInfo.Client.UserID, reqMsg.Data.UserID, err)
+		zlog.Error("user[%v] modify user[%v] info is err:%v", clientInfo.Client.UserID, reqMsg.Data.UserID, err)
 		return resRpc.ErrCode
 	}
 

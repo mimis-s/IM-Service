@@ -5,10 +5,10 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/IM-Service/src/services/message/api_message"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 func init() {
@@ -27,7 +27,7 @@ func GetSingleChatHistory(ctx context.Context, clientInfo *api_home.ClientReques
 	}
 	resRpc, err := api_message.GetSingleChatHistory(context.Background(), reqRpc)
 	if err != nil {
-		im_log.Error("user[%v] get friend[%v] Single Chat History is err:%v", clientInfo.Client.UserID,
+		zlog.Error("user[%v] get friend[%v] Single Chat History is err:%v", clientInfo.Client.UserID,
 			reqMsg.FriendID, err)
 		return resRpc.ErrCode
 	}
@@ -45,7 +45,7 @@ func UnReadMessage(ctx context.Context, clientInfo *api_home.ClientRequestHandle
 	}
 	resRpc, err := api_message.UnReadMessage(context.Background(), reqRpc)
 	if err != nil {
-		im_log.Error("user[%v] Read friend[%v] un read Message Single Chat is err:%v", clientInfo.Client.UserID,
+		zlog.Error("user[%v] Read friend[%v] un read Message Single Chat is err:%v", clientInfo.Client.UserID,
 			reqMsg.FriendID, err)
 		return resRpc.ErrCode
 	}
@@ -63,7 +63,7 @@ func DownLoadFileMessage(ctx context.Context, clientInfo *api_home.ClientRequest
 	}
 	resRpc, err := api_message.DownLoadFileMessage(context.Background(), reqRpc)
 	if err != nil {
-		im_log.Error("user[%v] down load friend[%v] file Message Single Chat is err:%v", clientInfo.Client.UserID,
+		zlog.Error("user[%v] down load friend[%v] file Message Single Chat is err:%v", clientInfo.Client.UserID,
 			reqMsg.FriendID, err)
 		return resRpc.ErrCode
 	}

@@ -6,19 +6,19 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/event"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/friends/service"
 	"github.com/mimis-s/IM-Service/src/services/relay/relay_api"
 	"github.com/mimis-s/golang_tools/mq/rabbitmq"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 type Job struct {
 	s *service.Service
 }
 
-func InitMQ(s *service.Service, configOptions *boot_config.ConfigOptions) *Job {
-	url := configOptions.BootConfigFile.MQ.Url
-	durable := configOptions.BootConfigFile.MQ.Durable
+func InitMQ(s *service.Service) *Job {
+	url := boot_config.BootConfigData.MQ.Url
+	durable := boot_config.BootConfigData.MQ.Durable
 
 	j := &Job{s}
 
@@ -38,7 +38,7 @@ func (j *Job) userLoginOk(payload interface{}) error {
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] login ok, but get friends staus list is errCode[%v] err:%v",
 			userLogin.UserInfo.UserID, errCode, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		return fmt.Errorf(errStr)
 	}
 

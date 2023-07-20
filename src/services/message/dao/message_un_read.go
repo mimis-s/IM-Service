@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/mimis-s/IM-Service/src/common/im_log"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 /*
@@ -23,7 +23,7 @@ func (d *Dao) GetUserAllUnReadMessage(userID int64) (map[int64]int, error) {
 	allMessageData, err := d.cache.Client.HGetAll(context.Background(), userUnReadMessage).Result()
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] redis get all off line message is err:%v", userID, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		return nil, fmt.Errorf(errStr)
 	}
 
@@ -33,14 +33,14 @@ func (d *Dao) GetUserAllUnReadMessage(userID int64) (map[int64]int, error) {
 		friendsID, err := strconv.ParseInt(strFriend, 10, 64)
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] redis decode friend[%v] off line message is err:%v", userID, strFriend, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 			return nil, fmt.Errorf(errStr)
 		}
 
 		data, err := strconv.Atoi(messageSum)
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] redis decode friend[%v] off line message is err:%v", userID, strFriend, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 			return nil, fmt.Errorf(errStr)
 		}
 
@@ -60,7 +60,7 @@ func (d *Dao) GetUserUnReadMessage(userID int64, friendID int64) (int, error) {
 
 	exists, err := d.cache.Client.HExists(context.Background(), userUnReadMessage, strconv.FormatInt(friendID, 10)).Result()
 	if err != nil {
-		im_log.Warn("user[%v] friend[%v] redis get off line message Exists is err:%v", userID, friendID, err)
+		zlog.Warn("user[%v] friend[%v] redis get off line message Exists is err:%v", userID, friendID, err)
 		return 0, err
 	}
 
@@ -69,14 +69,14 @@ func (d *Dao) GetUserUnReadMessage(userID int64, friendID int64) (int, error) {
 		messageSum, err := d.cache.Client.HGet(context.Background(), userUnReadMessage, strconv.FormatInt(friendID, 10)).Result()
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] redis get friend[%v] off line message is err:%v", userID, friendID, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 			return 0, fmt.Errorf(errStr)
 		}
 
 		data, err := strconv.Atoi(messageSum)
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] redis decode friend[%v] off line message is err:%v", userID, friendID, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 			return 0, fmt.Errorf(errStr)
 		}
 
@@ -92,7 +92,7 @@ func (d *Dao) AddUserOneUnReadMessage(sender, receiver int64) error {
 
 	exists, err := d.cache.Client.HExists(context.Background(), userUnReadMessage, strconv.FormatInt(sender, 10)).Result()
 	if err != nil {
-		im_log.Warn("user[%v] sender[%v] redis get off line message Exists is err:%v", receiver, sender, err)
+		zlog.Warn("user[%v] sender[%v] redis get off line message Exists is err:%v", receiver, sender, err)
 		return err
 	}
 
@@ -102,14 +102,14 @@ func (d *Dao) AddUserOneUnReadMessage(sender, receiver int64) error {
 		messageSum, err := d.cache.Client.HGet(context.Background(), userUnReadMessage, strconv.FormatInt(sender, 10)).Result()
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] redis get off line message is err:%v", receiver, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 			return fmt.Errorf(errStr)
 		}
 
 		data, err := strconv.Atoi(messageSum)
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] redis decode friend[%v] off line message is err:%v", sender, receiver, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 			return fmt.Errorf(errStr)
 		}
 		UnReadSum = data
@@ -120,7 +120,7 @@ func (d *Dao) AddUserOneUnReadMessage(sender, receiver int64) error {
 	_, err = d.cache.Client.HSet(context.Background(), userUnReadMessage, strconv.FormatInt(sender, 10), strconv.Itoa(UnReadSum)).Result()
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] redis set user[%v] off line message encode is err:%v", receiver, sender, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -133,18 +133,18 @@ func (d *Dao) DelUserOneUnReadMessage(senderID, receiverID int64) error {
 
 	exists, err := d.cache.Client.HExists(context.Background(), userUnReadMessage, strconv.FormatInt(receiverID, 10)).Result()
 	if err != nil {
-		im_log.Warn("user[%v] sender[%v] redis get off line message Exists is err:%v", receiverID, senderID, err)
+		zlog.Warn("user[%v] sender[%v] redis get off line message Exists is err:%v", receiverID, senderID, err)
 		return err
 	}
 
 	if !exists {
-		im_log.Info("sender[%v] receiver[%v] not off line message need del", senderID, receiverID)
+		zlog.Info("sender[%v] receiver[%v] not off line message need del", senderID, receiverID)
 		return nil
 	} else {
 		_, err = d.cache.Client.HDel(context.Background(), userUnReadMessage, strconv.FormatInt(receiverID, 10)).Result()
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] redis set user[%v] off line message encode is err:%v", receiverID, senderID, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 			return fmt.Errorf(errStr)
 		}
 	}

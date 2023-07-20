@@ -6,10 +6,10 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/message/api_message"
 	"github.com/mimis-s/golang_tools/lib"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 const (
@@ -30,7 +30,7 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 	if err != nil {
 		res.ErrCode = getUserInfoRes.ErrCode
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but db is err:%v", req.ClientInfo.UserID, req.Data.ReceiverID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -39,7 +39,7 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		errStr := fmt.Sprintf("user[%v] get user[%v][%v] message id is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
 			req.Data.ReceiverID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 	req.Data.MessageID = messageID
@@ -71,7 +71,7 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 			if err != nil {
 				errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
 					req.Data.ReceiverID, messageID, err)
-				im_log.Error(errStr)
+				zlog.Error(errStr)
 				return fmt.Errorf(errStr)
 			}
 		case im_home_proto.MessageFileType_Enum_EnumFileType:
@@ -79,7 +79,7 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 			if err != nil {
 				errStr := fmt.Sprintf("user[%v] get user[%v][%v] upload message[%v] is err:%v", req.ClientInfo.UserID, req.Data.SenderID,
 					req.Data.ReceiverID, messageID, err)
-				im_log.Error(errStr)
+				zlog.Error(errStr)
 				return fmt.Errorf(errStr)
 			}
 			fileMessage.FileData = ""
@@ -99,12 +99,12 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 			res.ErrCode = im_error_proto.ErrCode_db_write_err
 			errStr := fmt.Sprintf("user[%v] add off line message[%v] is err:%v",
 				req.ClientInfo.UserID, req.Data, err)
-			im_log.Error(errStr)
+			zlog.Error(errStr)
 			return fmt.Errorf(errStr)
 		}
 		res.IsOnline = false
 	} else {
-		im_log.Warn("user[%v] online status[%v] is not define", req.Data.ReceiverID, getUserInfoRes.Data.Status)
+		zlog.Warn("user[%v] online status[%v] is not define", req.Data.ReceiverID, getUserInfoRes.Data.Status)
 	}
 
 	// 写入数据库
@@ -113,7 +113,7 @@ func (s *Service) SaveSingleChatMessage(ctx context.Context, req *api_message.Sa
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		errStr := fmt.Sprintf("user[%v] add history message[%v] is err:%v",
 			req.ClientInfo.UserID, req.Data, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -136,12 +136,12 @@ func (s *Service) GetSingleChatHistory(ctx context.Context, req *api_message.Get
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] get friend[%v] history, but get history message id is err:%v",
 				req.ClientInfo.UserID, req.Data.FriendID, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 			res.ErrCode = im_error_proto.ErrCode_db_read_err
 			return fmt.Errorf(errStr)
 		}
 		if maxMessageID == -1 {
-			im_log.Info("user[%v] get friend[%v] history, but not find", req.ClientInfo.UserID, req.Data.FriendID)
+			zlog.Info("user[%v] get friend[%v] history, but not find", req.ClientInfo.UserID, req.Data.FriendID)
 			return nil
 		}
 		minMessageID = lib.MaxInt64(0, maxMessageID-maxGetChatHistoryNum+1)
@@ -151,7 +151,7 @@ func (s *Service) GetSingleChatHistory(ctx context.Context, req *api_message.Get
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] get friend[%v] history [%v]-[%v], but get history message db is err:%v",
 			req.ClientInfo.UserID, req.Data.FriendID, minMessageID, maxMessageID, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		return fmt.Errorf(errStr)
 	}
@@ -165,7 +165,7 @@ func (s *Service) GetSingleChatHistory(ctx context.Context, req *api_message.Get
 				if err != nil {
 					errStr := fmt.Sprintf("user[%v] get user[%v][%v] down load message[%v] is err:%v", req.ClientInfo.UserID, m.MessageData.HistoryData.SenderID,
 						m.MessageData.HistoryData.ReceiverID, m.MessageData.HistoryData.MessageID, err)
-					im_log.Error(errStr)
+					zlog.Error(errStr)
 					return fmt.Errorf(errStr)
 				}
 				m.MessageData.HistoryData.MessageFileInfos[index].FileData = string(data)
@@ -187,7 +187,7 @@ func (s *Service) UnReadMessage(ctx context.Context, req *api_message.UnReadMess
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] del friend[%v] un read message is err:%v",
 			req.ClientInfo.UserID, req.Data.FriendID, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		return fmt.Errorf(errStr)
 	}
@@ -210,7 +210,7 @@ func (s *Service) DownLoadFileMessage(ctx context.Context, req *api_message.Down
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] get user[%v] down load img message[%v] is err:%v", req.ClientInfo.UserID,
 				req.Data.FriendID, req.Data.MessageID, err)
-			im_log.Error(errStr)
+			zlog.Error(errStr)
 			return fmt.Errorf(errStr)
 		}
 		fileData = string(data)
@@ -220,7 +220,7 @@ func (s *Service) DownLoadFileMessage(ctx context.Context, req *api_message.Down
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] get user[%v] down load file message[%v] is err:%v", req.ClientInfo.UserID,
 				req.Data.FriendID, req.Data.MessageID, err)
-			im_log.Error(errStr)
+			zlog.Error(errStr)
 			return fmt.Errorf(errStr)
 		}
 		fileData = string(data)

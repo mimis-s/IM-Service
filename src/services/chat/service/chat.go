@@ -5,8 +5,8 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/event"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/chat/api_chat"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 // 服务器要做的是转发和回发
@@ -23,7 +23,7 @@ func (s *Service) ChatSingle(ctx context.Context, req *api_chat.ChatSingleReq, r
 
 	err := event.Publish(event.Event_SingleMessage, singleMessage)
 	if err != nil {
-		im_log.Error("err:%v", err)
+		zlog.Error("err:%v", err)
 		res.ErrCode = im_error_proto.ErrCode_common_unexpected_err
 		return err
 	}

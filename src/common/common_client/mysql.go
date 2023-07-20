@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
+	"github.com/mimis-s/golang_tools/zlog"
 	"xorm.io/xorm"
 )
 
@@ -43,7 +43,7 @@ func RegisterParseMysql(dbManageConfigs []boot_config.DBManageConfig) {
 func NewEngine(tag string) (*xorm.Engine, error) {
 
 	if !mapMysqlTag[tag] {
-		im_log.Warn("map tag[%v] service tag[%v] db not define", mapMysqlTag, tag)
+		zlog.Warn("map tag[%v] service tag[%v] db not define", mapMysqlTag, tag)
 		return nil, fmt.Errorf("map tag[%v] service tag[%v] db not define", mapMysqlTag, tag)
 	}
 
@@ -55,13 +55,13 @@ func NewEngine(tag string) (*xorm.Engine, error) {
 	}
 
 	if url == "" {
-		im_log.Warn("service tag[%v] db url is nil", tag)
+		zlog.Warn("service tag[%v] db url is nil", tag)
 		return nil, fmt.Errorf("service tag[%v] db url is nil", tag)
 	}
 
 	engine, err := xorm.NewEngine("mysql", url)
 	if err != nil {
-		im_log.Warn("service tag[%v] url[%v] db New Engine is err:%v", tag, url, err)
+		zlog.Warn("service tag[%v] url[%v] db New Engine is err:%v", tag, url, err)
 		return nil, fmt.Errorf("service tag[%v] url[%v] db New Engine is err:%v", tag, url, err)
 	}
 	return engine, nil

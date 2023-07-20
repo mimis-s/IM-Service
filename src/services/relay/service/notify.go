@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/gateway/api_gateway"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/golang_tools/net/clientConn"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 /*
@@ -21,7 +21,7 @@ func (s *Service) SendToClient(senderID, receiverID int64, msgID uint32, msgStru
 	}
 	getClientConnTypeRes, err := api_gateway.GetClientConnType(context.Background(), getClientConnTypeReq)
 	if err != nil {
-		im_log.Warn("senderID[%v] get receiverID[%v] conn type is err:%v", senderID, receiverID, err)
+		zlog.Warn("senderID[%v] get receiverID[%v] conn type is err:%v", senderID, receiverID, err)
 		return err
 	}
 	var payLoad []byte
@@ -29,18 +29,18 @@ func (s *Service) SendToClient(senderID, receiverID int64, msgID uint32, msgStru
 	if clientConn.ClientConn_Enum(getClientConnTypeRes.ConnType) == clientConn.ClientConn_TCP_Enum {
 		payLoad, err = seralize.Marshal(msgStruct)
 		if err != nil {
-			im_log.Warn("proto marshal[%v] is err:%v", msgStruct, err)
+			zlog.Warn("proto marshal[%v] is err:%v", msgStruct, err)
 			return err
 		}
 	} else if clientConn.ClientConn_Enum(getClientConnTypeRes.ConnType) == clientConn.ClientConn_HTTP_Enum {
 		payLoad, err = json.Marshal(msgStruct)
 		if err != nil {
-			im_log.Warn("json marshal[%v] is err:%v", msgStruct, err)
+			zlog.Warn("json marshal[%v] is err:%v", msgStruct, err)
 			return err
 		}
 	} else {
 		errStr := fmt.Sprintf("senderID[%v] getreceiverID[%v] conn type[%v] is not define", senderID, receiverID, getClientConnTypeRes.ConnType)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		return fmt.Errorf(errStr)
 	}
 

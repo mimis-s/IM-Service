@@ -8,11 +8,11 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
 	"github.com/mimis-s/golang_tools/net/clientConn"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 var cacheClient = sync.Map{}
@@ -40,7 +40,7 @@ func (s *Session) ConnectCallBack() {
 func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.ClientMsg, error) {
 	if reqClient.Tag == -1 {
 		// 心跳包
-		im_log.Info("client send heartCheack\n")
+		zlog.Info("client send heartCheack\n")
 		return &clientConn.ClientMsg{
 			Tag: -1,
 		}, nil
@@ -61,7 +61,7 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 			UserID: loginReq.UserID,
 		}
 		s.clientInfo.UserID = loginReq.UserID
-		im_log.Info("用户[%v] IP[%v]尝试登录", loginReq.UserID, s.GetClientConn().GetIP())
+		zlog.Info("用户[%v] IP[%v]尝试登录", loginReq.UserID, s.GetClientConn().GetIP())
 		cacheClient.Store(loginReq.UserID, s)
 	}
 
@@ -103,7 +103,7 @@ func (s *Session) RequestCallBack(reqClient *clientConn.ClientMsg) (*clientConn.
 func (s *Session) DisConnectCallBack() {
 	if s.clientInfo == nil {
 		// 用户没有登录
-		im_log.Info("IP[%v]断开连接", s.GetClientConn().GetIP())
+		zlog.Info("IP[%v]断开连接", s.GetClientConn().GetIP())
 		return
 	}
 	// 用户登出
@@ -113,8 +113,8 @@ func (s *Session) DisConnectCallBack() {
 	}
 	_, err := api_account.Logout(context.Background(), logoutReq)
 	if err != nil {
-		im_log.Error("用户[%v] IP[%v]登出 err:%v", s.clientInfo.UserID, s.GetClientConn().GetIP(), err)
+		zlog.Error("用户[%v] IP[%v]登出 err:%v", s.clientInfo.UserID, s.GetClientConn().GetIP(), err)
 	}
 	cacheClient.Delete(s.clientInfo.UserID)
-	im_log.Info("用户[%v] IP[%v]登出", s.clientInfo.UserID, s.GetClientConn().GetIP())
+	zlog.Info("用户[%v] IP[%v]登出", s.clientInfo.UserID, s.GetClientConn().GetIP())
 }

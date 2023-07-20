@@ -6,20 +6,20 @@ import (
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/event"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/message/service"
 	"github.com/mimis-s/IM-Service/src/services/relay/relay_api"
 	"github.com/mimis-s/golang_tools/mq/rabbitmq"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 type Job struct {
 	s *service.Service
 }
 
-func InitMQ(s *service.Service, configOptions *boot_config.ConfigOptions) *Job {
-	url := configOptions.BootConfigFile.MQ.Url
-	durable := configOptions.BootConfigFile.MQ.Durable
+func InitMQ(s *service.Service) *Job {
+	url := boot_config.BootConfigData.MQ.Url
+	durable := boot_config.BootConfigData.MQ.Durable
 
 	j := &Job{s}
 
@@ -37,7 +37,7 @@ func (j *Job) userLoginOk(payload interface{}) error {
 	// 登录成功下发未读消息
 	userChatMessage, err := j.s.Dao.GetUserAllUnReadMessage(userLogin.UserInfo.UserID)
 	if err != nil {
-		im_log.Warn("user[%v] login ok, but get off line message is err:%v", userLogin.UserInfo.UserID, err)
+		zlog.Warn("user[%v] login ok, but get off line message is err:%v", userLogin.UserInfo.UserID, err)
 		return err
 	}
 
@@ -60,7 +60,7 @@ func (j *Job) userLoginOk(payload interface{}) error {
 
 	usersInfoRes, err := api_account.GetUsersInfoService(context.Background(), usersInfoReq)
 	if err != nil {
-		im_log.Warn("user[%v] login ok, but friends[%v] info is err:%v", userLogin.UserInfo.UserID, usersInfoReq.UserIDs, err)
+		zlog.Warn("user[%v] login ok, but friends[%v] info is err:%v", userLogin.UserInfo.UserID, usersInfoReq.UserIDs, err)
 		return err
 	}
 

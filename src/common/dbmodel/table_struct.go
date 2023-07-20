@@ -37,7 +37,7 @@ type DbTableInterface interface {
 
 func subName(name string, value int64, tableNum int) string {
 	temp := value % int64(tableNum)
-	if temp == 0 || !boot_config.GetConfigOptions().BootConfigFile.DataBaseShard {
+	if temp == 0 || !boot_config.BootConfigData.DataBaseShard {
 		return name
 	}
 	return name + "_" + strconv.FormatInt(temp, 10)

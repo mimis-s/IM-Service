@@ -5,10 +5,10 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/chat/api_chat"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 func init() {
@@ -24,7 +24,7 @@ func ChatSingle(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq
 	}
 	resRpc, err := api_chat.ChatSingle(context.Background(), reqRpc)
 	if err != nil {
-		im_log.Error("chat single rpc is err:%v", err)
+		zlog.Error("chat single rpc is err:%v", err)
 		return resRpc.ErrCode
 	}
 	resMsg.Data = resRpc.Data

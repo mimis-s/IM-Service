@@ -1,7 +1,10 @@
 
-all:proto
+all: proto, wire
 
-.PHONY: proto
+.PHONY: proto, wire
 
 proto:
 	@./build_proto.sh
+
+wire:
+	@./build_wire.sh

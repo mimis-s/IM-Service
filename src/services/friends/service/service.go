@@ -1,10 +1,13 @@
 package service
 
 import (
-	"github.com/mimis-s/IM-Service/src/common/boot_config"
+	"github.com/google/wire"
 	"github.com/mimis-s/IM-Service/src/services/friends/api_friends"
 	"github.com/mimis-s/IM-Service/src/services/friends/dao"
+	rpcxService "github.com/mimis-s/golang_tools/rpcx/service"
 )
+
+var ProviderSet = wire.NewSet(dao.ProviderSet, NewServiceHandler)
 
 var S *Service
 
@@ -12,22 +15,17 @@ type Service struct {
 	Dao *dao.Dao
 }
 
-func Init(configOptions *boot_config.ConfigOptions) *Service {
-	d, err := dao.New(configOptions)
-	if err != nil {
-		panic(err)
-	}
+func NewServiceHandler(rpcSvc *rpcxService.ServerManage, d *dao.Dao) (*Service, error) {
 
 	S = &Service{
 		Dao: d,
 	}
 
-	listenAddr := configOptions.CommandFlags.RpcListenPort
-	addr := configOptions.CommandFlags.RpcExposePort
-	etcdAddrs := configOptions.BootConfigFile.Etcd.Addrs
-	etcdBasePath := configOptions.BootConfigFile.Etcd.EtcdBasePath
-	isLocal := configOptions.BootConfigFile.IsLocal
-	// 启动rpcx服务
-	api_friends.NewFriendsServiceAndRun(listenAddr, addr, etcdAddrs, S, etcdBasePath, isLocal)
-	return S
+	// 绑定rpcx服务
+	err := api_friends.RegisterFriendsService(rpcSvc, S)
+	if err != nil {
+		return nil, err
+	}
+
+	return S, nil
 }

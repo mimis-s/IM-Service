@@ -102,6 +102,8 @@ type OverrallServiceInterface interface {
 var OverrallServiceLocal OverrallServiceInterface
 
 func RegisterOverrallService(s *service.ServerManage, hdlr OverrallServiceInterface) error {
+	// 本地调用的时候使用(rpc本地客户端对应调用本地服务器)
+	OverrallServiceLocal = hdlr
 	return s.RegisterOneService(serverName, hdlr)
 }
 

@@ -11,11 +11,11 @@ type RedisClient struct {
 	Client *redis.Client
 }
 
-func NewRedisClient(configOptions *boot_config.ConfigOptions) *RedisClient {
+func NewRedisClient() *RedisClient {
 	client := redis.NewClient(&redis.Options{
-		Addr:               configOptions.BootConfigFile.Redis.Addr,
-		Password:           configOptions.BootConfigFile.Redis.Password,
-		DB:                 configOptions.BootConfigFile.Redis.DB,
+		Addr:               boot_config.BootConfigData.Redis.Addr,
+		Password:           boot_config.BootConfigData.Redis.Password,
+		DB:                 boot_config.BootConfigData.Redis.DB,
 		MaxRetries:         2,
 		DialTimeout:        time.Second * 10,
 		ReadTimeout:        time.Second * 5,
@@ -36,19 +36,19 @@ func NewRedisClient(configOptions *boot_config.ConfigOptions) *RedisClient {
 // 	// ok, err := pipe.Expire(context.Background(), key, expireTime).Result()
 // 	// if err != nil {
 // 	// 	errStr := fmt.Sprintf("redis set key[%v] expire time[%v] is err:%v", key, expireTime, err)
-// 	// 	im_log.Warn(errStr)
+// 	// 	zlog.Warn(errStr)
 // 	// 	return nil, fmt.Errorf(errStr)
 // 	// }
 // 	// if !ok {
 // 	// 	errStr := fmt.Sprintf("redis set key[%v] expire time[%v] is not ok", key, expireTime)
-// 	// 	im_log.Warn(errStr)
+// 	// 	zlog.Warn(errStr)
 // 	// 	return nil, fmt.Errorf(errStr)
 // 	// }
 
 // 	result, err := transactionFun(pipe)
 // 	if err != nil {
 // 		errStr := fmt.Sprintf("redis set key[%v] is err:%v", key, err)
-// 		im_log.Warn(errStr)
+// 		zlog.Warn(errStr)
 // 		return result, fmt.Errorf(errStr)
 // 	}
 

@@ -8,9 +8,9 @@ import (
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
 	"github.com/mimis-s/IM-Service/src/common/event"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/overrall/api_overrall"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api_account.LoginRes) error {
@@ -19,7 +19,7 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("role id[%v] register db is err:%v", req.Data.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -27,7 +27,7 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 		// 该账号不存在
 		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
 		errStr := fmt.Sprintf("role id[%v] login but account is not find", req.Data.UserID)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -35,7 +35,7 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 	if req.Data.Password != userInfo.Password {
 		res.ErrCode = im_error_proto.ErrCode_account_password_incorrect
 		errStr := fmt.Sprintf("role id[%v] login but password is incorrect", req.Data.UserID)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -56,7 +56,7 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 	if err != nil {
 		// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
 		errStr := fmt.Sprintf("user[%v] login, but dfs down load head is err:%v", userInfo.UserId, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 	} else {
 		res.Data.Info.HeadImg = string(headImg)
 	}
@@ -66,7 +66,7 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		errStr := fmt.Sprintf("role id[%v] login but update redis is err:%v", req.Data.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -83,7 +83,7 @@ func (s *Service) Login(ctx context.Context, req *api_account.LoginReq, res *api
 	// 推送成功登录事件
 	err = event.Publish(event.Event_UserLogin, userLoginEvent)
 	if err != nil {
-		im_log.Error("err:%v", err)
+		zlog.Error("err:%v", err)
 		res.ErrCode = im_error_proto.ErrCode_common_unexpected_err
 		return err
 	}
@@ -97,7 +97,7 @@ func (s *Service) Logout(ctx context.Context, req *api_account.LogoutReq, res *a
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		errStr := fmt.Sprintf("user[%v] logout but update redis is err:%v", req.ClientInfo.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 	return nil
@@ -111,7 +111,7 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("role name[%v] register db is err:%v", req.Data.UserName, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -119,7 +119,7 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 		// 重名
 		res.ErrCode = im_error_proto.ErrCode_account_user_name_repeat
 		errStr := fmt.Sprintf("role name[%v] register db, but name is repeat", req.Data.UserName)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -129,7 +129,7 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_common_unexpected_err
 		errStr := fmt.Sprintf("register generate unique user ID is err:%v", err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -151,7 +151,7 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		errStr := fmt.Sprintf("role name[%v] register db write is err:%v", req.Data.UserName, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -160,7 +160,7 @@ func (s *Service) Register(ctx context.Context, req *api_account.RegisterReq, re
 	if err != nil {
 		// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
 		errStr := fmt.Sprintf("user id[%v] register, but dfs up load head is err:%v", userInfo.UserId, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 	}
 
 	res.Data = &im_home_proto.RegisterRes{
@@ -178,7 +178,7 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but db is err:%v", req.ClientInfo.UserID, req.Data.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -186,7 +186,7 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 		// 没有找到说明没有这个人
 		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but db is not found", req.ClientInfo.UserID, req.Data.UserID)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -195,7 +195,7 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but redis db is err:%v", req.ClientInfo.UserID, req.Data.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -216,7 +216,7 @@ func (s *Service) GetUserInfo(ctx context.Context, req *api_account.GetUserInfoR
 	if err != nil {
 		// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but dfs down load head is err:%v", req.ClientInfo.UserID, userInfo.UserId, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 	}
 	res.Data.Data.HeadImg = string(headImg)
 
@@ -230,7 +230,7 @@ func (s *Service) GetUserInfoService(ctx context.Context, req *api_account.GetUs
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but db is err:%v", req.ClientInfo.UserID, req.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -238,7 +238,7 @@ func (s *Service) GetUserInfoService(ctx context.Context, req *api_account.GetUs
 		// 没有找到说明没有这个人
 		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but db is not found", req.ClientInfo.UserID, req.UserID)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -247,7 +247,7 @@ func (s *Service) GetUserInfoService(ctx context.Context, req *api_account.GetUs
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but redis db is err:%v", req.ClientInfo.UserID, req.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -270,7 +270,7 @@ func (s *Service) GetUsersInfoService(ctx context.Context, req *api_account.GetU
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("user[%v] get users[%v] info, but db is err:%v", req.ClientInfo.UserID, req.UserIDs, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -278,7 +278,7 @@ func (s *Service) GetUsersInfoService(ctx context.Context, req *api_account.GetU
 		// 没有找到说明没有这个人
 		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
 		errStr := fmt.Sprintf("user[%v] get users[%v] info, but db is not found", req.ClientInfo.UserID, req.UserIDs)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -292,7 +292,7 @@ func (s *Service) GetUsersInfoService(ctx context.Context, req *api_account.GetU
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("user[%v] get user[%v] info, but redis db is err:%v", req.ClientInfo.UserID, req.UserIDs, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -318,7 +318,7 @@ func (s *Service) ModifyUserInfo(ctx context.Context, req *api_account.ModifyUse
 	if err != nil {
 		res.ErrCode = im_error_proto.ErrCode_db_read_err
 		errStr := fmt.Sprintf("user[%v] modify user[%v] info, but db is err:%v", req.ClientInfo.UserID, req.Data.Data.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -326,7 +326,7 @@ func (s *Service) ModifyUserInfo(ctx context.Context, req *api_account.ModifyUse
 		// 没有找到说明没有这个人
 		res.ErrCode = im_error_proto.ErrCode_account_account_not_found
 		errStr := fmt.Sprintf("user[%v] modify user[%v] info, but db is not found", req.ClientInfo.UserID, req.Data.Data.UserID)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -338,7 +338,7 @@ func (s *Service) ModifyUserInfo(ctx context.Context, req *api_account.ModifyUse
 		if err != nil {
 			res.ErrCode = im_error_proto.ErrCode_db_read_err
 			errStr := fmt.Sprintf("role name[%v] get db is err:%v", req.Data.Data.UserName, err)
-			im_log.Error(errStr)
+			zlog.Error(errStr)
 			return fmt.Errorf(errStr)
 		}
 
@@ -346,7 +346,7 @@ func (s *Service) ModifyUserInfo(ctx context.Context, req *api_account.ModifyUse
 			// 重名
 			res.ErrCode = im_error_proto.ErrCode_account_user_name_repeat
 			errStr := fmt.Sprintf("role name[%v] modify db, but name is repeat", req.Data.Data.UserName)
-			im_log.Error(errStr)
+			zlog.Error(errStr)
 			return fmt.Errorf(errStr)
 		}
 		bUpdate = true
@@ -373,7 +373,7 @@ func (s *Service) ModifyUserInfo(ctx context.Context, req *api_account.ModifyUse
 		err = s.Dao.UpdateUserInfo(userInfo)
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] modify user info, but update db[%v] is err:%v", userInfo.UserId, userInfo, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 			res.ErrCode = im_error_proto.ErrCode_db_write_err
 			return fmt.Errorf(errStr)
 		}
@@ -397,7 +397,7 @@ func (s *Service) ModifyUserInfo(ctx context.Context, req *api_account.ModifyUse
 		if err != nil {
 			// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
 			errStr := fmt.Sprintf("user[%v] modify head imag, but dfs up load head is err:%v", userInfo.UserId, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 		}
 		res.Data.Data.HeadImg = string(req.Data.Data.HeadImg)
 	} else {
@@ -406,7 +406,7 @@ func (s *Service) ModifyUserInfo(ctx context.Context, req *api_account.ModifyUse
 		if err != nil {
 			// 这个地方日志打印错误, 但是这个错误不返回给客户端,不阻断主流程
 			errStr := fmt.Sprintf("user[%v] login, but dfs down load head is err:%v", userInfo.UserId, err)
-			im_log.Warn(errStr)
+			zlog.Warn(errStr)
 		} else {
 			res.Data.Data.HeadImg = string(headImg)
 		}

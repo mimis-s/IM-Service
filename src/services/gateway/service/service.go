@@ -1,11 +1,15 @@
 package service
 
 import (
+	"github.com/google/wire"
 	"github.com/mimis-s/IM-Service/src/common/boot_config"
 	"github.com/mimis-s/IM-Service/src/services/gateway/api_gateway"
 	"github.com/mimis-s/IM-Service/src/services/gateway/dao"
 	"github.com/mimis-s/golang_tools/net"
+	rpcxService "github.com/mimis-s/golang_tools/rpcx/service"
 )
+
+var ProviderSet = wire.NewSet(dao.ProviderSet, NewServiceHandler)
 
 var S *Service
 
@@ -14,26 +18,19 @@ type Service struct {
 	Dao *dao.Dao
 }
 
-func Init(configOptions *boot_config.ConfigOptions) *Service {
-
-	d, err := dao.New()
-	if err != nil {
-		panic(err)
-	}
+func NewServiceHandler(rpcSvc *rpcxService.ServerManage, d *dao.Dao) (*Service, error) {
 
 	S = &Service{
 		Dao: d,
 	}
 
-	listenAddr := configOptions.CommandFlags.RpcListenPort
-	addr := configOptions.CommandFlags.RpcExposePort
-	etcdAddrs := configOptions.BootConfigFile.Etcd.Addrs
-	etcdBasePath := configOptions.BootConfigFile.Etcd.EtcdBasePath
-	isLocal := configOptions.BootConfigFile.IsLocal
-	// 启动rpcx服务
-	api_gateway.NewGatewayServiceAndRun(listenAddr, addr, etcdAddrs, S, etcdBasePath, isLocal)
+	// 绑定rpcx服务
+	err := api_gateway.RegisterGatewayService(rpcSvc, S)
+	if err != nil {
+		return nil, err
+	}
 
-	webAddr := configOptions.CommandFlags.IP + ":" + configOptions.CommandFlags.WebPort
+	webAddr := boot_config.CustomBootFlagsData.IP + ":" + boot_config.CustomBootFlagsData.WebPort
 
 	httpServer := net.InitServer(webAddr, "http", NewSession)
 
@@ -44,7 +41,7 @@ func Init(configOptions *boot_config.ConfigOptions) *Service {
 		}
 	}()
 
-	tcpAddr := configOptions.CommandFlags.IP + ":" + configOptions.CommandFlags.Port
+	tcpAddr := boot_config.CustomBootFlagsData.IP + ":" + boot_config.CustomBootFlagsData.Port
 
 	// 客户端连接的TCP连接
 	tcpServer := net.InitServer(tcpAddr, "tcp", NewSession)
@@ -56,5 +53,5 @@ func Init(configOptions *boot_config.ConfigOptions) *Service {
 		}
 	}()
 
-	return S
+	return S, nil
 }

@@ -158,6 +158,8 @@ type GatewayServiceInterface interface {
 var GatewayServiceLocal GatewayServiceInterface
 
 func RegisterGatewayService(s *service.ServerManage, hdlr GatewayServiceInterface) error {
+	// 本地调用的时候使用(rpc本地客户端对应调用本地服务器)
+	GatewayServiceLocal = hdlr
 	return s.RegisterOneService(serverName, hdlr)
 }
 

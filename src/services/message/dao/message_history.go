@@ -5,8 +5,8 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/golang_tools/lib"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 /*
@@ -33,7 +33,7 @@ func (d *Dao) AddHistoryMessage(senderID, receiverID int64, chatMessage *im_home
 	if err != nil {
 		errStr := fmt.Sprintf("insert history message sender[%v] receiver[%v] messageID[%v] is err:%v",
 			senderID, receiverID, chatMessage.MessageID, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -42,7 +42,7 @@ func (d *Dao) AddHistoryMessage(senderID, receiverID int64, chatMessage *im_home
 	if err != nil {
 		errStr := fmt.Sprintf("update redis history message sender[%v] receiver[%v] messageID[%v] is err:%v",
 			senderID, receiverID, chatMessage.MessageID, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		return fmt.Errorf(errStr)
 	}
 	return nil
@@ -59,7 +59,7 @@ func (d *Dao) UpdateHistoryMessage(senderID, receiverID, messageID int64, histor
 	if err != nil {
 		errStr := fmt.Sprintf("insert history message sender[%v] receiver[%v] messageID[%v] is err:%v",
 			senderID, receiverID, messageID, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		return fmt.Errorf(errStr)
 	}
 	return nil
@@ -76,7 +76,7 @@ func (d *Dao) GetHistoryMessage(senderID, receiverID, minMessageID, maxMessageID
 	if err != nil {
 		errStr := fmt.Sprintf("get history message sender[%v] receiver[%v] is err:%v",
 			senderID, receiverID, err)
-		im_log.Warn(errStr)
+		zlog.Warn(errStr)
 		return nil, fmt.Errorf(errStr)
 	}
 	return historyMessages, nil

@@ -103,6 +103,8 @@ type ChatServiceInterface interface {
 var ChatServiceLocal ChatServiceInterface
 
 func RegisterChatService(s *service.ServerManage, hdlr ChatServiceInterface) error {
+	// 本地调用的时候使用(rpc本地客户端对应调用本地服务器)
+	ChatServiceLocal = hdlr
 	return s.RegisterOneService(serverName, hdlr)
 }
 

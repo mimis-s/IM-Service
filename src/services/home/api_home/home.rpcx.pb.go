@@ -130,6 +130,8 @@ type HomeServiceInterface interface {
 var HomeServiceLocal HomeServiceInterface
 
 func RegisterHomeService(s *service.ServerManage, hdlr HomeServiceInterface) error {
+	// 本地调用的时候使用(rpc本地客户端对应调用本地服务器)
+	HomeServiceLocal = hdlr
 	return s.RegisterOneService(serverName, hdlr)
 }
 

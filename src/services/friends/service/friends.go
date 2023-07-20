@@ -8,9 +8,9 @@ import (
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
 	"github.com/mimis-s/IM-Service/src/common/dbmodel"
 	"github.com/mimis-s/IM-Service/src/common/event"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/account/api_account"
 	"github.com/mimis-s/IM-Service/src/services/friends/api_friends"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 /*
@@ -22,7 +22,7 @@ func (s *Service) InitFriendsList(userID int64) (*dbmodel.Friends, im_error_prot
 	dbFriends, find, err := s.Dao.GetFriends(userID)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] get friends list, but db is err:%v", userID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return nil, im_error_proto.ErrCode_db_read_err, fmt.Errorf(errStr)
 	}
 
@@ -39,7 +39,7 @@ func (s *Service) InitFriendsList(userID int64) (*dbmodel.Friends, im_error_prot
 		err = s.Dao.InsertFriends(userID, dbFriends)
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] get friends list, but insert db is err:%v", userID, err)
-			im_log.Error(errStr)
+			zlog.Error(errStr)
 			return nil, im_error_proto.ErrCode_db_write_err, fmt.Errorf(errStr)
 		}
 	}
@@ -53,7 +53,7 @@ func (s *Service) GetFriendsStatusList(ctx context.Context, userInfo *im_home_pr
 	dbFriends, errCode, err := s.InitFriendsList(userInfo.UserID)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] get friends list, but init list is err:%v", userInfo.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return friendsStatusList, errCode, fmt.Errorf(errStr)
 	}
 
@@ -76,7 +76,7 @@ func (s *Service) GetFriendsStatusList(ctx context.Context, userInfo *im_home_pr
 		getUsersInfoServiceRes, err := api_account.GetUsersInfoService(context.Background(), getUsersInfoServiceReq)
 		if err != nil {
 			errStr := fmt.Sprintf("user[%v] Get Users[%v] Info Service is err:%v", userInfo.UserID, userIDs, err)
-			im_log.Error(errStr)
+			zlog.Error(errStr)
 			return friendsStatusList, getUsersInfoServiceRes.ErrCode, fmt.Errorf(errStr)
 		}
 		findFriend := func(id int64, array []int64) bool {
@@ -127,7 +127,7 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 	userInfoRes, err := api_account.GetUserInfoService(context.Background(), userInfoReq)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] get User[%v] Info is err:%v", req.ClientInfo.UserID, req.Data.ApplyFriendsID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = userInfoRes.ErrCode
 		return fmt.Errorf(errStr)
 	}
@@ -136,7 +136,7 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 	dbSelfFriends, errCode, err := s.InitFriendsList(req.ClientInfo.UserID)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] Apply Friends, but init list is err:%v", req.ClientInfo.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = errCode
 		return fmt.Errorf(errStr)
 	}
@@ -153,7 +153,7 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 	if findRepeat(req.Data.ApplyFriendsID, dbSelfFriends.Friends.ApplyFriendIDs) {
 		errStr := fmt.Sprintf("user[%v] apply friend, but [%v] already apply friend", req.ClientInfo.UserID, req.Data.ApplyFriendsID)
 		res.ErrCode = im_error_proto.ErrCode_friends_user_already_apply_friend
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		return fmt.Errorf(errStr)
 	}
 
@@ -163,7 +163,7 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 			// 已经是好友
 			errStr := fmt.Sprintf("user[%v] apply friend, but [%v] already friend", req.ClientInfo.UserID, req.Data.ApplyFriendsID)
 			res.ErrCode = im_error_proto.ErrCode_friends_user_already_be_friend
-			im_log.Error(errStr)
+			zlog.Error(errStr)
 			return fmt.Errorf(errStr)
 		}
 	}
@@ -172,7 +172,7 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 	dbOtherFriends, errCode, err := s.InitFriendsList(req.Data.ApplyFriendsID)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] Apply Friends, but user[%v] init list is err:%v", req.ClientInfo.UserID, req.Data.ApplyFriendsID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = errCode
 		return fmt.Errorf(errStr)
 	}
@@ -184,14 +184,14 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 	err = s.Dao.UpdateFriends(req.ClientInfo.UserID, dbSelfFriends)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] Apply Friends, but update db is err:%v", req.ClientInfo.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		return fmt.Errorf(errStr)
 	}
 	err = s.Dao.UpdateFriends(req.Data.ApplyFriendsID, dbOtherFriends)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] Apply Friends, but user[%v] update db is err:%v", req.ClientInfo.UserID, req.Data.ApplyFriendsID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		return fmt.Errorf(errStr)
 	}
@@ -207,7 +207,7 @@ func (s *Service) ApplyFriends(ctx context.Context, req *api_friends.ApplyFriend
 	err = event.Publish(event.Event_ApplyFriend, eventApplyFriend)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] get friends list, but publish is err:%v", req.ClientInfo.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = errCode
 		return fmt.Errorf(errStr)
 	}
@@ -224,7 +224,7 @@ func (s *Service) AgreeFriendApply(ctx context.Context, req *api_friends.AgreeFr
 	dbSelfFriends, errCode, err := s.InitFriendsList(req.ClientInfo.UserID)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] Agree Friend Apply, but init list is err:%v", req.ClientInfo.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = errCode
 		return fmt.Errorf(errStr)
 	}
@@ -234,7 +234,7 @@ func (s *Service) AgreeFriendApply(ctx context.Context, req *api_friends.AgreeFr
 			// 已经是好友
 			errStr := fmt.Sprintf("user[%v] agree apply friend, but [%v] already friend", req.ClientInfo.UserID, req.Data.FriendsID)
 			res.ErrCode = im_error_proto.ErrCode_friends_user_already_be_friend
-			im_log.Error(errStr)
+			zlog.Error(errStr)
 			return fmt.Errorf(errStr)
 		}
 	}
@@ -242,7 +242,7 @@ func (s *Service) AgreeFriendApply(ctx context.Context, req *api_friends.AgreeFr
 	dbOtherFriends, errCode, err := s.InitFriendsList(req.Data.FriendsID)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] Agree Friend[%v] Apply, but init list is err:%v", req.ClientInfo.UserID, req.Data.FriendsID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = errCode
 		return fmt.Errorf(errStr)
 	}
@@ -267,7 +267,7 @@ func (s *Service) AgreeFriendApply(ctx context.Context, req *api_friends.AgreeFr
 	err = s.Dao.UpdateFriends(req.ClientInfo.UserID, dbSelfFriends)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] update friend, but db is err:%v", req.ClientInfo.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		return fmt.Errorf(errStr)
 	}
@@ -275,7 +275,7 @@ func (s *Service) AgreeFriendApply(ctx context.Context, req *api_friends.AgreeFr
 	err = s.Dao.UpdateFriends(req.Data.FriendsID, dbOtherFriends)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] update friend[%v], but db is err:%v", req.ClientInfo.UserID, req.Data.FriendsID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = im_error_proto.ErrCode_db_write_err
 		return fmt.Errorf(errStr)
 	}
@@ -291,7 +291,7 @@ func (s *Service) AgreeFriendApply(ctx context.Context, req *api_friends.AgreeFr
 	err = event.Publish(event.Event_AgreeApplyFriend, eventAgreeApplyFriend)
 	if err != nil {
 		errStr := fmt.Sprintf("user[%v] get friends list, but publish is err:%v", req.ClientInfo.UserID, err)
-		im_log.Error(errStr)
+		zlog.Error(errStr)
 		res.ErrCode = errCode
 		return fmt.Errorf(errStr)
 	}

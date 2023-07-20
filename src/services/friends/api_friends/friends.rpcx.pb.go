@@ -159,6 +159,8 @@ type FriendsServiceInterface interface {
 var FriendsServiceLocal FriendsServiceInterface
 
 func RegisterFriendsService(s *service.ServerManage, hdlr FriendsServiceInterface) error {
+	// 本地调用的时候使用(rpc本地客户端对应调用本地服务器)
+	FriendsServiceLocal = hdlr
 	return s.RegisterOneService(serverName, hdlr)
 }
 

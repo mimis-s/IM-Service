@@ -5,10 +5,10 @@ import (
 
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_error_proto"
 	"github.com/mimis-s/IM-Service/src/common/commonproto/im_home_proto"
-	"github.com/mimis-s/IM-Service/src/common/im_log"
 	"github.com/mimis-s/IM-Service/src/services/friends/api_friends"
 	"github.com/mimis-s/IM-Service/src/services/home/api_home"
 	"github.com/mimis-s/IM-Service/src/services/home/service/seralize"
+	"github.com/mimis-s/golang_tools/zlog"
 )
 
 func init() {
@@ -26,7 +26,7 @@ func ApplyFriends(ctx context.Context, clientInfo *api_home.ClientRequestHandleR
 	}
 	resRpc, err := api_friends.ApplyFriends(context.Background(), reqRpc)
 	if err != nil {
-		im_log.Error("apply friends[%v] rpc is err:%v", reqMsg.ApplyFriendsID, err)
+		zlog.Error("apply friends[%v] rpc is err:%v", reqMsg.ApplyFriendsID, err)
 		return resRpc.ErrCode
 	}
 	resMsg.FriendInfo = resRpc.Data.FriendInfo
@@ -42,7 +42,7 @@ func AgreeFriendApply(ctx context.Context, clientInfo *api_home.ClientRequestHan
 	}
 	resRpc, err := api_friends.AgreeFriendApply(context.Background(), reqRpc)
 	if err != nil {
-		im_log.Error("agree friends[%v] apply rpc is err:%v", reqMsg.FriendsID, err)
+		zlog.Error("agree friends[%v] apply rpc is err:%v", reqMsg.FriendsID, err)
 		return resRpc.ErrCode
 	}
 	resMsg.FriendsID = resRpc.Data.FriendsID
@@ -58,7 +58,7 @@ func DelFriends(ctx context.Context, clientInfo *api_home.ClientRequestHandleReq
 	}
 	resRpc, err := api_friends.DelFriends(context.Background(), reqRpc)
 	if err != nil {
-		im_log.Error("del friends[%v] rpc is err:%v", reqMsg.FriendsID, err)
+		zlog.Error("del friends[%v] rpc is err:%v", reqMsg.FriendsID, err)
 		return resRpc.ErrCode
 	}
 	resMsg.FriendsID = resRpc.Data.FriendsID

@@ -1,8 +1,6 @@
 package main
 
 import (
-	_ "embed"
-
 	"github.com/mimis-s/IM-Service/src/common/registry"
 	"github.com/mimis-s/IM-Service/src/services/account"
 	"github.com/mimis-s/IM-Service/src/services/chat"
